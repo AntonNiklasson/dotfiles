@@ -4,3 +4,9 @@
 
 	git clone git@github.com:AntonNiklasson/dotfiles.git ~/.dotfiles 
 	sh ~/.dotfiles/install
+
+### Global git ignore
+
+Run the following to tell git about it:
+
+	git config --global core.excludesfile '~/.gitignore_global'
