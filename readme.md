@@ -2,5 +2,5 @@
 
 ### Installation
 
-	git clone https://www.github.com/AntonNiklasson/dotfiles ~/.dotfiles
+	git clone git@github.com:AntonNiklasson/dotfiles.git ~/.dotfiles 
 	sh ~/.dotfiles/install
