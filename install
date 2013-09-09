@@ -1,9 +1,16 @@
 #! /bin/bash
 
-echo Running the installtion. Linking files.
+echo "Installing..."
 
 
 # link the files
-ln -s ~/.dotfiles/.bashrc 		~/.bashrc
-ln -s ~/dotfiles/.vimrc 		~/.vimrc
-ln -s ~/.dotfiles/.gitignore_global 	~/.gitignore_global
+for f in ~/.dotfiles/link/.*; do
+	if test -f "$f"
+	then
+		echo "Linking ~/$(basename $f)"
+		#ln -s "$f" "~($(basename $f)"
+	fi
+done
+
+
+echo "Installation complete."
