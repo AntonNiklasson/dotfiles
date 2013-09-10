@@ -20,6 +20,7 @@
   st = status
   ksdiff = difftool -y -t Kaleidoscope
 	statsu = status
+	psuh = push
 [branch "master"]
   remote = origin
   merge = refs/heads/master
