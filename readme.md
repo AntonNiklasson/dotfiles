@@ -2,8 +2,7 @@
 
 ### Installation
 
-	git clone git@github.com:AntonNiklasson/dotfiles.git ~/.dotfiles 
-	cd && sh ~/.dotfiles/install
+	git clone git@github.com:AntonNiklasson/dotfiles.git ~/.dotfiles && cd && sh ~/.dotfiles/install
 
 ### Global git ignore
 
