@@ -6,11 +6,11 @@ echo "\n\n\n"
 
 
 # Link all files in /link to ~/<filename>
-for f in ~/.dotfiles/link/.*; do
+for f in .dotfiles/link/.*; do
 	if test -f "$f"
 	then
-		echo "Linking ~/$(basename $f)"
-		#ln -s "$f" "~($(basename $f)"
+		echo "Creating link from $f to $(basename $f)"
+		ln -s "$f" "$(basename $f)"
 	fi
 done
 
