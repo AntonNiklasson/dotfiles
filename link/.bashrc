@@ -14,6 +14,7 @@ alias mkdir='mkdir -p'
 # git related
 alias g='git'
 alias gb='g branch'
+alias gba='gb -a'
 alias gs='g status'
 alias gc='g commit'
 alias gcm='gc -m'
