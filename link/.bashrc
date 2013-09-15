@@ -25,7 +25,6 @@ alias gdc='gd --cached'
 alias deploy='g ftp push' # Set config in the git config
 
 # apps etc
-alias subl='subl&'
 alias fz='filezilla'
 
 # laravel related
