@@ -10,7 +10,7 @@ for f in .dotfiles/link/.*; do
 	if test -f "$f"
 	then
 		echo "Creating link from $f to $(basename $f)"
-		ln -s "$f" "$(basename $f)"
+		ln -fs "$f" "$(basename $f)"
 	fi
 done
 
