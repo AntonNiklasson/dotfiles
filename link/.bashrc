@@ -5,6 +5,7 @@ export HISTCONTROL=ignoredups
 # ALIASES
 # some basics
 alias ll='ls -FHhl'
+alias la='ll -a'
 alias ..='cd ..'
 alias ...='..;..'
 alias cl='clear'
