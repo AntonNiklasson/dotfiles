@@ -15,12 +15,6 @@ for f in .dotfiles/link/.*; do
 done
 
 
-# Installing useful things
-apt install tree
-apt install git
-apt install filezilla
-
-
 echo "\n\n\n"
 echo "Installation complete."
 echo "\n"
