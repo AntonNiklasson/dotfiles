@@ -1,9 +1,5 @@
 #! /bin/bash
 
-echo "\n"
-echo "Installing..."
-echo "\n\n\n"
-
 
 # Link all files in /link to ~/<filename>
 for f in .dotfiles/link/.*; do
@@ -15,6 +11,5 @@ for f in .dotfiles/link/.*; do
 done
 
 
-echo "\n\n\n"
-echo "Installation complete."
-echo "\n"
+
+echo "Dotfiles installed successfully!"
