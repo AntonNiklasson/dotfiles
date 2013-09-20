@@ -21,6 +21,7 @@
   ksdiff = difftool -y -t Kaleidoscope
 	statsu = status
 	psuh = push
+	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
 [branch "master"]
   remote = origin
   merge = refs/heads/master
