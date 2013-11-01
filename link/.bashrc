@@ -26,4 +26,4 @@ alias gd='g diff'
 alias gdc='gd --cached'
 alias deploy='g ftp push' # Set config in the git config
 
-alias arti='php artisan'
+alias artisan='php artisan'
