@@ -1,14 +1,20 @@
 # SETTINGS
 export HISTCONTROL=ignoredups
 
+
 # PROMPT
-export PS1="\[\033[36m\][\t] \[\033[1;33m\]\u\[\033[0m\]@\h:\[\033[36m\][\w]:\[\033[0m\]\n $ "
+if [ -n "$SSH_CLIENT" ]; then
+	text="[ssh]"
+fi
+
+export PS1="$text\[\033[36m\][\t] \[\033[1;33m\]\u\[\033[0m\]@\h:\[\033[36m\][\w]:\[\033[0m\]\n $ "
+
 
 alias php="/Applications/MAMP/bin/php/php5.4.4/bin/php"
 
 # ALIASES
 alias ll='ls -FHhl'
-alias la='ll -a'
+alias lla='ll -a'
 alias ..='cd ..'
 alias ...='..;..'
 alias cl='clear'
