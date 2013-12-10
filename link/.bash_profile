@@ -13,7 +13,7 @@ export PS1="$text\[\033[36m\][\t] \[\033[1;33m\]\u\[\033[0m\]@\h:\[\033[36m\][\w
 alias php="/Applications/MAMP/bin/php/php5.4.4/bin/php"
 
 # ALIASES
-alias ll='ls -FHhl'
+alias ll='ls -Hhl'
 alias lla='ll -a'
 alias ..='cd ..'
 alias ...='..;..'
