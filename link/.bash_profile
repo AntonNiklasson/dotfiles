@@ -1,10 +1,10 @@
 # SETTINGS
 export HISTCONTROL=ignoredups
+export PS1="\n\n\e[1;35m\W\e[m $ "
 
-# PROMPT
-export PS1="\[\033[36m\][\t] \[\033[1;33m\]\u\[\033[0m\]@\h:\[\033[36m\][\w]:\[\033[0m\]\n $ "
 
-alias php="/Applications/MAMP/bin/php/php5.4.4/bin/php"
+alias sphp="/Applications/MAMP/bin/php/php5.4.4/bin/php"
+alias mysql="/Applications/MAMP/Library/bin/mysql"
 
 # ALIASES
 alias ll='ls -FHhl'
