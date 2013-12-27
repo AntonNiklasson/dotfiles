@@ -11,5 +11,8 @@ for f in .dotfiles/link/.*; do
 done
 
 
+# Fix for .bash_profile and .bashrc
+ln -fs ~/.bash_profile ~/.bashrc
+
 
 echo "Dotfiles installed successfully!"
