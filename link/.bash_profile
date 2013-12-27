@@ -6,7 +6,7 @@ export PATH=/usr/local/bin:$PATH
 
 
 # PROMPT
-export PS1="\[\033[36m\][\t] \[\033[1;33m\]\u\[\033[0m\]@\h:\[\033[36m\][\w]:\[\033[0m\]\n $ "
+export PS1="[\u] \[\033[36m\]\w \[\033[0m\]\n $ "
 
 
 # ALIASES
