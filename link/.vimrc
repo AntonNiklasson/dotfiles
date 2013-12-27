@@ -1,4 +1,5 @@
 syntax on
+
 set background=dark
 set ruler                     " show the line number on the bar
 set more                      " use more prompt
@@ -13,7 +14,7 @@ set nocompatible              " vim, not vi
 set autoindent smartindent    " auto/smart indent
 set smarttab                  " tab and backspace are smart
 set tabstop=2                 " 6 spaces
-set shiftwidth=2
+set shiftwidth=4
 set scrolloff=10              " keep at least 5 lines above/below
 set sidescrolloff=5           " keep at least 5 lines left/right
 set history=300
@@ -26,7 +27,10 @@ set noerrorbells              " No error bells please
 set shell=bash
 set fileformats=unix
 set ff=unix
+set wildmenu                  " menu has tab completion
+
 filetype on                   " Enable filetype detection
 filetype indent on            " Enable filetype-specific indenting
 filetype plugin on            " Enable filetype-specific plugins
-set wildmenu                  " menu has tab completion
+
+:imap jj <Esc>

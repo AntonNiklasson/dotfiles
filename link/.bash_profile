@@ -1,10 +1,9 @@
 # SETTINGS
 export HISTCONTROL=ignoredups
 export PS1="\n\n\e[1;35m\W\e[m $ "
+export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
+export PATH=/usr/local/bin:$PATH
 
-
-alias sphp="/Applications/MAMP/bin/php/php5.4.4/bin/php"
-alias mysql="/Applications/MAMP/Library/bin/mysql"
 
 # ALIASES
 alias ll='ls -FHhl'
@@ -12,19 +11,21 @@ alias la='ll -a'
 alias ..='cd ..'
 alias ...='..;..'
 alias cl='clear'
-alias rm='rm -i'
 alias mkdir='mkdir -p'
 
+alias v='vim'
+alias vi='vim'
+
 alias g='git'
+alias ga='g add'
 alias gb='g branch'
 alias gba='gb -a'
-alias gs='g status'
 alias gc='g commit'
 alias gcm='gc -m'
 alias gco='g checkout'
-alias ga='g add'
 alias gd='g diff'
 alias gdc='gd --cached'
-alias deploy='g ftp push' # Set config in the git config
+alias gl='g log'
+alias gs='g status'
 
-alias artisan='php artisan'
+alias art='php artisan'
