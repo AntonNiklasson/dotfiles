@@ -40,8 +40,18 @@ alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bash_profile'
 alias gitconfig='vim ~/.gitconfig'
 
+if [[ $OSTYPE == darwin* ]]; then
+		alias hosts='vim /Applications/XAMPP/etc/extra/httpd-vhosts.conf'
+		alias sites='sudo vim /private/etc/apache2/extra/httpd-vhosts.conf'
+else
+		alias hosts='sudo vim /etc/hosts'
+		alias sites='cd /etc/apache2/sites-available && ll'
+fi
+
 # Laravel specific
 alias art='php artisan'
+
+alias pu='echo "Running PHPUnit..." && phpunit'
 
 
 # Extract files with ease
