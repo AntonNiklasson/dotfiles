@@ -34,6 +34,8 @@ alias gd='g diff'
 alias gdc='gd --cached'
 alias gl='g log'
 alias gs='g status'
+alias push='g push'
+alias pull='g pull'
 
 # Dotfile helpers
 alias vimrc='vim ~/.vimrc'
