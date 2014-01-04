@@ -41,4 +41,4 @@
 [url "git://gist.github.com/"]
 		insteadOf = "gist:"
 [push]
-		default = current
+		default = upstream
