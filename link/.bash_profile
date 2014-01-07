@@ -16,6 +16,7 @@ alias ..='cd ..'
 alias ...='..;..'
 alias cl='clear'
 alias mkdir='mkdir -p'
+alias pwd='pwd -P'
 
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
