@@ -18,6 +18,11 @@ alias cl='clear'
 alias mkdir='mkdir -p'
 alias pwd='pwd -P'
 
+MkdirAndCd() {
+	mkdir $1 && cd $1
+}
+alias md=MkdirAndCd;
+
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
 
