@@ -8,11 +8,8 @@ export PATH=/usr/local/bin:$PATH
 # Prompt
 export PS1="[\u] \[\033[36m\]\w \[\033[0m\]\n $ "
 
-# Z Directory Jumper
-. ~/.z.sh
-
 # Aliases
-alias ll='ls -Hhl --color --group-directories-first'
+alias ll='ls -Hhl'
 alias la='ll -a'
 alias ..='cd ..'
 alias ...='..;..'
