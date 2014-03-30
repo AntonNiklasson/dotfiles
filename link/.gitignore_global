@@ -12,7 +12,6 @@ node_modules
 *.war
 *.ear
 
-.htaccess
 wp-config.php
 wp-content/uploads/
 wp-content/blogs.dir/
