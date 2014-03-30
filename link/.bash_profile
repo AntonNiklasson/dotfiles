@@ -3,7 +3,7 @@ export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 export PATH=/usr/local/bin:$PATH
 export PATH=/opt/android-studio/bin:$PATH
 
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/bin/go/bin
 export GOPATH=$HOME/code/go
 export PATH=$PATH:$GOPATH/bin
 
