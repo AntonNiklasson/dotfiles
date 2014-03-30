@@ -1,13 +1,20 @@
-# Settings
 export HISTCONTROL=ignoredups
-export PS1="\n\n\e[1;35m\W\e[m $ "
 export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 export PATH=/usr/local/bin:$PATH
 export PATH=/opt/android-studio/bin:$PATH
 
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/code/go
+export PATH=$PATH:$GOPATH/bin
 
-# Prompt
+export PATH=$PATH:$HOME/.rvm/bin
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
 export PS1="[\u] \[\033[36m\]\w \[\033[0m\]\n $ "
+
+# Git completion
+source ~/.git-completion.bash
 
 
 MkdirAndCd() {
@@ -21,14 +28,13 @@ function o {
 export -f o
 
 # Aliases
-alias ll='ls -Hhl --color --group-directories-first'
+alias ll='ls -Hhl'
 alias la='ll -a'
 alias ..='cd ..'
 alias ...='..;..'
 alias cl='clear'
 alias mkdir='mkdir -p'
 alias pwd='pwd -P'
-
 
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
@@ -49,7 +55,6 @@ alias gs='g status'
 alias push='g push'
 alias pull='g pull'
 
-# Fast File Editing
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bash_profile'
 alias gitconfig='vim ~/.gitconfig'
@@ -63,7 +68,6 @@ fi
 
 # Laravel Specific 
 alias art='php artisan'
-
 alias pu='echo "Running PHPUnit..." && phpunit'
 
 
@@ -89,8 +93,3 @@ else
 	echo "'$1' is not a valid file!"
 fi
 }
-
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
