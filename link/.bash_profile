@@ -4,6 +4,13 @@ export PS1="\n\n\e[1;35m\W\e[m $ "
 export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 export PATH=/usr/local/bin:$PATH
 
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/code/go
+export PATH=$PATH:$GOPATH/bin
+
+
+# Git completion
+source ~/.git-completion.bash
 
 # Prompt
 export PS1="[\u] \[\033[36m\]\w \[\033[0m\]\n $ "
@@ -57,6 +64,9 @@ alias art='php artisan'
 
 alias pu='echo "Running PHPUnit..." && phpunit'
 
+if [ -f ~/.git-completion.bash ]; then
+	. ~/.git-completion.bash
+fi
 
 # Extraction
 extract () {
