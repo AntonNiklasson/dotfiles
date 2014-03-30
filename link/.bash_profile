@@ -3,13 +3,22 @@ export HISTCONTROL=ignoredups
 export PS1="\n\n\e[1;35m\W\e[m $ "
 export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 export PATH=/usr/local/bin:$PATH
+export PATH=/opt/android-studio/bin:$PATH
 
 
 # Prompt
 export PS1="[\u] \[\033[36m\]\w \[\033[0m\]\n $ "
 
-# Z Directory Jumper
-. ~/.z.sh
+
+MkdirAndCd() {
+	mkdir $1 && cd $1
+}
+alias md=MkdirAndCd;
+
+function o {
+	nohup xdg-open "$1" > /dev/null 2>&1 &
+}
+export -f o
 
 # Aliases
 alias ll='ls -Hhl --color --group-directories-first'
@@ -20,10 +29,6 @@ alias cl='clear'
 alias mkdir='mkdir -p'
 alias pwd='pwd -P'
 
-MkdirAndCd() {
-	mkdir $1 && cd $1
-}
-alias md=MkdirAndCd;
 
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
@@ -39,6 +44,7 @@ alias gco='g checkout'
 alias gd='g diff'
 alias gdc='gd --cached'
 alias gl='g log'
+alias gm='g merge'
 alias gs='g status'
 alias push='g push'
 alias pull='g pull'
@@ -83,3 +89,8 @@ else
 	echo "'$1' is not a valid file!"
 fi
 }
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
