@@ -1,9 +1,10 @@
 export HISTCONTROL=ignoredups
+
 export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 export PATH=/usr/local/bin:$PATH
 export PATH=/opt/android-studio/bin:$PATH
-
 export PATH=$PATH:/usr/local/go/bin
+
 export GOPATH=$HOME/code/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
@@ -12,7 +13,10 @@ export PATH=$PATH:$HOME/.rvm/bin
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
-export PS1="[\u] \[\033[36m\]\w \[\033[0m\]\n $ "
+parse_git_branch() {
+	git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+export PS1="[\u] \[\033[36m\]\w\[\033[0m\]\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \n $ "
 
 # Git completion
 source ~/.git-completion.bash
@@ -56,6 +60,10 @@ alias gs='g status'
 alias push='g push'
 alias pull='g pull'
 
+# Laravel Specific 
+alias art='php artisan'
+alias pu='echo "Running PHPUnit..." && phpunit'
+
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bash_profile'
 alias gitconfig='vim ~/.gitconfig'
@@ -66,11 +74,6 @@ if [[ $OSTYPE == darwin* ]]; then
 else
 		alias sites='cd /etc/apache2/sites-available && ll'
 fi
-
-# Laravel Specific 
-alias art='php artisan'
-alias pu='echo "Running PHPUnit..." && phpunit'
-
 
 # Extraction
 extract () {
