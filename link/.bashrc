@@ -8,7 +8,7 @@ parse_git_branch() {
 export PS1="[\u] \[\033[36m\]\w\[\033[0m\]\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \n $ "
 
 # Install aliases
-source .aliases
+source .bash_aliases
 
 # Setup $PATH
 source .paths

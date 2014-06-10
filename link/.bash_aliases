@@ -9,8 +9,6 @@ alias pwd='pwd -P'
 
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
-alias v='vim'
-alias vi='vim'
 alias g='git'
 alias ga='g add'
 alias gb='g branch'
@@ -30,7 +28,8 @@ alias pull='g pull'
 alias art='php artisan'
 alias pu='echo "Running PHPUnit..." && phpunit'
 
-alias vm='cd ~/code/Homestead/ && vagrant destroy && vagrant up && vagrant ssh'
+alias homestead='cd ~/code/Homestead'
+alias vm='cd ~/code/Homestead/ && vagrant ssh'
 
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bash_profile'
