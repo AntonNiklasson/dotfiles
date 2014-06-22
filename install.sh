@@ -1,22 +1,21 @@
 #! /bin/sh
 
+echo "Creating .files..."
 
-# Link all files in /link to ~/<filename>
-echo "Linking files..."
 for f in ~/.dotfiles/link/.*; do
 	if test -f "$f"
 	then
-		echo "Creating link from $f to $(basename $f)"
+		echo "Creating ~/$(basename $f)"
 		ln -fs "$f" "$(basename $f)"
 	fi
 done
 
-# .bashrc to .bash_profile on OSX
+# .bashrc to .bash_profile on OSX.
 if [[ $OSTYPE == darwin* ]]; then
 	ln -fs ~/.bashrc ~/.bash_profile
-	source ~/.bash_profile
+	. ~/.bash_profile
 else
-	source ~/.bashrc
+	. ~/.bashrc
 fi
 
 # Set global .gitignore

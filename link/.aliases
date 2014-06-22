@@ -60,10 +60,10 @@ extract () {
 				*.Z) uncompress $1 				&& cd $(basename "$1" .Z) ;;
 				*.7z) 7z x $1 						&& cd $(basename "$1" .7z) ;;
 				*) echo "don't know how to extract '$1'..." ;;
-esac
-else
-	echo "'$1' is not a valid file!"
-fi
+		esac
+	else
+		echo "'$1' is not a valid file!"
+	fi
 }
 
 MkdirAndCd() {
