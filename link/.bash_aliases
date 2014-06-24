@@ -30,7 +30,7 @@ alias art='php artisan'
 alias pu='echo "Running PHPUnit..." && phpunit'
 
 alias homestead='cd ~/code/Homestead'
-alias vm='cd ~/code/Homestead/ && vagrant ssh'
+alias vm='ssh vagrant@127.0.0.1 -p 2222'
 
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bashrc'
@@ -60,10 +60,10 @@ extract () {
 				*.Z) uncompress $1 				&& cd $(basename "$1" .Z) ;;
 				*.7z) 7z x $1 						&& cd $(basename "$1" .7z) ;;
 				*) echo "don't know how to extract '$1'..." ;;
-esac
-else
-	echo "'$1' is not a valid file!"
-fi
+		esac
+	else
+		echo "'$1' is not a valid file!"
+	fi
 }
 
 MkdirAndCd() {
