@@ -21,6 +21,7 @@ alias gdc='gd --cached'
 alias gl='g log'
 alias gm='g merge'
 alias gs='g status'
+alias gf='g fetch'
 alias push='g push'
 alias pull='g pull'
 
@@ -32,7 +33,7 @@ alias homestead='cd ~/code/Homestead'
 alias vm='cd ~/code/Homestead/ && vagrant ssh'
 
 alias vimrc='vim ~/.vimrc'
-alias bashrc='vim ~/.dotfiles/link/.bash_profile'
+alias bashrc='vim ~/.dotfiles/link/.bashrc'
 alias gitconfig='vim ~/.gitconfig'
 alias hosts='sudo vim /etc/hosts'
 
