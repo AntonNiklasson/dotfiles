@@ -25,6 +25,8 @@ alias gf='g fetch'
 alias push='g push'
 alias pull='g pull'
 
+alias pyserv='python -m SimpleHTTPServer'
+
 # Laravel Specific 
 alias art='php artisan'
 alias pu='echo "Running PHPUnit..." && phpunit'
