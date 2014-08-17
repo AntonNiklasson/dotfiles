@@ -10,5 +10,7 @@ export PS1="[\u] \[\033[36m\]\w\[\033[0m\]\[\033[32m\]\$(parse_git_branch)\[\033
 # Install aliases
 . ~/.bash_aliases
 
+alias mapniktest='ssh -i ~/.ssh/mapniktest.pem ubuntu@mapniktest.2xper.se'
+
 # Setup $PATH
 . ~/.paths

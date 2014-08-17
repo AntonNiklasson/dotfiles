@@ -21,14 +21,17 @@ alias gdc='gd --cached'
 alias gl='g log'
 alias gm='g merge'
 alias gs='g status'
+alias gf='g fetch'
 alias push='g push'
 alias pull='g pull'
+
+alias pyserv='python -m SimpleHTTPServer'
 
 alias vm='ssh vagrant@127.0.0.1 -p 2222'
 alias digitalocean='ssh root@5.101.107.248'
 
 alias vimrc='vim ~/.vimrc'
-alias bashrc='vim ~/.dotfiles/link/.bash_profile'
+alias bashrc='vim ~/.dotfiles/link/.bashrc'
 alias gitconfig='vim ~/.gitconfig'
 alias hosts='sudo vim /etc/hosts'
 

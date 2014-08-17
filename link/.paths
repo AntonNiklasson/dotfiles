@@ -3,12 +3,11 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/opt/android-studio/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/opt/android-studio/sdk/tools
-
 export PATH=$PATH:~/.composer/vendor/bin
-
 export GOPATH=$HOME/code/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
-
+export PATH=$PATH:$HOME/apache-maven-3.2.1/bin:$HOME/apache-tomcat-7.0.54/bin
+export CXX='/usr/local/Cellar/gcc/4.8.3_1/bin/g++-4.8'
 export PATH=$PATH:$HOME/.rvm/bin
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
