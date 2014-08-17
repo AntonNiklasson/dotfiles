@@ -14,3 +14,8 @@ alias mapniktest='ssh -i ~/.ssh/mapniktest.pem ubuntu@mapniktest.2xper.se'
 
 # Setup $PATH
 . ~/.paths
+
+# Git autocompletion
+if [ -f ~/.git-completion.bash ]; then
+	. ~/.git-completion.bash
+fi
