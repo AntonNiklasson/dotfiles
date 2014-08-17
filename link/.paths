@@ -2,6 +2,7 @@ export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 export PATH=/usr/local/bin:$PATH
 export PATH=/opt/android-studio/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/opt/android-studio/sdk/tools
 
 export PATH=$PATH:~/.composer/vendor/bin
 
