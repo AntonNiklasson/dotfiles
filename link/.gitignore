@@ -6,6 +6,7 @@
 
 .sass-cache
 node_modules
+bower_components
 
 *.class
 *.war
@@ -23,3 +24,6 @@ sitemap.xml
 wp-content/cache/
 wp-content/backups/
 sitemap.xml.gz
+
+*.sublime-project
+*.sublime-workspace

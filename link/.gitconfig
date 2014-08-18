@@ -6,7 +6,8 @@
 [core]
 		autocrlf = input
 		whitespace = fix,space-before-tab,tab-in-indent,trailing-space
-	excludesfile = ~/.gitignore
+		excludesfile = ~/.gitignore
+		editor = vim
 [apply]
 		whitespace = fix
 [alias]
