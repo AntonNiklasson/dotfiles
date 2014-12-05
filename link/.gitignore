@@ -27,3 +27,5 @@ sitemap.xml.gz
 
 *.sublime-project
 *.sublime-workspace
+
+.idea

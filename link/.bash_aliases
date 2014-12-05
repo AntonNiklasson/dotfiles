@@ -25,7 +25,7 @@ alias gf='g fetch'
 alias push='g push'
 alias pull='g pull'
 
-alias pyserv='python -m SimpleHTTPServer'
+alias pyserv='python -m http.server'
 
 alias vm='ssh vagrant@127.0.0.1 -p 2222'
 alias digitalocean='ssh root@5.101.107.248'
