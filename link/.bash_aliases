@@ -1,13 +1,14 @@
 alias ll='ls -Hhl'
 alias la='ll -a'
 alias ..='cd ..'
-alias ...='..;..'
+alias ...='cd ../..'
 alias mkdir='mkdir -p'
 alias pwd='pwd -P'
 
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
 alias homestead='cd ~/code/Homestead'
+alias td38='cd ~/code/tddd38'
 
 alias g='git'
 alias ga='g add'
@@ -32,6 +33,7 @@ alias digitalocean='ssh root@5.101.107.248'
 
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bashrc'
+alias aliases='vim ~/.bash_aliases && source ~/.bashrc'
 alias gitconfig='vim ~/.gitconfig'
 alias hosts='sudo vim /etc/hosts'
 
