@@ -9,6 +9,7 @@ alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
 alias homestead='cd ~/code/Homestead'
 alias td38='cd ~/code/tddd38'
+alias t48='cd ~/code/TNM048'
 
 alias g='git'
 alias ga='g add'
