@@ -1,13 +1,13 @@
 [user]
-		name = Anton Niklasson
-		email = niklasson.anton@gmail.com
+	name = Anton Niklasson
+	email = niklasson.anton@gmail.com
 [github]
 		user = AntonNiklasson
 [core]
 		autocrlf = input
 		whitespace = fix,space-before-tab,tab-in-indent,trailing-space
 	excludesfile = ~/.gitignore
-		editor = vim
+	editor = vim
 [apply]
 		whitespace = fix
 [alias]

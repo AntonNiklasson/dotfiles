@@ -1,5 +1,5 @@
+" SETTINGS
 syntax on
-
 set autoindent smartindent	" auto/smart indent
 set autoread	" watch for file changes
 set background=dark
@@ -33,9 +33,16 @@ set updatecount=100	" switch every 100 chars
 set visualbell
 set wildmenu	" menu has tab completion
 
-filetype on	" Enable filetype detection
-filetype indent on	" Enable filetype-specific indenting
-filetype plugin on	" Enable filetype-specific plugins
+filetype on
+filetype indent on
+filetype plugin on
 
-:imap jj <Esc>	" Leave insert mode with 
-:nmap <C-k> I//<Esc>
+
+let mapleader = "."
+
+" KEY BINDINGS
+:imap jj 		<Esc>
+
+" COMMAND BINDINGS
+:command W		w
+:command WQ		wq

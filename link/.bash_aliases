@@ -7,8 +7,6 @@ alias pwd='pwd -P'
 
 alias code='cd ~/code'
 alias dotfiles='cd ~/.dotfiles/link && la'
-alias homestead='cd ~/code/Homestead'
-alias td38='cd ~/code/tddd38'
 alias t48='cd ~/code/TNM048'
 
 alias g='git'
@@ -26,11 +24,13 @@ alias gs='g status'
 alias gf='g fetch'
 alias push='g push'
 alias pull='g pull'
+alias pushdeploy='git push origin master && envoy run deploy'
 
 alias pyserv='python -m http.server'
 
 alias vm='ssh vagrant@127.0.0.1 -p 2222'
 alias digitalocean='ssh root@5.101.107.248'
+alias pi='ssh pi@192.168.1.123'
 
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bashrc'

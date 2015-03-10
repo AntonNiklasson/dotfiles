@@ -10,9 +10,9 @@ done
 # .bashrc to .bash_profile on OSX.
 if [[ $OSTYPE == darwin* ]]; then
 	ln -fs ~/.bashrc ~/.bash_profile
-	source ~/.bash_profile
+	. ~/.bash_profile
 else
-	source ~/.bashrc
+	. ~/.bashrc
 fi
 
 git config --global user.name "Anton Niklasson"
