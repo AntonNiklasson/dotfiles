@@ -1,51 +1,53 @@
+set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#rc()
+Plugin 'gmarik/Vundle.vim'
+
+Plugin 'tpope/vim-fugitive'
+Bundle 'scrooloose/syntastic'
+Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+Bundle 'scrooloose/nerdtree'
+
+filetype plugin indent on
+
 syntax on
-set autoindent smartindent	" auto/smart indent
-set autoread	" watch for file changes
+
+set autoindent
+set smartindent
+set autoread
 set background=dark
 set backspace=indent,eol,start
-set cmdheight=2	" command line two lines high
-set ff=unix
-set fileformats=unix
-set hidden
-set history=300
-set lazyredraw	" don't redraw when don't have to
+set cmdheight=1
+set lazyredraw	
 set linebreak
-set more	" use more prompt
-set noautowrite	" don't automagically write on :next
-set noerrorbells	" No error bells please
+set more	
+set noautowrite	
+set noerrorbells	
 set noexpandtab
 set nowrap
-set number	" line numbers
-set showmode	" show current editing mode
-set showcmd	" show current command related information
-set nocompatible	" vim, not vi
-set smarttab	" tab and backspace are smart
+set number	
+set showmode	
+set showcmd	
+set nocompatible	
+set smarttab	
 set shiftwidth=4
 set shell=bash
-set scrolloff=10	" keep at least 5 lines above/below
-set sidescrolloff=5	" keep at least 5 lines left/right
-set splitright	" vsplit to the right
-set splitbelow	" split below
-set tabstop=4	" 6 spaces
-set undolevels=1000	" 1000 undos
-set updatecount=100	" switch every 100 chars
+set splitright	
+set splitbelow	
+set tabstop=4	
 set visualbell
-set wildmenu	" menu has tab completion
+set wildmenu	
+set encoding=utf-8
+set termencoding=utf-8
 set laststatus=2
 set t_Co=256
 
-filetype on
-filetype indent on
-filetype plugin on
+let g:Powerline_symbols = 'fancy'
 
-" KEY BINDINGS
+colorscheme gruvbox
+
 :imap jj 		<Esc>
 
-" COMMAND BINDINGS
-:command W		w
-:command WQ		wq
-
-
-python from powerline.vim import setup as powerline_setup
-python powerline_setup()
-python del powerline_setup
+:nmap <C-k> :NERDTreeToggle<cr>
