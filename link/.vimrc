@@ -1,4 +1,3 @@
-" SETTINGS
 syntax on
 set autoindent smartindent	" auto/smart indent
 set autoread	" watch for file changes
@@ -32,13 +31,12 @@ set undolevels=1000	" 1000 undos
 set updatecount=100	" switch every 100 chars
 set visualbell
 set wildmenu	" menu has tab completion
+set laststatus=2
+set t_Co=256
 
 filetype on
 filetype indent on
 filetype plugin on
-
-
-let mapleader = "."
 
 " KEY BINDINGS
 :imap jj 		<Esc>
@@ -46,3 +44,8 @@ let mapleader = "."
 " COMMAND BINDINGS
 :command W		w
 :command WQ		wq
+
+
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
