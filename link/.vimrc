@@ -9,6 +9,7 @@ Plugin 'tpope/vim-fugitive'
 Bundle 'scrooloose/syntastic'
 Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
+Bundle 'kien/ctrlp.vim'
 
 filetype plugin indent on
 
