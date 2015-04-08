@@ -1,4 +1,4 @@
-alias ll='ls -Hhl'
+alias ll='ls -lh --color --group-directories-first'
 alias la='ll -a'
 alias ..='cd ..'
 alias ...='cd ../..'
