@@ -10,6 +10,7 @@ Bundle 'scrooloose/syntastic'
 Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
 Bundle 'kien/ctrlp.vim'
+Bundle 'mattn/emmet-vim'
 
 filetype plugin indent on
 
@@ -52,3 +53,6 @@ colorscheme gruvbox
 :imap jj 		<Esc>
 
 :nmap <C-k> :NERDTreeToggle<cr>
+
+" expand emmet with <Tab>
+:imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
