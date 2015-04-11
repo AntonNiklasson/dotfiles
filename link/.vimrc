@@ -29,7 +29,6 @@ set noerrorbells
 set noexpandtab
 set nowrap
 set number	
-set showmode	
 set showcmd	
 set nocompatible	
 set smarttab	
@@ -37,13 +36,14 @@ set shiftwidth=4
 set shell=bash
 set splitright	
 set splitbelow	
-set tabstop=4	
+set tabstop=4
 set visualbell
 set wildmenu	
 set encoding=utf-8
 set termencoding=utf-8
 set laststatus=2
 set t_Co=256
+set guifont=Inconsolata\ for\ Powerline:h15
 
 let g:Powerline_symbols = 'fancy'
 
