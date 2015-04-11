@@ -1,4 +1,4 @@
-alias ll='ls -Hhl'
+alias ll='ls -lh --color --group-directories-first'
 alias la='ll -a'
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -56,3 +56,8 @@ function o {
 	nohup xdg-open "$1" > /dev/null 2>&1 &
 }
 export -f o
+
+
+function google() {
+	o 'https://www.google.se/search?q='$1
+}
