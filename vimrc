@@ -30,7 +30,6 @@ set noerrorbells
 set noexpandtab
 set nowrap
 set number	
-set showmode	
 set showcmd	
 set nocompatible	
 set smarttab	
@@ -38,7 +37,7 @@ set shiftwidth=4
 set shell=bash
 set splitright	
 set splitbelow	
-set tabstop=4	
+set tabstop=4
 set visualbell
 set wildmenu	
 set encoding=utf-8
@@ -49,6 +48,13 @@ set mouse=a
 
 colorscheme gruvbox
 
+" powerline settings
+let g:Powerline_symbols = 'fancy'
+set guifont=Inconsolata\ for\ Powerline:h15
+
+" ignore some directorires in ctrlp
+let g:ctrlp_custom_ignore = '(node_modules|bower_components|.sass-cache)'
+
 " map <Leader> to ,
 let mapleader = ","
 
@@ -57,9 +63,6 @@ nmap <Leader>r :e app/Http/routes.php<cr>
 
 " toggle NERDTree with F2
 silent! nmap <F2> :NERDTreeToggle<cr>
-
-" expand emmet with <Tab>
-" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " switch buffers with Ctrl+{h,j,k,l}
 nmap <C-h> <C-w>h
