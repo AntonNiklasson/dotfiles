@@ -1,0 +1,14 @@
+#! /bin/bash
+
+ln -s ~/.dotfiles/vimrc 	~/.vimrc
+ln -s ~/.dotfiles/gitignore 	~/.gitignore
+ln -s ~/.dotfiles/gitconfig 	~/.gitconfig
+
+# .bashrc to .bash_profile on OSX.
+if [[ $OSTYPE == darwin* ]]; then
+	ln -s ~/.dotfiles/bashrc ~/.bash_profile
+	. ~/.bash_profile
+else
+	ln -s ~/.dotfiles/bashrc ~/.bashrc
+	. ~/.bashrc
+fi

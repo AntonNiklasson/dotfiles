@@ -28,23 +28,13 @@ alias pushdeploy='git push origin master && envoy run deploy'
 
 alias pyserv='python -m http.server'
 
-alias vm='ssh vagrant@127.0.0.1 -p 2222'
 alias digitalocean='ssh root@5.101.107.248'
 alias pi='ssh pi@192.168.1.123'
 
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.dotfiles/link/.bashrc'
-alias aliases='vim ~/.bash_aliases && source ~/.bashrc'
-alias gitconfig='vim ~/.gitconfig'
+alias aliases='vim ~/.dotfiles/link/.aliases && . ~/.bashrc'
 alias hosts='sudo vim /etc/hosts'
-
-
-if [[ $OSTYPE == darwin* ]]; then
-		alias sites='sudo vim /Applications/XAMPP/xamppfiles/etc/extra/httpd-vhosts.conf'
-else
-		alias sites='cd /etc/apache2/sites-available && ll'
-fi
-
 
 MkdirAndCd() {
 	mkdir $1 && cd $1
