@@ -1,1 +1,5 @@
+# Map escape to caps.
 setxkbmap -option caps:escape
+
+# Specific flags
+alias ll='ls -lAhp --color --group-directories-first'
