@@ -61,8 +61,9 @@ let mapleader = ","
 " Leader commands
 nmap <Leader>r :e app/Http/routes.php<cr>
 
-" toggle NERDTree with F2
+" NERDTree
 silent! nmap <F2> :NERDTreeToggle<cr>
+let NERDTreeShowHidden=1
 
 " switch buffers with Ctrl+{h,j,k,l}
 nmap <C-h> <C-w>h
