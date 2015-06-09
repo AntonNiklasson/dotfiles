@@ -78,5 +78,3 @@ nmap sp :split<cr>
 " highlight the search term
 highlight Search cterm=underline
 
-" save buffers with Ctrl+s
-nmap  <C-s> :w<cr>

@@ -16,3 +16,5 @@ export CXX='/usr/local/Cellar/gcc/4.8.3_1/bin/g++-4.8'
 export GOPATH=$HOME/code/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
+
+export PATH=$PATH:node_modules/.bin/

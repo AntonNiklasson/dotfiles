@@ -32,8 +32,9 @@ alias digitalocean='ssh root@5.101.107.248'
 alias pi='ssh pi@192.168.1.123'
 
 alias vimrc='vim ~/.vimrc'
-alias bashrc='vim ~/.dotfiles/link/.bashrc'
-alias aliases='vim ~/.dotfiles/link/.aliases && . ~/.bashrc'
+alias bashrc='vim ~/.bashrc'
+alias aliases='vim ~/.dotfiles/aliases'
+alias paths='vim ~/.dotfiles/paths'
 alias hosts='sudo vim /etc/hosts'
 
 MkdirAndCd() {
