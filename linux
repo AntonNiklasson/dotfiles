@@ -1,5 +1,5 @@
-# Map escape to caps.
-setxkbmap -option caps:escape
+# Setup the keyboard configuration.
+setxkbmap -layout 'us,se' -option -option 'grp:rctrl_rshift_toggle' -option 'grp:switch' -option 'caps:escape'
 
-# Specific flags
+# Specific flags for the ll alias.
 alias ll='ls -lAhp --color --group-directories-first'
