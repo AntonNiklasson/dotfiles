@@ -9,6 +9,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'kien/ctrlp.vim'
 Bundle 'mattn/emmet-vim'
 Bundle 'wavded/vim-stylus'
+Bundle 'flazz/vim-colorschemes'
 
 let g:Powerline_symbols = 'fancy'
 
