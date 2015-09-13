@@ -30,6 +30,7 @@ alias pyserv='python -m http.server'
 
 alias digitalocean='ssh root@5.101.107.248'
 alias pi='ssh pi@192.168.1.123'
+alias vm='ssh vagrant@127.0.0.1 -p 2222'
 
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.bashrc'
