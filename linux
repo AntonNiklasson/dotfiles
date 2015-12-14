@@ -2,4 +2,4 @@
 setxkbmap -layout 'us,se' -option -option 'grp:rctrl_rshift_toggle' -option 'grp:switch' -option 'caps:escape'
 
 # Specific flags for the ll alias.
-alias ll='ls -lAhp --color --group-directories-first'
+alias ll='ls -lhp --color --group-directories-first'
