@@ -2,14 +2,12 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 Plugin 'gmarik/Vundle.vim'
-Plugin 'tpope/vim-fugitive'
-Bundle 'scrooloose/syntastic'
-Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
-Bundle 'scrooloose/nerdtree'
-Bundle 'kien/ctrlp.vim'
-Bundle 'mattn/emmet-vim'
-Bundle 'wavded/vim-stylus'
-Bundle 'flazz/vim-colorschemes'
+Plugin 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'wavded/vim-stylus'
+Plugin 'joshdick/onedark.vim'
 
 let g:Powerline_symbols = 'fancy'
 
@@ -79,3 +77,5 @@ nmap sp :split<cr>
 " highlight the search term
 highlight Search cterm=underline
 
+" Run Emmet with <Tab>
+imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
