@@ -38,18 +38,20 @@ alias aliases='vim ~/.dotfiles/aliases'
 alias paths='vim ~/.dotfiles/paths'
 alias hosts='sudo vim /etc/hosts'
 
+# Create and step into directory
 MkdirAndCd() {
 	mkdir $1 && cd $1
 }
 alias md=MkdirAndCd;
 
-
+# Open anything
 function o {
 	nohup xdg-open "$1" > /dev/null 2>&1 &
 }
 export -f o
 
-
-function google() {
-	o 'https://www.google.se/search?q='$1
+# Copy file content to clipboard
+copyFileToClipboard() {
+	cat $1 | xclip -sel clip
 }
+alias copy=copyFileToClipboard;
