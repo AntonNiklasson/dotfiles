@@ -16,5 +16,7 @@ export PATH=$PATH:$GOROOT/bin
 export PATH=$PATH:/usr/local/go/bin
 
 # Node
-export PATH=$PATH:node_modules/.bin/
 export PATH=$PATH:/usr/lib/node_modules/karma/bin
+
+# Ruby gems
+export PATH=$PATH:~/.gem/ruby/2.2.0/bin
