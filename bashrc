@@ -20,3 +20,5 @@ else
 	. ~/.dotfiles/linux
 fi
 
+# Prevent Ctrl-S
+stty -ixon
