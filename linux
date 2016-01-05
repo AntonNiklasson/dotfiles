@@ -1,5 +1,5 @@
 # Setup the keyboard configuration.
-setxkbmap -layout 'us,se' -option -option 'grp:rctrl_rshift_toggle' -option 'grp:switch' -option 'caps:escape'
+setxkbmap -layout 'us,se' -option 'grp:rctrl_rshift_toggle' -option 'grp:switch' -option 'caps:escape'
 
 # Specific flags for the ll alias.
 alias ll='ls -lhp --color --group-directories-first'
