@@ -55,3 +55,6 @@ copyFileToClipboard() {
 	cat $1 | xclip -sel clip
 }
 alias copy=copyFileToClipboard;
+
+# Always use NeoVim instead of Vim
+alias vim='nvim'
