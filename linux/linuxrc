@@ -3,3 +3,6 @@ setxkbmap -layout 'us,se' -option 'grp:rctrl_rshift_toggle' -option 'grp:switch'
 
 # Specific flags for the ll alias.
 alias ll='ls -lhp --color --group-directories-first'
+
+# Link .vimrc to neovim.
+ln -s ~/.vimrc ~/.config/nvim/init.vim
