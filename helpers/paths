@@ -18,6 +18,7 @@ export PATH=$PATH:/usr/local/go/bin
 # Node
 export PATH=$PATH:/usr/lib/node_modules/karma/bin
 export PATH=$PATH:~/.npm-global/bin
+export PATH=$PATH:./node_modules/.bin
 
 # Ruby gems
 export PATH=$PATH:~/.gem/ruby/2.2.0/bin

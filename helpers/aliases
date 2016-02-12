@@ -50,5 +50,4 @@ copyFileToClipboard() {
 }
 alias copy=copyFileToClipboard;
 
-# Always use NeoVim instead of Vim
 alias vim='nvim'
