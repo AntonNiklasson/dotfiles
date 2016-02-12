@@ -15,6 +15,8 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'scrooloose/syntastic'
 Plugin 'joshdick/onedark.vim'
 Plugin 'digitaltoad/vim-jade'
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 
 filetype plugin indent on
 
@@ -24,7 +26,7 @@ hi Tabline     ctermfg=White ctermbg=Gray
 hi TablineSel  ctermfg=White ctermbg=Black
 
 " Comma is the leader
-let mapleader = ","
+let mapleader = " "
 
 " Use ; for : commands
 nnoremap ; :
@@ -48,8 +50,18 @@ nnoremap <Leader>f 	:NERDTreeToggle<cr>
 nnoremap <Leader>gg :GitGutterToggle<cr>
 nnoremap <Leader>rc :source ~/.vimrc<cr>
 
+" Colors
+syntax on
+colorscheme onedark
+
+" Fix the search hits.
+nnoremap <Esc> :noh<cr><Esc>
+set hlsearch
+hi Search cterm=NONE ctermfg=white ctermbg=red
+
 " Airline
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 
 " Ctrl+P
 " let g:ctrlp_custom_ignore = '(node_modules|bower_components|.sass-cache|.git|.log)'
@@ -71,15 +83,15 @@ let NERDTreeIgnore = ['\.aux$', '\~$']
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
-let g:syntastic_javascript_jshint_exec = '/home/fem/.npm-global/bin/jshint'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_loc_list_height = 5
+let g:syntastic_javascript_checkers = ['eslint']
 
-" Colors
-syntax on
-colorscheme onedark
+" vim-jsx
+let g:jsx_ext_required = 0
 
 " Indentation & Whitespace
 set autoindent
@@ -115,6 +127,7 @@ set noerrorbells
 set showcmd
 set nocompatible
 set ignorecase
+set cursorline
 
 " Layout
 set splitright
