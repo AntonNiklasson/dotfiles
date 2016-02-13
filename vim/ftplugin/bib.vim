@@ -1,0 +1,2 @@
+set wrap
+set nospell
