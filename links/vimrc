@@ -13,8 +13,8 @@ Plugin 'mattn/emmet-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'scrooloose/syntastic'
-Plugin 'joshdick/onedark.vim'
 Plugin 'digitaltoad/vim-jade'
+Plugin 'morhetz/gruvbox'
 
 filetype plugin indent on
 
@@ -24,7 +24,7 @@ hi Tabline     ctermfg=White ctermbg=Gray
 hi TablineSel  ctermfg=White ctermbg=Black
 
 " Comma is the leader
-let mapleader = ","
+let mapleader = " "
 
 " Use ; for : commands
 nnoremap ; :
@@ -79,7 +79,8 @@ let g:syntastic_check_on_wq = 0
 
 " Colors
 syntax on
-colorscheme onedark
+colorscheme gruvbox
+set background=dark
 
 " Indentation & Whitespace
 set autoindent
