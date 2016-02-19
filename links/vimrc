@@ -17,6 +17,8 @@ Plugin 'joshdick/onedark.vim'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
+Plugin 'benekastah/neomake'
+Plugin 'SirVer/ultisnips'
 
 filetype plugin indent on
 
@@ -47,8 +49,6 @@ nnoremap <Leader>sk :resize -5<cr>
 nnoremap <Leader>v 	:tabfind $MYVIMRC<cr>
 nnoremap <Leader>t 	:tabedit .<cr>
 nnoremap <Leader>f 	:NERDTreeToggle<cr>
-nnoremap <Leader>gg :GitGutterToggle<cr>
-nnoremap <Leader>rc :source ~/.vimrc<cr>
 
 " Colors
 syntax on
@@ -79,19 +79,17 @@ autocmd FileType html,css EmmetInstall
 " NERDTree
 let NERDTreeIgnore = ['\.aux$', '\~$']
 
-" Syntastic Config
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_loc_list_height = 5
-let g:syntastic_javascript_checkers = ['eslint']
+" Neomak
+let g:neomake_javascript_enabled_makers = ['eslint']
 
 " vim-jsx
 let g:jsx_ext_required = 0
+
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
 
 " Indentation & Whitespace
 set autoindent
@@ -116,7 +114,7 @@ set mouse=a
 set nocursorline
 
 " Misc
-set scrolloff=5
+set scrolloff=3
 set autoread
 set backspace=indent,eol,start
 set lazyredraw	
@@ -128,6 +126,7 @@ set showcmd
 set nocompatible
 set ignorecase
 set cursorline
+set noswapfile
 
 " Layout
 set splitright
