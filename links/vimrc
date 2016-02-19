@@ -13,8 +13,8 @@ Plugin 'mattn/emmet-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'scrooloose/syntastic'
-Plugin 'joshdick/onedark.vim'
 Plugin 'digitaltoad/vim-jade'
+Plugin 'morhetz/gruvbox'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'benekastah/neomake'
@@ -81,6 +81,11 @@ let NERDTreeIgnore = ['\.aux$', '\~$']
 
 " Neomak
 let g:neomake_javascript_enabled_makers = ['eslint']
+
+" Colors
+syntax on
+colorscheme gruvbox
+set background=dark
 
 " vim-jsx
 let g:jsx_ext_required = 0
