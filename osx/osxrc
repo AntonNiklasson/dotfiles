@@ -1,0 +1,11 @@
+# The flags are a bit different on OSX.
+alias ll='gls -lAhp --color --group-directories-first'
+
+# Where is Android?
+export ANDROID_HOME='/usr/local/opt/android-sdk'
+
+# Authenticate Homebrew requests to GitHub
+export HOMEBREW_GITHUB_API_TOKEN='cb3c83df0e16dc59fea74d5d22db12209f6d8ad5'
+
+# Find IP faster.
+alias ip='ifconfig | grep "en0" -A 4'

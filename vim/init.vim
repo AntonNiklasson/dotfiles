@@ -14,6 +14,12 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'scrooloose/syntastic'
 Plugin 'joshdick/onedark.vim'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
+Plugin 'benekastah/neomake'
+Plugin 'sirver/ultisnips'
+Plugin 'tpope/vim-surround'
 
 filetype plugin indent on
 
@@ -23,7 +29,7 @@ hi Tabline     ctermfg=White ctermbg=Gray
 hi TablineSel  ctermfg=White ctermbg=Black
 
 " Comma is the leader
-let mapleader = ","
+let mapleader = " "
 
 " Use ; for : commands
 nnoremap ; :
@@ -37,14 +43,26 @@ nnoremap <C-l> <C-w>l
 " Misc leader commands
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
+nnoremap <Leader>sh :vertical resize -5<cr>
+nnoremap <Leader>sj :resize +5<cr>
+nnoremap <Leader>sl :vertical resize +5<cr>
+nnoremap <Leader>sk :resize -5<cr>
 nnoremap <Leader>v 	:tabfind $MYVIMRC<cr>
 nnoremap <Leader>t 	:tabedit .<cr>
 nnoremap <Leader>f 	:NERDTreeToggle<cr>
-nnoremap <Leader>gg :GitGutterToggle<cr>
-nnoremap <Leader>rc :source ~/.vimrc<cr>
+
+" Colors
+syntax on
+colorscheme onedark
+
+" Fix the search hits.
+nnoremap <Esc> :noh<cr><Esc>
+set hlsearch
+hi Search cterm=NONE ctermfg=white ctermbg=red
 
 " Airline
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 
 " Ctrl+P
 " let g:ctrlp_custom_ignore = '(node_modules|bower_components|.sass-cache|.git|.log)'
@@ -62,18 +80,19 @@ autocmd FileType html,css EmmetInstall
 " NERDTree
 let NERDTreeIgnore = ['\.aux$', '\~$']
 
-" Syntastic Config
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+" Neomak
+let g:neomake_javascript_enabled_makers = ['eslint']
+autocmd! BufWritePost * Neomake " On save
+autocmd! InsertLeave * Neomake " On leaving Insert
 
-" Colors
-syntax on
-colorscheme onedark
+" vim-jsx
+let g:jsx_ext_required = 0
+
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
 
 " Indentation & Whitespace
 set autoindent
@@ -98,7 +117,7 @@ set mouse=a
 set nocursorline
 
 " Misc
-set scrolloff=10
+set scrolloff=3
 set autoread
 set backspace=indent,eol,start
 set lazyredraw	
@@ -108,6 +127,9 @@ set noautowrite
 set noerrorbells
 set showcmd
 set nocompatible
+set ignorecase
+set cursorline
+set noswapfile
 
 " Layout
 set splitright

@@ -44,17 +44,10 @@ MkdirAndCd() {
 }
 alias md=MkdirAndCd;
 
-# Open anything
-function o {
-	nohup xdg-open "$1" > /dev/null 2>&1 &
-}
-export -f o
-
 # Copy file content to clipboard
 copyFileToClipboard() {
 	cat $1 | xclip -sel clip
 }
 alias copy=copyFileToClipboard;
 
-# Always use NeoVim instead of Vim
 alias vim='nvim'

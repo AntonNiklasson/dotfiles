@@ -1,14 +1,29 @@
 #! /bin/bash
 
-ln -s ~/.dotfiles/vimrc 	~/.vimrc
-ln -s ~/.dotfiles/gitignore 	~/.gitignore
-ln -s ~/.dotfiles/gitconfig 	~/.gitconfig
 
-# .bashrc to .bash_profile on OSX.
+# Backup any existing link files.
+mv ~/.vimrc ~/.vimrc.backup
+mv ~/.gitignore ~/.gitignore.backup
+mv ~/.gitconfig ~/.gitconfig.backup
+ln -fs ~/.dotfiles/links/vimrc ~/.vimrc
+ln -fs ~/.dotfiles/links/gitignore ~/.gitignore
+ln -fs ~/.dotfiles/links/gitconfig ~/.gitconfig
+
+
+# Link ~/.vim
+if [ -d ~/.vim ]; then
+	mv ~/.vim ~/.vim.backup
+fi
+ln -s ~/.dotfiles/vim ~/.vim
+
+
+# Link either .bashrc or .bash_profile.
 if [[ $OSTYPE == darwin* ]]; then
-	ln -s ~/.dotfiles/bashrc ~/.bash_profile
-	. ~/.bash_profile
+	mv ~/.bash_profile ~/.bash_profile.backup
+	ln -s ~/.dotfiles/links/bashrc ~/.bash_profile
+	source ~/.bash_profile
 else
-	ln -s ~/.dotfiles/bashrc ~/.bashrc
-	. ~/.bashrc
+	mv ~/.bashrc ~/.bashrc.backup
+	ln -s ~/.dotfiles/links/bashrc ~/.bashrc
+	source ~/.bashrc
 fi

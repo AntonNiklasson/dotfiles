@@ -1,7 +1,6 @@
 export HISTCONTROL=ignoredups
 export EDITOR='vim'
 export VISUAL='vim'
-export BROWSER='/usr/bin/google-chrome-stable'
 
 # Set the prompt. Shows current branch if in repo.
 parse_git_branch() {
