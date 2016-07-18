@@ -52,7 +52,7 @@ nnoremap <Leader>f 	:NERDTreeToggle<cr>
 
 " Colors
 syntax on
-colorscheme onedark
+colorscheme gruvbox
 
 " Fix the search hits.
 nnoremap <Esc> :noh<cr><Esc>

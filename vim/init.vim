@@ -18,7 +18,8 @@ Plugin 'digitaltoad/vim-jade'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'benekastah/neomake'
-Plugin 'SirVer/ultisnips'
+Plugin 'sirver/ultisnips'
+Plugin 'tpope/vim-surround'
 
 filetype plugin indent on
 
@@ -81,6 +82,8 @@ let NERDTreeIgnore = ['\.aux$', '\~$']
 
 " Neomak
 let g:neomake_javascript_enabled_makers = ['eslint']
+autocmd! BufWritePost * Neomake " On save
+autocmd! InsertLeave * Neomake " On leaving Insert
 
 " vim-jsx
 let g:jsx_ext_required = 0
