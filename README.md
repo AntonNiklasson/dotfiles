@@ -1,3 +1,6 @@
-# .files
+## Installation
 
-I felt like putting these here.
+```
+git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
+~/.dotfiles/install.sh
+```
