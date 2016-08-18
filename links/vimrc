@@ -5,20 +5,17 @@ call vundle#rc()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'bling/vim-airline'
 Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
 Plugin 'wavded/vim-stylus'
 Plugin 'gerw/vim-latex-suite'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
 Plugin 'scrooloose/syntastic'
-Plugin 'digitaltoad/vim-jade'
+Plugin 'raphamorim/lucario'
 Plugin 'morhetz/gruvbox'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'benekastah/neomake'
-Plugin 'SirVer/ultisnips'
 
 filetype plugin indent on
 
@@ -51,8 +48,9 @@ nnoremap <Leader>t 	:tabedit .<cr>
 nnoremap <Leader>f 	:NERDTreeToggle<cr>
 
 " Colors
-syntax on
+syntax enable
 colorscheme gruvbox
+set background=dark
 
 " Fix the search hits.
 nnoremap <Esc> :noh<cr><Esc>
@@ -82,19 +80,14 @@ let NERDTreeIgnore = ['\.aux$', '\~$']
 " Neomak
 let g:neomake_javascript_enabled_makers = ['eslint']
 
-" Colors
-syntax on
-colorscheme gruvbox
-set background=dark
-
 " vim-jsx
 let g:jsx_ext_required = 0
 
-" UltiSnips
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-let g:UltiSnipsEditSplit="vertical"
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 " Indentation & Whitespace
 set autoindent
@@ -102,8 +95,9 @@ set smartindent
 set noexpandtab
 set tabstop=4
 set shiftwidth=4
-set listchars+=space:\ ,tab:\ \ ,trail:·
-set list
+"set listchars+=space:\ ,tab:\ \ ,trail:·
+"set list
+set nolist
 
 " Folding
 set foldmethod=indent

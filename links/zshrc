@@ -1,0 +1,12 @@
+export ZSH=/Users/anton/.oh-my-zsh
+
+ZSH_THEME="zhann"
+
+plugins=(git brew npm battery zsh-syntax-highlighting)
+
+source $ZSH/oh-my-zsh.sh
+
+source ~/.dotfiles/partials/aliases
+source ~/.dotfiles/partials/paths
+source ~/.dotfiles/partials/variables
+source ~/.dotfiles/partials/osx
