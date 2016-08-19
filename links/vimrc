@@ -8,14 +8,11 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'wavded/vim-stylus'
 Plugin 'gerw/vim-latex-suite'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'mattn/emmet-vim'
-Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/syntastic'
 Plugin 'raphamorim/lucario'
 Plugin 'morhetz/gruvbox'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
-Plugin 'benekastah/neomake'
 
 filetype plugin indent on
 
