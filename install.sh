@@ -10,13 +10,17 @@ then
 
 	# Install Homebrew Cask.
 	brew tap caskroom/cask
-	brew tap caskroom/font
 
 	# Install all the applications.
 	brew cask install google-chrome firefox lastpass sequel-pro slack spotify
 	brew cask install sublime-text skim alfred divvy dropbox flux
 	brew cask install omnidisksweeper seil skype transmission vlc
 	brew cask install iterm2 atom fantastical hipchat
+
+	# Install some fonts.
+	brew tap caskroom/fonts
+
+	brew cask install font-inconsolata font-source-code-pro
 fi
 
 # Install oh-my-zsh
