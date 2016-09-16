@@ -15,8 +15,8 @@ then
 	brew cask install google-chrome firefox lastpass sequel-pro slack spotify
 	brew cask install sublime-text skim alfred divvy dropbox flux
 	brew cask install omnidisksweeper seil skype transmission vlc
-	brew cask install iterm2 atom fantastical hipchat appcleaner
-
+	brew cask install iterm2 atom fantastical hipchat appcleaner divvy
+	
 	# Install some fonts.
 	brew tap caskroom/fonts
 
