@@ -8,18 +8,17 @@ then
 	Install Homebrew.
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-        # Install things.
-        brew install npm tree
+        # Install things from brew.
+        brew install node npm tree composer
 
 	# Install Homebrew Cask.
 	brew tap caskroom/cask
 
-	# Install all the applications.
+        # Install all GUI applications.
         brew cask install google-chrome firefox lastpass sequel-pro slack spotify skim alfred divvy dropbox flux omnidisksweeper seil skype transmission vlc iterm2 atom fantastical hipchat appcleaner divvy macvim
 	
 	# Install some fonts.
 	brew tap caskroom/fonts
-
 	brew cask install font-inconsolata font-source-code-pro
 fi
 
