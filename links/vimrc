@@ -5,6 +5,8 @@ call vundle#rc()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'bling/vim-airline'
 Plugin 'scrooloose/nerdtree'
+Plugin 'xuyuanp/nerdtree-git-plugin'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'wavded/vim-stylus'
 Plugin 'gerw/vim-latex-suite'
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -72,7 +74,8 @@ let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
 " NERDTree
-let NERDTreeIgnore = ['\.aux$', '\~$']
+let g:NERDTreeIgnore = ['\.aux$', '\~$']
+let g:NERDTreeWinSize = 50
 
 " Neomak
 let g:neomake_javascript_enabled_makers = ['eslint']
@@ -83,7 +86,7 @@ let g:jsx_ext_required = 0
 " Syntastic
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
 " Indentation & Whitespace

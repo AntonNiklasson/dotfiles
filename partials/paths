@@ -11,7 +11,12 @@ export PATH=~/.composer/vendor/bin:$PATH
 
 # Node
 export PATH=~/.npm/bin:$PATH
+export PATH=/usr/local/bin:$PATH
 export PATH=./node_modules/.bin:$PATH
 
 # Ruby gems
 export PATH=~/.gem/ruby/2.2.0/bin:$PATH
+
+export PATH=~/.rbenv/shims:$PATH
+
+export PATH=/usr/local/lib:$PATH
