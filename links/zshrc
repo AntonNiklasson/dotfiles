@@ -14,3 +14,5 @@ source ~/.dotfiles/partials/osx
 # Prototyping
 alias note-new='cd ~/notes && touch note.md && $EDITOR note.md'
 alias note-save='cd ~/notes && git add . && git commit -m "`date`" && git push'
+alias note-list='cd ~/notes && ls -la'
+alias note-all='cd ~/notes && $EDITOR .'
