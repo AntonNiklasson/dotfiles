@@ -8,16 +8,16 @@ then
 	Install Homebrew.
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-	# Install things from brew.
-        brew install node npm tree composer neovim/neovim/neovim
+	# Install packages from brew.
+  brew install node npm tree neovim/neovim/neovim
 
-	# Install Homebrew Cask.
+	# Configure Homebrew Cask.
 	brew tap caskroom/cask
 
-	# Install all GUI applications.
-	brew cask install google-chrome firefox lastpass sequel-pro slack spotify skim alfred divvy dropbox flux omnidisksweeper seil skype transmission vlc iterm2 atom fantastical hipchat appcleaner divvy macvim
-	
-	# Install some fonts.
+	# Install GUI applications.
+	brew cask install google-chrome firefox slack spotify skim alfred spectacle dropbox flux seil skype vlc iterm2 atom appcleaner macvim
+
+	# Install fonts.
 	brew tap caskroom/fonts
 	brew cask install font-inconsolata font-source-code-pro
 fi
