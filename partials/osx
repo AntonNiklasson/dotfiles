@@ -1,6 +1,3 @@
-# The flags are a bit different on OSX.
-#alias ll='ls -lAhp --color --group-directories-first'
-
 # Remove the dock reveal delay.
 defaults write com.apple.Dock autohide-delay -float 0
 

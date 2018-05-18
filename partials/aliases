@@ -1,12 +1,9 @@
-# Navigational
-alias ll='ls -lh'
-alias la='ll -a'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias mkdir='mkdir -p'
-alias pwd='pwd -P'
+# Navigation
+alias ll='gls -Flh --group-directories-first --color'
+alias lla='ll -a'
 
 # Git
+alias git=hub
 alias g='git '
 alias ga='g add'
 alias gb='g branch'
@@ -14,33 +11,15 @@ alias gba='gb -a'
 alias gc='g commit'
 alias gcm='gc -m'
 alias gco='g checkout'
-alias gd='g diff'
+alias gd='g --no-pager diff'
 alias gdc='gd --cached'
 alias gl='g log'
 alias gm='g merge'
 alias gs='g status'
 alias gf='g fetch'
-alias push='g push'
-alias pull='g pull'
 
-# SSH
-alias digitalocean='ssh root@5.101.107.248'
+alias digitalocean="ssh root@95.85.43.196"
 
-# Create and move into a new directory
-function md() {
-	mkdir -p $1 && cd $1
-}
-
-# Copy to contents of a file to the clipboard.
-function copycat() {
-	cat $1 | xclip -sel clip
-}
-
-# Improved tree.
-# By Wes Bos (https://gist.github.com/wesbos/1432b08749e3cd2aea22fcea2628e2ed)
-function t() {
-	tree -I '.git|node_modules|bower_components|.DS_Store' --dirsfirst --filelimit 30 -L ${1:-3} -aC $2
-}
-
-# Improved `cat`.
-alias dog='pygmentize -g -O style=colorful,linenos=1'
+# Prefer nvim over vim
+alias vim='nvim'
+alias v='vim'

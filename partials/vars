@@ -1,0 +1,17 @@
+# Other
+export HISTCONTROL=ignoredups
+export EDITOR='vim'
+export VISUAL='vim'
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+export ANDROID_HOME='/usr/local/share/android-sdk'
+
+export PATH=/usr/local/bin:$PATH
+export PATH=$PATH:~/bin
+export PATH=/usr/local/lib:$PATH
+export PATH=~/.npm/bin:$PATH
+export PATH=/usr/local/bin:$PATH
+export PATH=./node_modules/.bin:$PATH
+export GOPATH=~/code/go
+export PATH=~/.npm/bin:$PATH
+export PATH=/usr/local/bin:$PATH
+export PATH=./node_modules/.bin:$PATH
