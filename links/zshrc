@@ -2,16 +2,63 @@ export ZSH=/Users/anton/.oh-my-zsh
 export NVM_AUTO_USE=true
 
 ZSH_THEME="gozilla"
-
 plugins=(zsh-nvm git brew npm battery zsh-syntax-highlighting golang)
 
 source $ZSH/oh-my-zsh.sh
-
-source ~/.dotfiles/partials/aliases
-source ~/.dotfiles/partials/paths
-source ~/.dotfiles/partials/variables
 source ~/.dotfiles/partials/osx
 source ~/.z.sh
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/anton/Downloads/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/anton/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/anton/.bin/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/anton/.bin/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/anton/.bin/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/anton/.bin/google-cloud-sdk/completion.zsh.inc'; fi
+
+
+### VARIABLES ###
+
+export HISTCONTROL=ignoredups
+export VISUAL='nvim'
+export EDITOR='$VISUAL'
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+export ANDROID_HOME='/usr/local/share/android-sdk'
+
+export PATH=/usr/local/bin:$PATH
+export PATH=$PATH:~/bin
+export PATH=/usr/local/lib:$PATH
+export PATH=~/.npm/bin:$PATH
+export PATH=/usr/local/bin:$PATH
+export PATH=./node_modules/.bin:$PATH
+export GOPATH=~/code/go
+export PATH=~/.npm/bin:$PATH
+export PATH=/usr/local/bin:$PATH
+
+export KUTA_PROCESSES=1
+
+
+### ALIASES ###
+
+alias digitalocean="ssh root@95.85.43.196"
+alias ga='git add'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gco='git checkout'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gf='git fetch'
+alias git=hub
+alias gl='git prettylog'
+alias gm='git merge'
+alias gp='git push'
+alias gpnv='git push --no-verify'
+alias gpf='git push --force-with-lease'
+alias gpl='git pull'
+alias gr='git rebase'
+alias gri='git rebase -i'
+alias gs='git status'
+alias ll='gls -lAFh --color --group-directories-first'
+alias mobcommit="git commit -m \"fixup: mobcommit\" --no-verify && git push --no-verify"
+alias vim='nvim'
+alias vi='vim'

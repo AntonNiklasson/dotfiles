@@ -4,17 +4,19 @@
 [github]
   user = AntonNiklasson
 [core]
-autocrlf = input
+  autocrlf = input
   whitespace = fix,space-before-tab,tab-in-indent,trailing-space
   excludesfile = ~/.gitignore
   ignorecase = false
-  [apply]
+  pager = diff-so-fancy | less --tabs=4 -RFX
+[apply]
   whitespace = fix
 [alias]
   statsu = status
   psuh = push
   unstage = reset HEAD
-  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  prettylog = log --pretty=format:'%Cblue%h%Creset %Cgreen%an%Creset %s %Cgreen(%cr)%Creset' --date=relative
+  prs = pr list --format='%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n'
 [branch "master"]
   remote = origin
   merge = refs/heads/master
@@ -26,7 +28,7 @@ autocrlf = input
 [help]
   autocorrect = 1
 [pull]
-  rebase = true
+  rebase = preserve
 [merge]
   log = true
 [rerere]
