@@ -11,22 +11,11 @@
   pager = diff-so-fancy | less --tabs=4 -RFX
 [apply]
   whitespace = fix
-[alias]
-  statsu = status
-  psuh = push
-  unstage = reset HEAD
-  prettylog = log --pretty=format:'%Cblue%h%Creset %Cgreen%an%Creset %s %Cgreen(%cr)%Creset' --date=relative
-  prs = pr list --format='%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n'
-[branch "master"]
-  remote = origin
-  merge = refs/heads/master
 [color]
   ui = auto
   diff = auto
   status = auto
   branch = auto
-[help]
-  autocorrect = 1
 [pull]
   rebase = preserve
 [merge]
