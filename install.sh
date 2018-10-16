@@ -8,7 +8,7 @@ git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
 # Get some stuff from Homebrew.
 brew install node npm tree neovim/neovim/neovim coreutils diff-so-fancy hub
 brew tap caskroom/cask
-brew cask install google-chrome firefox slack spotify skim alfred spectacle dropbox flux seil skype vlc iterm2 atom appcleaner macvim
+brew cask install google-chrome firefox slack spotify skim alfred spectacle dropbox flux seil skype vlc iterm2 atom appcleaner macvim visual-studio-code
 brew tap caskroom/fonts
 brew cask install font-inconsolata font-source-code-pro
 
