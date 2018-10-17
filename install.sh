@@ -1,5 +1,7 @@
 #! /bin/bash
 
+git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
+
 # Install Homebrew.
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
