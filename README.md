@@ -1,6 +1,3 @@
-## Installation
-
 ```
-git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
-~/.dotfiles/install.sh
+curl https://raw.githubusercontent.com/AntonNiklasson/dotfiles/master/install.sh | sh
 ```
