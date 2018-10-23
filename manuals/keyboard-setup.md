@@ -2,6 +2,12 @@
 
 ## 1. Input Sources
 
+I spend most of my time on the american keyboard layout, but with a quick way to switch to swedish whenever I need it.
+
+I've got the _Next Input Source_ currently mapped to <kbd>Shift</kbd><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>Cmd</kbd><kbd>Enter</kbd>.
+
+And that is in turn programmed to <kbd>Fn</kbd><kbd>Enter</kbd> on my Pok3r. Stupid, yes. I should fix that.
+
 ![Input Sources](assets/input-sources.png)
 
 ## 2. Key Repeat
