@@ -4,7 +4,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'kien/ctrlp.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'morhetz/gruvbox'
-Plug 'sbdchd/neoformat'
+Plug 'wavded/vim-stylus'
 call plug#end()
 
 filetype plugin indent on
@@ -20,6 +20,12 @@ nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
 nnoremap <Leader>v 	:tabfind $MYVIMRC<cr>
 nnoremap <Leader>f 	:NERDTreeToggle<cr>
+
+" Move between splits with ctrl+{h,j,k,l}
+nnoremap <c-h> <c-w>h
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-l> <c-w>l
 
 " Remaps for the lazy
 nnoremap ; :
@@ -49,8 +55,8 @@ autocmd BufWritePre *.js Neoformat
 set expandtab
 set foldcolumn=1
 set hlsearch
+set mouse=a
 set number
-set relativenumber
 set shiftwidth=2
 set softtabstop=2
 set splitbelow

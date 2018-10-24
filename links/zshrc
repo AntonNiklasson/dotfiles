@@ -1,8 +1,7 @@
 export ZSH=~/.oh-my-zsh
-export NVM_AUTO_USE=true
 
 ZSH_THEME="spaceship"
-plugins=(zsh-nvm git brew npm battery zsh-syntax-highlighting golang)
+plugins=(git brew npm battery zsh-syntax-highlighting golang)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -38,7 +37,10 @@ alias gri='git rebase -i'
 alias gs='git status'
 alias ll='gls -lAFh --color --group-directories-first'
 alias mobcommit="git commit -m \"fixup: mobcommit :fire:\" --no-verify && git push --no-verify"
-alias vim='nvim'
 alias pulls='hub pr list --format="%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n"'
 
 export KUTA_PROCESSES=1
+
+  # Set Spaceship ZSH as a prompt
+  autoload -U promptinit; promptinit
+  prompt spaceship
