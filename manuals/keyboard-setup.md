@@ -23,3 +23,7 @@ You need to either logout or restart the computer for this to take effect in the
 On top of that, make sure to increase the frequency and initial delay for the repeating:
 
 ![Key Repeat](assets/key-repeat.png)
+
+## 3. Full keyboard access in windows and dialogs
+
+![Full keyboard access](assets/keyboard-access.png)
