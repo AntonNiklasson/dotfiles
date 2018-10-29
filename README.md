@@ -14,6 +14,6 @@ On top of the installed apps and few settings included in the install script, I 
 - [Alfred](/manuals/alfred.md)
 - [iTerm2](/manuals/iterm2.md)
 - [Keyboard](/manuals/keyboard-setup.md)
-- [Mounse and trackpad](/manuals/mouse-and-trackpad.md)
+- [Mouse and trackpad](/manuals/mouse-and-trackpad.md)
 - [Screenshots](/manuals/screenshots.md)
 - [Visual Studio Code](/manuals/visual-studio-code.md)
