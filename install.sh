@@ -9,7 +9,7 @@ git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
 brew install node tree coreutils diff-so-fancy hub mas zsh docker git-extras
 brew tap caskroom/cask
 brew tap caskroom/fonts
-brew cask install font-inconsolata font-source-code-pro telegram google-chrome firefox slack spotify skim alfred spectacle dropbox flux seil skype vlc iterm2 atom appcleaner macvim visual-studio-code notion
+brew cask install font-inconsolata font-source-code-pro telegram google-chrome firefox slack spotify skim alfred spectacle dropbox flux seil skype vlc iterm2 atom appcleaner macvim visual-studio-code notion virtualbox
 
 # Install things from NPM
 npm i -g yarn spaceship-prompt
