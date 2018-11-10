@@ -6,7 +6,7 @@ git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Install things from Homebrew
-brew install node tree coreutils diff-so-fancy hub mas zsh docker git-extras
+brew install node tree coreutils diff-so-fancy hub mas zsh docker git-extras httpie
 brew tap caskroom/cask
 brew tap caskroom/fonts
 brew cask install font-inconsolata font-source-code-pro telegram google-chrome firefox slack spotify skim alfred spectacle dropbox flux seil skype vlc iterm2 atom appcleaner macvim visual-studio-code notion virtualbox
