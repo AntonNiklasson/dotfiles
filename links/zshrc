@@ -14,6 +14,7 @@ export PATH=$PATH:/usr/local/lib
 export PATH=$PATH:~/bin
 export PATH=$PATH:~/.npm/bin
 export PATH=$PATH:./node_modules/.bin
+export PATH=$PATH:~/.dotfiles/scripts
 
 alias ga='git add'
 alias gb='git branch'

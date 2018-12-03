@@ -1,0 +1,16 @@
+#! /usr/bin/env node
+
+const chalk = require('chalk')
+
+console.log(chalk.green('\n+++ GOOD MORNING! 👋  +++'));
+console.log(`
+- What was on your mind this morning?
+- What should have been done yesterday?
+
+- Answer any slack notifications
+- Check GitHub notifications (https://www.github.com/notifications)
+- Scim through email inbox. Move actionable items to Todoist (https://mail.google.com)
+
+- Process the Todoist inbox
+
+`);
