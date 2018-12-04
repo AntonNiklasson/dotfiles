@@ -13,4 +13,6 @@ console.log(`
 
 - Process the Todoist inbox
 
+- What is todays schedule?
+
 `);
