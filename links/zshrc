@@ -39,6 +39,8 @@ alias gs='git status'
 alias ll='gls -lAFh --color --group-directories-first'
 alias mobcommit="git commit -m \"fixup: mobcommit :fire:\" --no-verify && git push --no-verify"
 alias pulls='hub pr list --format="%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n"'
+alias docker-stop-all-containers='docker stop $(docker ps -q)'
+alias docker-remove-all-containers='docker rm $(docker ps -a -q)'
 
 export KUTA_PROCESSES=1
 
