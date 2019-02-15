@@ -5,6 +5,7 @@ Plug 'kien/ctrlp.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'morhetz/gruvbox'
 Plug 'wavded/vim-stylus'
+Plug 'nightsense/cosmic_latte'
 call plug#end()
 
 filetype plugin indent on
@@ -12,7 +13,7 @@ filetype plugin indent on
 " Colors
 syntax enable
 set background=dark
-colorscheme gruvbox
+colorscheme cosmic_latte
 
 " Leader commands
 let mapleader = ","
