@@ -51,8 +51,13 @@ let NERDTreeShowHidden = 1
 let g:NERDTreeNodeDelimiter = "\u00a0"
 
 
+" File associations
+autocmd BufNewFile,BufRead *.hbs set syntax=html
+
+
 set expandtab
-set foldcolumn=1
+set foldmethod=indent
+set foldlevelstart=20
 set hlsearch
 set mouse=a
 set number
