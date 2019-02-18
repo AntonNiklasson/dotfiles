@@ -48,6 +48,7 @@ let g:ctrlp_custom_ignore = {
 let g:NERDTreeIgnore = ['\.aux$', '\~$']
 let g:NERDTreeWinSize = 50
 let NERDTreeShowHidden = 1
+let g:NERDTreeNodeDelimiter = "\u00a0"
 
 
 set expandtab
