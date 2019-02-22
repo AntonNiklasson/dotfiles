@@ -1,11 +1,13 @@
 filetype off
 
 call plug#begin('~/.vim/plugged')
+Plug 'airblade/vim-gitgutter'
 Plug 'kien/ctrlp.vim'
-Plug 'scrooloose/nerdtree'
-Plug 'morhetz/gruvbox'
-Plug 'wavded/vim-stylus'
+Plug 'mileszs/ack.vim'
 Plug 'nightsense/cosmic_latte'
+Plug 'scrooloose/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
 filetype plugin indent on
@@ -16,11 +18,12 @@ set background=dark
 colorscheme cosmic_latte
 
 " Leader commands
-let mapleader = ","
+let mapleader = " "
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
-nnoremap <Leader>v 	:tabfind $MYVIMRC<cr>
-nnoremap <Leader>f 	:NERDTreeToggle<cr>
+nnoremap <Leader>, :tabfind $MYVIMRC<cr>
+nnoremap <Leader>f :NERDTreeToggle<cr>
+nnoremap <Leader>l :noh<cr>:<backspace>
 
 " Move between splits with ctrl+{h,j,k,l}
 nnoremap <c-h> <c-w>h
@@ -31,10 +34,6 @@ nnoremap <c-l> <c-w>l
 " Remaps for the lazy
 nnoremap ; :
 nnoremap :q :close
-
-" Text Rendering
-set guifont=Source\ Code\ Pro:h14
-set linespace=5
 
 " Ctrl+P
 let g:ctrlp_show_hidden = 1
@@ -50,15 +49,19 @@ let g:NERDTreeWinSize = 50
 let NERDTreeShowHidden = 1
 let g:NERDTreeNodeDelimiter = "\u00a0"
 
+" Airline
+let g:airline_powerline_fonts = 1
 
 " File associations
-autocmd BufNewFile,BufRead *.hbs set syntax=html
+autocmd BufNewFile,BufRead *.hbs setlocal ft=html
 
 
+set cursorline
 set expandtab
 set foldmethod=indent
 set foldlevelstart=20
 set hlsearch
+set ignorecase
 set mouse=a
 set number
 set shiftwidth=2
@@ -66,3 +69,4 @@ set softtabstop=2
 set splitbelow
 set splitright
 set noswapfile
+set nowrap
