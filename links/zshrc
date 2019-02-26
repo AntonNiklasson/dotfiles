@@ -1,9 +1,14 @@
 export ZSH=~/.oh-my-zsh
 
-ZSH_THEME="spaceship"
-plugins=(git brew npm battery zsh-syntax-highlighting golang)
+plugins=(git brew npm battery zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Set prompt
+ZSH_THEME=""
+autoload -U promptinit; promptinit
+prompt pure
 
 export HISTCONTROL=ignoredups
 export VISUAL='nvim'
@@ -37,13 +42,13 @@ alias gr='git rebase'
 alias gri='git rebase -i'
 alias gs='git status'
 alias ll='gls -lAFh --color --group-directories-first'
+alias l='ll'
 alias mobcommit="git commit -m \"fixup: mobcommit :fire:\" --no-verify && git push --no-verify"
 alias pulls='hub pr list --format="%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n"'
-alias docker-stop-all-containers='docker stop $(docker ps -q)'
-alias docker-remove-all-containers='docker rm $(docker ps -a -q)'
-
-export KUTA_PROCESSES=1
-
-  # Set Spaceship ZSH as a prompt
-  autoload -U promptinit; promptinit
-  prompt spaceship
+alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
+alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
+alias docker-remove-all-images='docker rmi $(docker images -q) || true'
+alias vimrc='vim ~/.vimrc'
+alias zshrc='vim ~/.zshrc'
+alias zshrcs='source ~/.zshrc'
+alias dotfiles='(cd ~/.dotfiles && vim .)'
