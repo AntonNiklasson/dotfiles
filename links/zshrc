@@ -1,9 +1,8 @@
 export ZSH=~/.oh-my-zsh
 
-plugins=(git brew npm battery zsh-syntax-highlighting)
+plugins=(git brew npm battery zsh-syntax-highlighting yarn)
 
 source $ZSH/oh-my-zsh.sh
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Set prompt
 ZSH_THEME=""
@@ -15,11 +14,11 @@ export VISUAL='nvim'
 export EDITOR='$VISUAL'
 
 export PATH=$PATH:/usr/local/bin
+export PATH=$PATH:/usr/bin
 export PATH=$PATH:/usr/local/lib
-export PATH=$PATH:~/bin
 export PATH=$PATH:~/.npm/bin
-export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:~/.dotfiles/scripts
+export PATH=$PATH:./node_modules/.bin
 
 alias ga='git add'
 alias gb='git branch'
@@ -51,4 +50,4 @@ alias docker-remove-all-images='docker rmi $(docker images -q) || true'
 alias vimrc='vim ~/.vimrc'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
-alias dotfiles='(cd ~/.dotfiles && vim .)'
+alias dotfiles='vim ~/.dotfiles'

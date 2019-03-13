@@ -24,6 +24,7 @@ ln -is ~/.dotfiles/links/zshrc ~/.zshrc
 ln -is ~/.dotfiles/links/vimrc ~/.vimrc
 ln -is ~/.dotfiles/links/gitignore ~/.gitignore
 ln -is ~/.dotfiles/links/gitconfig ~/.gitconfig
+ln -is ~/.dotfiles/links/tmux.conf ~/.tmux.conf
 
 # macOS Preferences
 defaults write com.apple.dock autohide-time-modifier -int 0
