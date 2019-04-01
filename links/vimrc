@@ -1,4 +1,3 @@
-filetype off
 
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
@@ -12,6 +11,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
@@ -22,8 +22,8 @@ filetype plugin indent on
 " Colors
 syntax enable
 set background=dark
-colorscheme cosmic_latte
 set t_Co=256
+colorscheme cosmic_latte
 
 " Leader commands
 let mapleader = " "
@@ -35,6 +35,9 @@ nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>t :tabe<cr>
 nnoremap <Leader>i :IndentGuidesToggle<cr>:set list!<cr>:<backspace>
 nnoremap <Leader>p :ALEFix<cr>:<backspace>
+
+" Snippets, all under <Leader>j
+nnoremap <Leader>jl oconsole.log(JSON.stringify(<++>, null, 2));<Esc>
 
 " Move between splits with ctrl+{h,j,k,l}
 nnoremap <c-h> <c-w>h
