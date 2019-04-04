@@ -10,7 +10,7 @@ autoload -U promptinit; promptinit
 prompt pure
 
 export HISTCONTROL=ignoredups
-export VISUAL='nvim'
+export VISUAL='vim'
 export EDITOR='$VISUAL'
 
 export PATH=$PATH:/usr/local/bin
