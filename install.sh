@@ -9,7 +9,7 @@ git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
 brew install node tree coreutils diff-so-fancy hub mas zsh docker git-extras httpie sequel-pro vim 
 brew tap caskroom/cask
 brew tap caskroom/fonts
-brew cask install font-inconsolata font-source-code-pro telegram firefox slack spotify skim alfred spectacle dropbox flux iterm2 appcleaner macvim visual-studio-code notion virtualbox
+brew cask install --force font-inconsolata font-source-code-pro telegram firefox slack spotify skim alfred spectacle dropbox flux iterm2 appcleaner macvim visual-studio-code notion virtualbox
 
 # Setup zsh
 echo "/usr/local/bin/zsh" >> /etc/shells
