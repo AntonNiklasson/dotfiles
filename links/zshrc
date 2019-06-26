@@ -1,19 +1,14 @@
-export ZSH=~/.oh-my-zsh
+export ZSH="/Users/anton.niklasson/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
 
-plugins=(git brew npm battery zsh-syntax-highlighting yarn)
+plugins=(git yarn)
 
 source $ZSH/oh-my-zsh.sh
-
-# Set prompt
-ZSH_THEME=""
-autoload -U promptinit; promptinit
-prompt pure
 
 export HISTCONTROL=ignoredups
 export VISUAL='vim'
 export EDITOR='$VISUAL'
 
-export GOPATH=$HOME/code/go
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/bin
 export PATH=$PATH:/usr/local/lib
@@ -21,6 +16,14 @@ export PATH=$PATH:~/.npm/bin
 export PATH=$PATH:~/.dotfiles/scripts
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/opt/ruby/bin
+
+export GOPATH=$HOME/code/go
+export JAVA_HOME="`/usr/libexec/java_home -v 1.8`"
+export ANDROID_HOME="/usr/local/share/android-sdk"
+export ANDROID_SDK_ROOT="/usr/local/share/android-sdk"
+export GRADLE_USER_HOME="/usr/local/share/gradle"
+export M2_HOME="/usr/local/share/maven"
 
 alias ga='git add'
 alias gb='git branch'
@@ -45,8 +48,8 @@ alias gs='git status'
 alias gst='git stash'
 alias ll='gls -lAFh --color --group-directories-first'
 alias l='ll'
-alias mobcommit="git commit -m \"fixup: mobcommit :fire:\" --no-verify && git push --no-verify"
-alias pulls='hub pr list --format="%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n"'
+#alias mobcommit="git commit -m \"fixup: mobcommit :fire:\" --no-verify && git push --no-verify"
+#alias pulls='hub pr list --format="%sC%>(8)%i%Creset %t%  l%n       %Cblue%  U%n%n"'
 alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
 alias docker-remove-all-images='docker rmi $(docker images -q) || true'
@@ -59,3 +62,11 @@ alias t='tmux'
 alias tn='tmux new-session -t'
 alias tl='tmux ls'
 alias ta='tmux attach -t'
+
+eval "$(direnv hook $SHELL)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+autoload -U promptinit; promptinit

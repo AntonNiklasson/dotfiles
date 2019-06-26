@@ -1,9 +1,11 @@
 
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'honza/dockerfile.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'kien/ctrlp.vim'
+Plug 'leafgarland/typescript-vim'
 Plug 'mhartington/oceanic-next'
 Plug 'mileszs/ack.vim'
 Plug 'mxw/vim-jsx'
@@ -19,7 +21,7 @@ filetype plugin indent on
 
 " Colors
 syntax enable
-set background=dark
+" set background=dark
 set t_Co=256
 colorscheme OceanicNext
 

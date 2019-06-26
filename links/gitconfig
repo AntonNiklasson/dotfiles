@@ -1,6 +1,6 @@
 [user]
-  name = Anton Niklasson
-  email = niklasson.anton@gmail.com
+	name = Anton Niklasson
+	email = anton.niklasson@klarna.com
 [github]
   user = AntonNiklasson
 [core]
@@ -36,3 +36,12 @@
   insteadOf = "gist:"
 [push]
   default = current
+[lfs]
+	locksverify = false
+[branch]
+	autosetuprebase = always
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge --skip -- %f
+	process = git-lfs filter-process --skip
