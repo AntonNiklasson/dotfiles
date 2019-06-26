@@ -27,3 +27,9 @@ On top of that, make sure to increase the frequency and initial delay for the re
 ## 3. Full keyboard access in windows and dialogs
 
 ![Full keyboard access](assets/keyboard-access.png)
+
+## Disable accent characters menu
+
+```
+defaults write -g ApplePressAndHoldEnabled -bool false
+```

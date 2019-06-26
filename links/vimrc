@@ -56,10 +56,11 @@ inoremap jj <Esc>
 " Ctrl+P
 let g:ctrlp_show_hidden = 1
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](node_modules|.git|vendor|.cache|.next)$',
+  \ 'dir':  '\v[\/](node_modules|.git|vendor|.cache|.next|dist)$',
   \ 'file': '\v\.(exe|so|dll)$',
   \ 'link': '',
   \ }
+let g:ctrlp_working_path_mode = 0
 
 " NERDTree
 let g:NERDTreeIgnore = ['\.aux$', '\~$']
