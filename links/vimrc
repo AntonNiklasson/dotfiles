@@ -1,17 +1,17 @@
 
 call plug#begin('~/.vim/plugged')
+"Plug 'honza/dockerfile.vim'
+"Plug 'leafgarland/typescript-vim'
+"Plug 'mxw/vim-jsx'
+"Plug 'styled-components/vim-styled-components'
 Plug 'airblade/vim-gitgutter'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'honza/dockerfile.vim'
-Plug 'junegunn/goyo.vim'
 Plug 'kien/ctrlp.vim'
-Plug 'leafgarland/typescript-vim'
 Plug 'mhartington/oceanic-next'
 Plug 'mileszs/ack.vim'
-Plug 'mxw/vim-jsx'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'styled-components/vim-styled-components'
+Plug 'sheerun/vim-polyglot'
 Plug 'vim-airline/vim-airline'
 Plug 'w0rp/ale'
 Plug 'xuyuanp/nerdtree-git-plugin'
@@ -30,7 +30,7 @@ let mapleader = " "
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
 nnoremap <Leader>, :tabfind $MYVIMRC<cr>
-" nnoremap <Leader>r :source $MYVIMRC<cr>
+nnoremap <Leader>r :source $MYVIMRC<cr>
 nnoremap <Leader>f :NERDTreeToggle<cr>
 nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>t :tabe<cr>
