@@ -6,11 +6,48 @@ git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Install things from Homebrew
-brew install node tree coreutils diff-so-fancy hub mas zsh docker git-extras
-httpie sequel-pro vim tmux postgresql
+brew install \
+	coreutils \
+	diff-so-fancy \
+	docker \
+	git-extras \
+	httpie \
+	hub \
+	mas \
+	node \
+	postgresql \
+	sequel-pro \
+	tmux \
+	tree \
+	vim \
+	zsh
+
 brew tap caskroom/cask
 brew tap caskroom/fonts
-brew cask install --force font-inconsolata font-source-code-pro telegram firefox slack spotify skim alfred spectacle dropbox flux iterm2 appcleaner macvim visual-studio-code notion virtualbox hyper fantastical
+brew cask install --force \
+	alfred \
+	appcleaner \
+	dropbox \
+	fantastical \
+	firefox \
+	flux \
+	font-inconsolata \
+	font-source-code-pro \
+	hyper \
+	iterm2 \
+	macvim \
+	notion \
+	skim \
+	slack \
+	spectacle \
+	spotify \
+	telegram \
+	virtualbox \
+	visual-studio-code
+
+# Install software from the Mac App Store
+mas install \
+	585829637 # Todoist
 
 # Setup zsh
 echo "/usr/local/bin/zsh" >> /etc/shells

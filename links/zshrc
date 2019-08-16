@@ -7,7 +7,7 @@ source $ZSH/oh-my-zsh.sh
 
 export HISTCONTROL=ignoredups
 export VISUAL='vim'
-export EDITOR='$VISUAL'
+export EDITOR=$VISUAL
 
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/bin
@@ -17,6 +17,7 @@ export PATH=$PATH:~/.dotfiles/scripts
 export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:/usr/local/opt/ruby/bin
+export PATH=$PATH:$HOME/.rvm/bin
 
 export GOPATH=$HOME/code/go
 export JAVA_HOME="`/usr/libexec/java_home -v 1.8`"
