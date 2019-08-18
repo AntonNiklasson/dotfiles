@@ -5,7 +5,6 @@ git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
 # Install Homebrew.
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-# Install things from Homebrew
 brew install \
 	coreutils \
 	diff-so-fancy \
@@ -20,10 +19,11 @@ brew install \
 	tmux \
 	tree \
 	vim \
-	zsh
-
+	zsh \
+	yarn
 brew tap caskroom/cask
 brew tap caskroom/fonts
+brew tap homebrew/cask-drivers
 brew cask install --force \
 	alfred \
 	appcleaner \
@@ -43,7 +43,9 @@ brew cask install --force \
 	spotify \
 	telegram \
 	virtualbox \
-	visual-studio-code
+	visual-studio-code \
+	postico \
+	logitech-options
 
 # Install software from the Mac App Store
 mas install \
