@@ -19,8 +19,8 @@ brew install \
 	tmux \
 	tree \
 	vim \
-	zsh \
-	yarn
+	yarn \
+	zsh
 brew tap caskroom/cask
 brew tap caskroom/fonts
 brew tap homebrew/cask-drivers
@@ -35,17 +35,17 @@ brew cask install --force \
 	font-source-code-pro \
 	hyper \
 	iterm2 \
+	logitech-options \
 	macvim \
 	notion \
+	postico \
 	skim \
 	slack \
 	spectacle \
 	spotify \
 	telegram \
 	virtualbox \
-	visual-studio-code \
-	postico \
-	logitech-options
+	visual-studio-code
 
 # Install software from the Mac App Store
 mas install \
