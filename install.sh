@@ -45,7 +45,8 @@ brew cask install --force \
 	spotify \
 	telegram \
 	virtualbox \
-	visual-studio-code
+	visual-studio-code \
+	brave-browser
 
 # Install software from the Mac App Store
 mas install \
