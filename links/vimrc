@@ -1,16 +1,17 @@
 
 call plug#begin('~/.vim/plugged')
-"Plug 'sheerun/vim-polyglot'
 Plug 'airblade/vim-gitgutter'
 Plug 'kien/ctrlp.vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'mhartington/oceanic-next'
 Plug 'mileszs/ack.vim'
+Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'vim-airline/vim-airline'
 Plug 'w0rp/ale'
 Plug 'xuyuanp/nerdtree-git-plugin'
 call plug#end()
@@ -19,9 +20,9 @@ filetype plugin indent on
 
 " Colors
 syntax enable
-" set background=dark
+set background=dark
 set t_Co=256
-colorscheme OceanicNext
+" colorscheme gruvbox
 
 " Leader commands
 let mapleader = " "
@@ -34,11 +35,6 @@ nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>t :tabe<cr>
 nnoremap <Leader>p :ALEFix<cr>:<backspace>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
-nnoremap <Leader>w :w<cr>
-noremap <Leader>y "*y
-
-" Clear all registers with :WipeReg
-command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 
 " Move between splits with ctrl+{h,j,k,l}
 nnoremap <c-h> <c-w>h
@@ -73,7 +69,7 @@ let g:airline#extensions#ale#enabled = 1
 " Ale
 let g:ale_fix_on_save = 1
 let g:ale_linters = {
-  \ 'javascript': ['stylelint', 'eslint'],
+  \ 'javascript': ['stylelint', 'eslint', 'tslint'],
 \}
 let g:ale_fixers = {
 	\ 'javascript': ['prettier'],
@@ -96,12 +92,15 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 1
 
+" vim-jsx
+let g:jsx_ext_required = 0
+
 set backspace=indent,eol,start
 set backupcopy=yes
 set cursorline
 set encoding=utf-8
 set foldlevelstart=20
-set foldmethod=indent
+set foldmethod=syntax
 set hlsearch
 set ignorecase
 set mouse=a
@@ -113,12 +112,13 @@ set number
 set relativenumber
 set scrolloff=10
 set shiftwidth=2
-set showtabline=2
+set showtabline=3
 set softtabstop=2
 set splitbelow
 set splitright
 set tabstop=2
 set exrc
+set backupcopy=yes
 
 " File associations
 autocmd BufRead,BufNewFile *.blade.php set filetype=html

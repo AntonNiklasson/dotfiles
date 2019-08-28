@@ -33,3 +33,7 @@ On top of that, make sure to increase the frequency and initial delay for the re
 ```
 defaults write -g ApplePressAndHoldEnabled -bool false
 ```
+
+## Turn Caps Lock into Ctrl
+
+![Caps lock as ctrl](assets/caps-lock.png)

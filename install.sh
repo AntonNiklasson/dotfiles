@@ -46,7 +46,8 @@ brew cask install --force \
 	telegram \
 	virtualbox \
 	visual-studio-code \
-	brave-browser
+	brave-browser \
+	macmediakeyforwarder
 
 # Install software from the Mac App Store
 mas install \
