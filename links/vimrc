@@ -22,7 +22,7 @@ filetype plugin indent on
 syntax enable
 set background=dark
 set t_Co=256
-" colorscheme gruvbox
+colorscheme gruvbox
 
 " Leader commands
 let mapleader = " "
@@ -30,7 +30,8 @@ nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
 nnoremap <Leader>, :tabfind $MYVIMRC<cr>
 nnoremap <Leader>r :source $MYVIMRC<cr>
-nnoremap <Leader>f :NERDTreeToggle<cr>
+nnoremap <Leader>fo :NERDTreeToggle<cr>
+nnoremap <Leader>ff :NERDTreeFind<cr>
 nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>t :tabe<cr>
 nnoremap <Leader>p :ALEFix<cr>:<backspace>
@@ -60,7 +61,7 @@ let g:ctrlp_lazy_update = 0
 " NERDTree
 let g:NERDTreeIgnore = ['\.aux$', '\~$']
 let NERDTreeShowHidden = 1
-let g:NERDTreeWinSize=40
+let g:NERDTreeWinSize=50
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -109,7 +110,7 @@ set nolist
 set noswapfile
 set nowrap
 set number
-set relativenumber
+set norelativenumber
 set scrolloff=10
 set shiftwidth=2
 set showtabline=3
