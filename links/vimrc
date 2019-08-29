@@ -1,28 +1,29 @@
 
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
-Plug 'kien/ctrlp.vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'mhartington/oceanic-next'
-Plug 'mileszs/ack.vim'
-Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-Plug 'vim-airline/vim-airline'
 Plug 'w0rp/ale'
 Plug 'xuyuanp/nerdtree-git-plugin'
+Plug 'itchyny/lightline.vim'
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 filetype plugin indent on
 
 " Colors
 syntax enable
-set background=dark
-set t_Co=256
-colorscheme gruvbox
+set termguicolors
+colorscheme OceanicNext
+
+" Font
+set guifont="Source Code Pro":h14
 
 " Leader commands
 let mapleader = " "
@@ -111,7 +112,7 @@ set noswapfile
 set nowrap
 set number
 set norelativenumber
-set scrolloff=10
+set scrolloff=3
 set shiftwidth=2
 set showtabline=3
 set softtabstop=2
