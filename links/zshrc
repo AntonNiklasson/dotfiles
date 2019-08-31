@@ -1,4 +1,4 @@
-export ZSH="/Users/anton.niklasson/.oh-my-zsh"
+export ZSH="~/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
 plugins=(git yarn)
@@ -58,7 +58,9 @@ alias tl='tmux ls'
 alias ta='tmux attach -t'
 
 # Klarna
-eval "$(direnv hook $SHELL)"
+if type "direnv" > /dev/null; then
+	eval "$(direnv hook $SHELL)"
+fi
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
