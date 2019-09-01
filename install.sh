@@ -20,7 +20,8 @@ brew install \
 	tree \
 	vim \
 	yarn \
-	zsh
+	zsh \
+	zsh-completions
 brew tap caskroom/cask
 brew tap caskroom/fonts
 brew tap homebrew/cask-drivers
@@ -47,7 +48,8 @@ brew cask install --force \
 	virtualbox \
 	visual-studio-code \
 	brave-browser \
-	macmediakeyforwarder
+	macmediakeyforwarder \
+	nordvpn
 
 # Install software from the Mac App Store
 mas install \

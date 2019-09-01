@@ -20,6 +20,8 @@ filetype plugin indent on
 " Colors
 syntax enable
 set termguicolors
+"set t_Co=256
+"set background=dark
 colorscheme OceanicNext
 
 " Font
@@ -31,11 +33,12 @@ nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
 nnoremap <Leader>, :tabfind $MYVIMRC<cr>
 nnoremap <Leader>r :source $MYVIMRC<cr>
-nnoremap <Leader>fo :NERDTreeToggle<cr>
-nnoremap <Leader>ff :NERDTreeFind<cr>
+"nnoremap <Leader>fo :NERDTreeToggle<cr>
+nnoremap <Leader>f :NERDTreeFind<cr>
 nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>t :tabe<cr>
-nnoremap <Leader>p :ALEFix<cr>:<backspace>
+"nnoremap <Leader>p :ALEFix<cr>:<backspace>
+nnoremap <Leader>p :Files<cr>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
 
 " Move between splits with ctrl+{h,j,k,l}

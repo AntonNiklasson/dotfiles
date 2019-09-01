@@ -1,7 +1,7 @@
-export ZSH="~/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="fwalch"
 
-plugins=(git yarn)
+plugins=(git yarn z)
 
 source $ZSH/oh-my-zsh.sh
 
