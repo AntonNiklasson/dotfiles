@@ -56,6 +56,11 @@ mas install \
 	585829637			\ # Todoist
 	1176895641		\ # Spark
 
+# Install packages from npm
+yarn global add \
+	alfred-fkill \
+	alfred-npms \
+	alfred-loremipsum \
 
 # Setup zsh
 echo "/usr/local/bin/zsh" >> /etc/shells

@@ -29,17 +29,17 @@ set guifont="Source Code Pro":h14
 
 " Leader commands
 let mapleader = " "
+"nnoremap <Leader>fo :NERDTreeToggle<cr>
+"nnoremap <Leader>p :ALEFix<cr>:<backspace>
+nnoremap <Leader>, :tabfind $MYVIMRC<cr>
+nnoremap <Leader>f :NERDTreeFind<cr>
+nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
+nnoremap <Leader>l :noh<cr>:<backspace>
+nnoremap <Leader>p :GFiles<cr>
+nnoremap <Leader>r :source $MYVIMRC<cr>
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
-nnoremap <Leader>, :tabfind $MYVIMRC<cr>
-nnoremap <Leader>r :source $MYVIMRC<cr>
-"nnoremap <Leader>fo :NERDTreeToggle<cr>
-nnoremap <Leader>f :NERDTreeFind<cr>
-nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>t :tabe<cr>
-"nnoremap <Leader>p :ALEFix<cr>:<backspace>
-nnoremap <Leader>p :Files<cr>
-nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
 
 " Move between splits with ctrl+{h,j,k,l}
 nnoremap <c-h> <c-w>h
