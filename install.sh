@@ -21,7 +21,9 @@ brew install \
 	vim \
 	yarn \
 	zsh \
-	zsh-completions
+	zsh-completions \
+	the_silver_searcher \
+	p4v
 brew tap caskroom/cask
 brew tap caskroom/fonts
 brew tap homebrew/cask-drivers
@@ -32,12 +34,10 @@ brew cask install --force \
 	fantastical \
 	firefox \
 	flux \
-	font-inconsolata \
 	font-source-code-pro \
 	hyper \
 	iterm2 \
 	logitech-options \
-	macvim \
 	notion \
 	postico \
 	skim \
@@ -45,11 +45,12 @@ brew cask install --force \
 	spectacle \
 	spotify \
 	telegram \
-	virtualbox \
 	visual-studio-code \
 	brave-browser \
 	macmediakeyforwarder \
-	nordvpn
+	nordvpn \
+	kap \
+	runjs
 
 # Install software from the Mac App Store
 mas install \
@@ -61,6 +62,7 @@ yarn global add \
 	alfred-fkill \
 	alfred-npms \
 	alfred-loremipsum \
+	alfred-ip
 
 # Setup zsh
 echo "/usr/local/bin/zsh" >> /etc/shells
