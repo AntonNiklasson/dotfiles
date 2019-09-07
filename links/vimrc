@@ -37,6 +37,7 @@ nnoremap <Leader>f :NERDTreeFind<cr>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
 nnoremap <Leader>l :noh<cr>:<backspace>
 nnoremap <Leader>p :GFiles<cr>
+nnoremap <Leader>p :GFiles<cr>
 nnoremap <Leader>r :source $MYVIMRC<cr>
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>

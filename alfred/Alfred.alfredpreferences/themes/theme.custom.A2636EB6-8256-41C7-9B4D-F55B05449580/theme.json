@@ -1,0 +1,61 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 5,
+      "subtext" : {
+        "size" : 12,
+        "colorSelected" : "#FFFFFFCC",
+        "font" : "System",
+        "color" : "#FFFFFF66"
+      },
+      "shortcut" : {
+        "size" : 16,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "System",
+        "color" : "#FEFFFF66"
+      },
+      "backgroundSelected" : "#3D3D3EFF",
+      "text" : {
+        "size" : 18,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "System",
+        "color" : "#FFFFFFD8"
+      },
+      "iconPaddingHorizontal" : 10,
+      "paddingVertical" : 10,
+      "iconSize" : 28
+    },
+    "search" : {
+      "paddingVertical" : 5,
+      "background" : "#FFFFFF00",
+      "spacing" : 4,
+      "text" : {
+        "size" : 27,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "System Light",
+        "color" : "#FFFFFFFF"
+      },
+      "backgroundSelected" : "#E47635FF"
+    },
+    "window" : {
+      "color" : "#000000D8",
+      "paddingHorizontal" : 0,
+      "width" : 559,
+      "borderPadding" : 0,
+      "borderColor" : "#0000007F",
+      "blur" : 15,
+      "roundness" : 3,
+      "paddingVertical" : 4
+    },
+    "credit" : "Anton Niklasson",
+    "separator" : {
+      "color" : "#CBCBCBF3",
+      "thickness" : 0
+    },
+    "scrollbar" : {
+      "color" : "#6D6D6DFF",
+      "thickness" : 2
+    },
+    "name" : "Minimal Dark"
+  }
+}
