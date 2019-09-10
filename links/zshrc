@@ -56,6 +56,7 @@ alias t='tmux'
 alias tn='tmux new-session -t'
 alias tl='tmux ls'
 alias ta='tmux attach -t'
+alias whatisrunningonport='lsof -i'
 
 # Klarna
 if type "direnv" > /dev/null; then

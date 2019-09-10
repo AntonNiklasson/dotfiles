@@ -67,7 +67,7 @@ let g:ctrlp_lazy_update = 0
 " NERDTree
 let g:NERDTreeIgnore = ['\.aux$', '\~$']
 let NERDTreeShowHidden = 1
-let g:NERDTreeWinSize=50
+let g:NERDTreeWinSize=40
 
 " Airline
 let g:airline_powerline_fonts = 1

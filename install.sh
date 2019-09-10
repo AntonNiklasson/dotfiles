@@ -50,7 +50,8 @@ brew cask install --force \
 	macmediakeyforwarder \
 	nordvpn \
 	kap \
-	runjs
+	runjs \
+	inter-power-gadget
 
 # Install software from the Mac App Store
 mas install \
