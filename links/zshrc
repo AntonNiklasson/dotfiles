@@ -18,6 +18,7 @@ export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:/usr/local/opt/ruby/bin
 export PATH=$PATH:$HOME/.rvm/bin
+export ANDROID_HOME=/usr/local/share/android-sdk
 
 alias ga='git add'
 alias gb='git branch'
