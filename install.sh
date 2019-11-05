@@ -1,10 +1,9 @@
 #! /bin/bash
 
-git clone git@github.com:AntonNiklasson/dotfiles.git .dotfiles
-
 # Install Homebrew.
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+# Install CLI tools
 brew install \
 	coreutils \
 	diff-so-fancy \
@@ -27,6 +26,8 @@ brew install \
 brew tap caskroom/cask
 brew tap caskroom/fonts
 brew tap homebrew/cask-drivers
+
+# Install GUI applications
 brew cask install --force \
 	alfred \
 	appcleaner \
@@ -53,10 +54,12 @@ brew cask install --force \
 	runjs \
 	inter-power-gadget
 
+
 # Install software from the Mac App Store
 mas install \
 	585829637			\ # Todoist
 	1176895641		\ # Spark
+
 
 # Install packages from npm
 yarn global add \
@@ -65,20 +68,29 @@ yarn global add \
 	alfred-loremipsum \
 	alfred-ip
 
+
 # Setup zsh
 echo "/usr/local/bin/zsh" >> /etc/shells
 chsh -s /usr/local/bin/zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-# Link up files.
+
+# Link files.
 ln -is ~/.dotfiles/links/zshrc ~/.zshrc
 ln -is ~/.dotfiles/links/vimrc ~/.vimrc
 ln -is ~/.dotfiles/links/gitignore ~/.gitignore
 ln -is ~/.dotfiles/links/gitconfig ~/.gitconfig
 ln -is ~/.dotfiles/links/tmux.conf ~/.tmux.conf
 
-# macOS Preferences
-defaults write com.apple.dock autohide-time-modifier -int 0
-killall Dock
 
+# macOS Preferences
+# Speed up dock animation
+defaults write com.apple.dock autohide-time-modifier -int 0
+
+# Don't store screenshots on the desktop
+defaults write com.apple.screencapture location ~/Dropbox/Screenshots
+
+
+# Refresh things to read new config
+killall Dock
 source ~/.zshrc
