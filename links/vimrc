@@ -36,8 +36,7 @@ nnoremap <Leader>, :tabfind $MYVIMRC<cr>
 nnoremap <Leader>f :NERDTreeFind<cr>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
 nnoremap <Leader>l :noh<cr>:<backspace>
-nnoremap <Leader>p :GFiles<cr>
-nnoremap <Leader>p :GFiles<cr>
+nnoremap <Leader>p :Files<cr>
 nnoremap <Leader>r :source $MYVIMRC<cr>
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
@@ -75,6 +74,8 @@ let g:airline#extensions#ale#enabled = 1
 
 " Ale
 let g:ale_fix_on_save = 1
+" let g:ale_set_highlights = 0
+highlight ALEWarning ctermbg=94
 let g:ale_linters = {
   \ 'javascript': ['stylelint', 'eslint', 'tslint'],
 \}
@@ -131,6 +132,7 @@ set backupcopy=yes
 autocmd BufRead,BufNewFile *.blade.php set filetype=html
 autocmd BufRead,BufNewFile .vimrc set filetype=vim
 autocmd BufRead,BufNewFile .babelrc set filetype=json
+autocmd BufRead,BufNewFile *.ts.snap set filetype=typescript
 
 " Language Settings
 autocmd BufRead,BufNewFile *.md set wrap|set textwidth=80
