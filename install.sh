@@ -8,6 +8,7 @@ brew install \
 	coreutils \
 	diff-so-fancy \
 	docker \
+	docker-compose \
 	git-extras \
 	httpie \
 	hub \
@@ -67,6 +68,10 @@ yarn global add \
 	alfred-npms \
 	alfred-loremipsum \
 	alfred-ip
+
+
+# Install vim-plug
+# curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 
 # Setup zsh
