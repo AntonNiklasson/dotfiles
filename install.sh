@@ -57,9 +57,8 @@ brew cask install --force \
 
 
 # Install software from the Mac App Store
-mas install \
-	585829637			\ # Todoist
-	1176895641		\ # Spark
+mas lucky Todoist
+mas lucky Spark
 
 
 # Install packages from npm
