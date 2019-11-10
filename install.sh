@@ -79,6 +79,10 @@ chsh -s /usr/local/bin/zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 
+# Clone the repo
+git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
+
+
 # Link files.
 ln -is ~/.dotfiles/links/zshrc ~/.zshrc
 ln -is ~/.dotfiles/links/vimrc ~/.vimrc
