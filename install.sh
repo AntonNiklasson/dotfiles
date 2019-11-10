@@ -15,7 +15,6 @@ brew install \
 	mas \
 	node \
 	postgresql \
-	sequel-pro \
 	tmux \
 	tree \
 	vim \
@@ -23,7 +22,6 @@ brew install \
 	zsh \
 	zsh-completions \
 	the_silver_searcher \
-	p4v
 brew tap caskroom/cask
 brew tap homebrew/cask-fonts
 brew tap homebrew/cask-drivers
@@ -53,7 +51,9 @@ brew cask install --force \
 	nordvpn \
 	kap \
 	runjs \
-	inter-power-gadget
+	inter-power-gadget \
+	sequel-pro \
+	p4v
 
 
 # Install software from the Mac App Store
