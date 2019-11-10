@@ -25,18 +25,18 @@ brew install \
 	the_silver_searcher \
 	p4v
 brew tap caskroom/cask
-brew tap caskroom/fonts
+brew tap homebrew/cask-fonts
 brew tap homebrew/cask-drivers
 
 # Install GUI applications
 brew cask install --force \
+	font-source-code-pro \
 	alfred \
 	appcleaner \
 	dropbox \
 	fantastical \
 	firefox \
 	flux \
-	font-source-code-pro \
 	hyper \
 	iterm2 \
 	logitech-options \
