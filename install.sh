@@ -15,7 +15,6 @@ brew install \
 	mas \
 	node \
 	postgresql \
-	sequel-pro \
 	tmux \
 	tree \
 	vim \
@@ -23,20 +22,19 @@ brew install \
 	zsh \
 	zsh-completions \
 	the_silver_searcher \
-	p4v
 brew tap caskroom/cask
-brew tap caskroom/fonts
+brew tap homebrew/cask-fonts
 brew tap homebrew/cask-drivers
 
 # Install GUI applications
 brew cask install --force \
+	font-source-code-pro \
 	alfred \
 	appcleaner \
 	dropbox \
 	fantastical \
 	firefox \
 	flux \
-	font-source-code-pro \
 	hyper \
 	iterm2 \
 	logitech-options \
@@ -53,13 +51,14 @@ brew cask install --force \
 	nordvpn \
 	kap \
 	runjs \
-	inter-power-gadget
+	inter-power-gadget \
+	sequel-pro \
+	p4v
 
 
 # Install software from the Mac App Store
-mas install \
-	585829637			\ # Todoist
-	1176895641		\ # Spark
+mas lucky Todoist
+mas lucky Spark
 
 
 # Install packages from npm
@@ -78,6 +77,10 @@ yarn global add \
 echo "/usr/local/bin/zsh" >> /etc/shells
 chsh -s /usr/local/bin/zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+
+# Clone the repo
+git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 
 
 # Link files.
