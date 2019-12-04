@@ -1,7 +1,7 @@
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="fwalch"
 
-plugins=(git yarn z vi-mode)
+plugins=(docker git git-extras yarn z vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 

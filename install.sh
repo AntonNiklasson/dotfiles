@@ -67,6 +67,7 @@ mas lucky Spark
 
 # Install packages from npm
 yarn global add \
+	yo \
 	alfred-fkill \
 	alfred-npms \
 	alfred-loremipsum \
@@ -86,6 +87,10 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 
 # Clone the repo
 git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
+
+
+# Install Tmux Plugin Manager
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 
 # Link files.
