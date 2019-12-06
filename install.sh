@@ -3,6 +3,12 @@
 # Install Homebrew.
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+# Add taps
+brew tap caskroom/cask
+brew tap homebrew/cask-fonts
+brew tap homebrew/cask-drivers
+brew tap domt4/autoupdate
+
 # Install CLI tools
 brew install \
 	coreutils \
@@ -22,9 +28,7 @@ brew install \
 	zsh \
 	zsh-completions \
 	the_silver_searcher \
-brew tap caskroom/cask
-brew tap homebrew/cask-fonts
-brew tap homebrew/cask-drivers
+	terminal-notifier
 
 # Install GUI applications
 brew cask install --force \
@@ -66,7 +70,8 @@ yarn global add \
 	alfred-fkill \
 	alfred-npms \
 	alfred-loremipsum \
-	alfred-ip
+	alfred-ip \
+	gatsby-cli
 
 
 # Install vim-plug
