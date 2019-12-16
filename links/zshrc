@@ -20,6 +20,8 @@ export PATH=$PATH:/usr/local/opt/ruby/bin
 export PATH=$PATH:$HOME/.rvm/bin
 export ANDROID_HOME=/usr/local/share/android-sdk
 
+export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
+
 alias ga='git add'
 alias gb='git branch'
 alias gba='git branch -a'

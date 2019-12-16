@@ -38,6 +38,12 @@ brew cask install --force \
 	dropbox \
 	fantastical \
 	firefox \
+	firefox-developer-edition \
+	firefox-nightly \
+	google-chrome \
+	google-chrome-dev \
+	google-chrome-canary \
+	safari-technology-preview \
 	flux \
 	hyper \
 	iterm2 \
