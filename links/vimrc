@@ -16,6 +16,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/vim-slash'
+Plug 'arcticicestudio/nord-vim'
 call plug#end()
 
 filetype plugin indent on
@@ -24,8 +25,8 @@ filetype plugin indent on
 syntax enable
 set termguicolors
 set t_Co=256
-set background=dark
-colorscheme OceanicNext
+" set background=dark
+colorscheme Nord
 
 " Font
 set guifont="Source Code Pro":h14

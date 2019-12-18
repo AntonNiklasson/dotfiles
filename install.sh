@@ -78,7 +78,8 @@ yarn global add \
 	alfred-npms \
 	alfred-loremipsum \
 	alfred-ip \
-	gatsby-cli
+	gatsby-cli \
+	@bitwarden/cli
 
 
 # Install vim-plug
