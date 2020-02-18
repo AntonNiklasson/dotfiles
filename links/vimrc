@@ -17,6 +17,7 @@ Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'tpope/vim-fugitive'
 Plug 'w0rp/ale'
 Plug 'xuyuanp/nerdtree-git-plugin'
+Plug 'iloginow/vim-stylus'
 
 Plug '/usr/local/opt/fzf'
 call plug#end()
@@ -27,7 +28,7 @@ filetype plugin indent on
 syntax enable
 set termguicolors
 set t_Co=256
-" set background=dark
+set background=dark
 colorscheme Nord
 
 " Font
@@ -94,6 +95,7 @@ let g:ale_linter_aliases = {
 \}
 let g:ale_fixer_aliases = {
 	\ 'javascript.jsx': ['javascript', 'css'],
+	\ 'scss': ['css'],
 \}
 
 " NERDCommenter

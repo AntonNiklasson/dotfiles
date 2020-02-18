@@ -21,14 +21,15 @@ brew install \
 	mas \
 	node \
 	postgresql \
+	rename \
+	terminal-notifier \
+	the_silver_searcher \
 	tmux \
 	tree \
 	vim \
 	yarn \
 	zsh \
-	zsh-completions \
-	the_silver_searcher \
-	terminal-notifier
+	zsh-completions
 
 # Install GUI applications
 brew cask install --force \
