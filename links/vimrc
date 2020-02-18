@@ -1,6 +1,12 @@
 
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
+Plug 'arcticicestudio/nord-vim'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'itchyny/lightline.vim'
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-peekaboo'
+Plug 'junegunn/vim-slash'
 Plug 'leafgarland/typescript-vim'
 Plug 'mhartington/oceanic-next'
 Plug 'mxw/vim-jsx'
@@ -8,15 +14,11 @@ Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'tpope/vim-fugitive'
 Plug 'w0rp/ale'
 Plug 'xuyuanp/nerdtree-git-plugin'
-Plug 'itchyny/lightline.vim'
+
 Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'junegunn/vim-slash'
-Plug 'arcticicestudio/nord-vim'
 call plug#end()
 
 filetype plugin indent on
@@ -33,8 +35,6 @@ set guifont="Source Code Pro":h14
 
 " Leader commands
 let mapleader = " "
-"nnoremap <Leader>fo :NERDTreeToggle<cr>
-"nnoremap <Leader>p :ALEFix<cr>:<backspace>
 nnoremap <Leader>, :tabfind $MYVIMRC<cr>
 nnoremap <Leader>f :NERDTreeFind<cr>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
@@ -134,7 +134,6 @@ set noswapfile
 set nowrap
 set number
 set norelativenumber
-set scrolloff=3
 set shiftwidth=2
 set showtabline=3
 set softtabstop=2
