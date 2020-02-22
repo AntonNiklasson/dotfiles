@@ -21,15 +21,10 @@ export PATH=$PATH:$HOME/.rvm/bin
 export ANDROID_HOME=/usr/local/share/android-sdk
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 
-<<<<<<< HEAD
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
 alias docker-remove-all-images='docker rmi $(docker images -q) || true'
 alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
 alias dotfiles='vim ~/.dotfiles'
-=======
-bindkey -e
-
->>>>>>> cd724f4... updates
 alias ga='git add'
 alias gb='git branch'
 alias gba='git branch -a'
