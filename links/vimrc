@@ -2,11 +2,8 @@
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'arcticicestudio/nord-vim'
-Plug 'editorconfig/editorconfig-vim'
 Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-peekaboo'
-Plug 'junegunn/vim-slash'
 Plug 'leafgarland/typescript-vim'
 Plug 'mhartington/oceanic-next'
 Plug 'mxw/vim-jsx'
@@ -14,10 +11,9 @@ Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-Plug 'tpope/vim-fugitive'
 Plug 'w0rp/ale'
 Plug 'xuyuanp/nerdtree-git-plugin'
-Plug 'iloginow/vim-stylus'
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug '/usr/local/opt/fzf'
 call plug#end()
@@ -108,10 +104,6 @@ let g:NERDToggleCheckAllLines = 1
 let g:jsx_ext_required = 0
 
 
-" Lightline
-" 
-
-
 " vim-slash
 if has('timers')
   " Blink 2 times with 50ms interval
@@ -119,31 +111,43 @@ if has('timers')
 endif
 
 
-set laststatus=2
-set noshowmode
+" CoC
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+"inoremap <silent><expr> <TAB>
+      "\ pumvisible() ? "\<C-n>" :
+      "\ <SID>check_back_space() ? "\<TAB>" :
+      "\ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+
 set backspace=indent,eol,start
+set backupcopy=yes
 set backupcopy=yes
 set cursorline
 set encoding=utf-8
+set exrc
 set foldlevelstart=20
 set foldmethod=syntax
 set hlsearch
 set ignorecase
+set laststatus=2
 set mouse=a
 set noexpandtab
 set nolist
+set norelativenumber
+set noshowmode
 set noswapfile
 set nowrap
 set number
-set norelativenumber
 set shiftwidth=2
 set showtabline=3
 set softtabstop=2
 set splitbelow
 set splitright
 set tabstop=2
-set exrc
-set backupcopy=yes
+set updatetime=300
 
 " File associations
 autocmd BufRead,BufNewFile *.blade.php set filetype=html
