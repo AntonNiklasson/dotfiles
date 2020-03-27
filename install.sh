@@ -64,7 +64,8 @@ brew cask install --force \
 	runjs \
 	inter-power-gadget \
 	sequel-pro \
-	p4v
+	p4v \
+	hiddenbar
 
 
 # Install software from the Mac App Store
