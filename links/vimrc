@@ -1,21 +1,36 @@
 
 call plug#begin('~/.vim/plugged')
-Plug 'airblade/vim-gitgutter'
-Plug 'arcticicestudio/nord-vim'
-Plug 'itchyny/lightline.vim'
-Plug 'junegunn/fzf.vim'
-Plug 'leafgarland/typescript-vim'
-Plug 'mhartington/oceanic-next'
-Plug 'mxw/vim-jsx'
-Plug 'pangloss/vim-javascript'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-Plug 'w0rp/ale'
-Plug 'xuyuanp/nerdtree-git-plugin'
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" Colors
+Plug 'arcticicestudio/nord-vim'
+
+" UI
+Plug 'scrooloose/nerdtree'
+Plug 'itchyny/lightline.vim'
+
+" Search
+Plug 'junegunn/fzf.vim'
 Plug '/usr/local/opt/fzf'
+
+" Git
+Plug 'airblade/vim-gitgutter'
+Plug 'xuyuanp/nerdtree-git-plugin'
+Plug 'tpope/vim-fugitive'
+
+" Lint & Format
+Plug 'w0rp/ale'
+
+" Languages
+Plug 'mxw/vim-jsx'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'leafgarland/typescript-vim'
+
+" TypeScript
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/denite.nvim'
+
 call plug#end()
 
 filetype plugin indent on
@@ -32,7 +47,7 @@ set guifont="Source Code Pro":h14
 
 " Leader commands
 let mapleader = " "
-nnoremap <Leader>, :tabfind $MYVIMRC<cr>
+nnoremap <Leader>, :tabfind ~/.vimrc<cr>
 nnoremap <Leader>f :NERDTreeFind<cr>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
 nnoremap <Leader>l :noh<cr>:<backspace>

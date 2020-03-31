@@ -56,6 +56,10 @@ alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 
+# Use Neovim
+alias vim='nvim'
+
+
 # Klarna
 if type "direnv" > /dev/null; then
 	eval "$(direnv hook $SHELL)"
