@@ -7,6 +7,7 @@ Plug 'arcticicestudio/nord-vim'
 " UI
 Plug 'scrooloose/nerdtree'
 Plug 'itchyny/lightline.vim'
+Plug 'xuyuanp/nerdtree-git-plugin'
 
 " Search
 Plug 'junegunn/fzf.vim'
@@ -23,9 +24,10 @@ Plug 'w0rp/ale'
 " Languages
 Plug 'mxw/vim-jsx'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-Plug 'leafgarland/typescript-vim'
+Plug 'jxnblk/vim-mdx-js'
 
 " TypeScript
+Plug 'leafgarland/typescript-vim'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 Plug 'Shougo/deoplete.nvim'
@@ -107,6 +109,7 @@ let g:ale_linter_aliases = {
 let g:ale_fixer_aliases = {
 	\ 'javascript.jsx': ['javascript', 'css'],
 	\ 'scss': ['css'],
+	\ 'markdown.mdx': ['markdown']
 \}
 
 " NERDCommenter
