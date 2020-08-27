@@ -19,7 +19,8 @@ Plug 'xuyuanp/nerdtree-git-plugin'
 Plug 'tpope/vim-fugitive'
 
 " Lint & Format
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
+Plug 'preservim/nerdcommenter'
 
 " Languages
 Plug 'mxw/vim-jsx'
@@ -53,11 +54,12 @@ nnoremap <Leader>, :tabfind ~/.vimrc<cr>
 nnoremap <Leader>f :NERDTreeFind<cr>
 nnoremap <Leader>k :ALENextWrap<cr>:<backspace>
 nnoremap <Leader>l :noh<cr>:<backspace>
-nnoremap <Leader>p :Files<cr>
 nnoremap <Leader>r :source $MYVIMRC<cr>
 nnoremap <Leader>ss :split<cr>
 nnoremap <Leader>sv :vsplit<cr>
 nnoremap <Leader>t :tabe<cr>
+nnoremap <Leader>o :ALEFix<cr>
+nnoremap <Leader>p :Files<cr>
 
 " Move between splits with ctrl+{h,j,k,l}
 nnoremap <c-h> <c-w>h
@@ -71,17 +73,6 @@ nnoremap :q :close
 inoremap jj <Esc>
 
 
-" Ctrl+P
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](node_modules|.git|vendor|.cache|.next|dist|storybook-static)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ 'link': '',
-  \ }
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_lazy_update = 0
-
-
 " NERDTree
 let g:NERDTreeIgnore = ['\.aux$', '\~$']
 let NERDTreeShowHidden = 1
@@ -93,7 +84,7 @@ let g:ale_fix_on_save = 1
 " let g:ale_set_highlights = 0
 highlight ALEWarning ctermbg=94
 let g:ale_linters = {
-  \ 'javascript': ['stylelint', 'eslint', 'tslint'],
+  \ 'javascript': ['eslint'],
 \}
 let g:ale_fixers = {
 	\ 'javascript': ['prettier'],
@@ -118,6 +109,7 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 1
 
+
 " vim-jsx
 let g:jsx_ext_required = 0
 
@@ -127,17 +119,6 @@ if has('timers')
   " Blink 2 times with 50ms interval
   noremap <expr> <plug>(slash-after) slash#blink(3, 50)
 endif
-
-
-" CoC
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-"inoremap <silent><expr> <TAB>
-      "\ pumvisible() ? "\<C-n>" :
-      "\ <SID>check_back_space() ? "\<TAB>" :
-      "\ coc#refresh()
-"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 
 set backspace=indent,eol,start
@@ -152,8 +133,9 @@ set hlsearch
 set ignorecase
 set laststatus=2
 set mouse=a
-set noexpandtab
+set expandtab
 set nolist
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 set norelativenumber
 set noshowmode
 set noswapfile
