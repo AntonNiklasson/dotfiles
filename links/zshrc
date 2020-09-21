@@ -1,5 +1,7 @@
 export ZSH="$HOME/.oh-my-zsh"
+
 ZSH_THEME="avit"
+ZSH_THEME="robbyrussell"
 
 plugins=(docker git git-extras yarn z)
 
@@ -58,12 +60,6 @@ alias zshrcs='source ~/.zshrc'
 
 # Use Neovim
 alias vim='nvim'
-
-
-# Klarna
-if type "direnv" > /dev/null; then
-	eval "$(direnv hook $SHELL)"
-fi
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
