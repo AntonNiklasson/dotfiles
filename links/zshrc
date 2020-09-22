@@ -58,7 +58,7 @@ alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 
 # Use Neovim
-alias vim='nvim'
+# alias vim='nvim'
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
