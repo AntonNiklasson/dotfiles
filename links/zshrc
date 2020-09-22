@@ -36,7 +36,6 @@ alias gco='git checkout'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gf='git fetch'
-alias git=hub
 alias gl='git log --pretty=format:"%Cred%h%Creset %Cgreen%cd%Creset %Cblue%an <%ae>%Creset%n%s%n" --date=short'
 alias gm='git merge'
 alias gp='git push'

@@ -11,25 +11,25 @@ brew tap domt4/autoupdate
 
 # Install CLI tools
 brew install \
-	coreutils \
-	diff-so-fancy \
-	docker \
-	docker-compose \
-	git-extras \
-	httpie \
-	hub \
-	mas \
-	node \
-	postgresql \
-	rename \
-	terminal-notifier \
-	the_silver_searcher \
-	tmux \
-	tree \
-	vim \
-	yarn \
-	zsh \
-	zsh-completions
+  coreutils \
+  diff-so-fancy \
+  docker \
+  docker-compose \
+  git-extras \
+  httpie \
+  gh \
+  mas \
+  node \
+  postgresql \
+  rename \
+  terminal-notifier \
+  the_silver_searcher \
+  tmux \
+  tree \
+  vim \
+  yarn \
+  zsh \
+  zsh-completions
 
 # Install GUI applications
 brew cask install --force \
