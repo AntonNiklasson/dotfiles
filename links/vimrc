@@ -3,6 +3,7 @@ call plug#begin('~/.vim/plugged')
 
 " Colors
 Plug 'arcticicestudio/nord-vim'
+Plug 'embark-theme/vim'
 
 " UI
 Plug 'scrooloose/nerdtree'
@@ -26,6 +27,7 @@ Plug 'preservim/nerdcommenter'
 Plug 'mxw/vim-jsx'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'leafgarland/typescript-vim'
+Plug 'ianks/vim-tsx'
 
 call plug#end()
 
@@ -36,7 +38,7 @@ syntax enable
 set termguicolors
 set t_Co=256
 set background=dark
-colorscheme Nord
+colorscheme Embark
 
 " Font
 set guifont="Source Code Pro":h14
