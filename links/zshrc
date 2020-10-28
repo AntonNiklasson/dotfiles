@@ -20,7 +20,7 @@ export PATH=$PATH:./node_modules/.bin
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:/usr/local/opt/ruby/bin
 export PATH=$PATH:$HOME/.rvm/bin
-export ANDROID_HOME=/usr/local/share/android-sdk
+export ANDROID_HOME=/usr/local/Caskroom/android-sdk
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
@@ -61,6 +61,5 @@ alias zshrcs='source ~/.zshrc'
 # alias vim='nvim'
 
 # NVM
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm

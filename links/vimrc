@@ -65,7 +65,6 @@ nnoremap <c-l> <c-w>l
 " Remaps for the lazy
 nnoremap ; :
 nnoremap :q :close
-inoremap jj <Esc>
 
 
 " NERDTree
@@ -75,7 +74,7 @@ let g:NERDTreeWinSize=40
 
 
 " Ale
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 " let g:ale_set_highlights = 0
 highlight ALEWarning ctermbg=94
 let g:ale_linters = {
@@ -144,10 +143,15 @@ set splitright
 set tabstop=2
 set updatetime=300
 
+" Autoresize splits as window resizes
+autocmd VimResized * wincmd =
+
+
 " File associations
 autocmd BufRead,BufNewFile *.blade.php set filetype=html
 autocmd BufRead,BufNewFile .vimrc set filetype=vim
 autocmd BufRead,BufNewFile .babelrc set filetype=json
+
 
 " Language Settings
 autocmd BufRead,BufNewFile *.md set wrap|set textwidth=80
