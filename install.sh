@@ -4,7 +4,7 @@
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Add taps
-brew tap caskroom/cask
+brew tap homebrew/cask
 brew tap homebrew/cask-fonts
 brew tap homebrew/cask-drivers
 brew tap domt4/autoupdate
