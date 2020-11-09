@@ -62,7 +62,6 @@ brew cask install --force \
 	nordvpn \
 	kap \
 	runjs \
-	inter-power-gadget \
 	sequel-pro \
 	p4v \
 	hiddenbar
