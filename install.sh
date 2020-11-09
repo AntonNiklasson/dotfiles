@@ -28,7 +28,8 @@ brew install \
   vim \
   yarn \
   zsh \
-  zsh-completions
+  zsh-completions \
+  fzf
 
 # Install GUI applications
 brew cask install --force \
