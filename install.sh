@@ -61,7 +61,7 @@ brew cask install --force \
 	sequel-pro \
 	skim \
 	slack \
-	spectacle \
+	rectangle \
 	spotify \
 	telegram \
   visual-studio-code
@@ -83,8 +83,9 @@ yarn global add \
 	@bitwarden/cli
 
 
-# Install vim-plug
-# curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
+nvm install 12
 
 
 # Setup zsh
