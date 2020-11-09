@@ -13,11 +13,10 @@ brew tap domt4/autoupdate
 brew install \
   coreutils \
   diff-so-fancy \
-  docker \
   docker-compose \
+  gh \
   git-extras \
   httpie \
-  gh \
   mas \
   node \
   postgresql \
@@ -33,38 +32,39 @@ brew install \
 
 # Install GUI applications
 brew cask install --force \
-	font-source-code-pro \
 	alfred \
 	appcleaner \
+	brave-browser \
+  docker \
 	dropbox \
 	fantastical \
 	firefox \
 	firefox-developer-edition \
 	firefox-nightly \
-	google-chrome \
-	google-chrome-dev \
-	google-chrome-canary \
-	safari-technology-preview \
 	flux \
+	font-source-code-pro \
+	google-chrome \
+	google-chrome-canary \
+	google-chrome-dev \
+	hiddenbar \
 	hyper \
 	iterm2 \
+	kap \
 	logitech-options \
+	macmediakeyforwarder \
+	nordvpn \
 	notion \
+	p4v \
 	postico \
+	runjs \
+	safari-technology-preview \
+	sequel-pro \
 	skim \
 	slack \
 	spectacle \
 	spotify \
 	telegram \
-	visual-studio-code \
-	brave-browser \
-	macmediakeyforwarder \
-	nordvpn \
-	kap \
-	runjs \
-	sequel-pro \
-	p4v \
-	hiddenbar
+  visual-studio-code
 
 
 # Install software from the Mac App Store
