@@ -11,61 +11,62 @@ brew tap domt4/autoupdate
 
 # Install CLI tools
 brew install \
-  coreutils \
-  diff-so-fancy \
-  docker-compose \
-  gh \
-  git-extras \
-  httpie \
-  mas \
-  node \
-  postgresql \
-  rename \
-  terminal-notifier \
-  the_silver_searcher \
-  tmux \
-  tree \
-  vim \
-  yarn \
-  zsh \
-  zsh-completions \
-  fzf
+coreutils \
+diff-so-fancy \
+docker-compose \
+fzf \
+gh \
+git-extras \
+httpie \
+mas \
+node \
+postgresql \
+rename \
+terminal-notifier \
+the_silver_searcher \
+tmux \
+tree \
+vim \
+yarn \
+zsh \
+zsh-completions
 
 # Install GUI applications
 brew cask install --force \
-	alfred \
-	appcleaner \
-	brave-browser \
-  docker \
-	dropbox \
-	fantastical \
-	firefox \
-	firefox-developer-edition \
-	firefox-nightly \
-	flux \
-	font-source-code-pro \
-	google-chrome \
-	google-chrome-canary \
-	google-chrome-dev \
-	hiddenbar \
-	hyper \
-	iterm2 \
-	kap \
-	logitech-options \
-	macmediakeyforwarder \
-	nordvpn \
-	notion \
-	p4v \
-	postico \
-	runjs \
-	safari-technology-preview \
-	sequel-pro \
-	skim \
-	slack \
-	rectangle \
-	spotify \
-	telegram \
-  visual-studio-code
+alfred \
+appcleaner \
+basecamp \
+brave-browser \
+docker \
+dropbox \
+fantastical \
+firefox \
+firefox-developer-edition \
+firefox-nightly \
+flux \
+font-source-code-pro \
+google-chrome \
+google-chrome-canary \
+google-chrome-dev \
+hiddenbar \
+hyper \
+iterm2 \
+kap \
+logitech-options \
+macmediakeyforwarder \
+nordvpn \
+notion \
+p4v \
+postico \
+rectangle \
+runjs \
+safari-technology-preview \
+sequel-pro \
+skim \
+slack \
+spotify \
+telegram \
+visual-studio-code
 
 
 # Install software from the Mac App Store
