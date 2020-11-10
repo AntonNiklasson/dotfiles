@@ -60,6 +60,7 @@ nnoremap <Leader>sv :vsplit<cr>
 nnoremap <Leader>t :tabe<cr>
 nnoremap <Leader>o :ALEFix<cr>
 nnoremap <Leader>p :Files<cr>
+nnoremap <Leader>d :ALEGoToDefinition<cr>
 
 " Move between splits with ctrl+{h,j,k,l}
 nnoremap <c-h> <c-w>h

@@ -64,6 +64,7 @@ safari-technology-preview \
 sequel-pro \
 skim \
 slack \
+sonos \
 spotify \
 telegram \
 visual-studio-code
