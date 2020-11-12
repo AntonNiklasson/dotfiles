@@ -80,7 +80,7 @@ let g:NERDTreeWinSize=40
 
 
 " Ale
-let g:ale_fix_on_save = 0
+let g:ale_fix_on_save = 1
 " let g:ale_set_highlights = 0
 highlight ALEWarning ctermbg=94
 let g:ale_linters = {

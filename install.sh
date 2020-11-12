@@ -37,6 +37,7 @@ alfred \
 appcleaner \
 basecamp \
 brave-browser \
+displaylink \
 docker \
 dropbox \
 fantastical \
@@ -62,17 +63,18 @@ rectangle \
 runjs \
 safari-technology-preview \
 sequel-pro \
-skim \
 slack \
 sonos \
 spotify \
 telegram \
+tuple \
 visual-studio-code
 
 
 # Install software from the Mac App Store
 mas lucky Todoist
 mas lucky Spark
+mas lucky Vimari
 
 
 # Install packages from npm
