@@ -42,8 +42,6 @@ docker \
 dropbox \
 fantastical \
 firefox \
-firefox-developer-edition \
-firefox-nightly \
 flux \
 font-source-code-pro \
 google-chrome \
@@ -57,6 +55,7 @@ logitech-options \
 macmediakeyforwarder \
 nordvpn \
 notion \
+numi \
 p4v \
 postico \
 rectangle \
@@ -115,11 +114,17 @@ ln -is ~/.dotfiles/links/gitconfig ~/.gitconfig
 ln -is ~/.dotfiles/links/tmux.conf ~/.tmux.conf
 
 
-# macOS Preferences
+### macOS Preferences ###
 # Speed up dock animation
 defaults write com.apple.dock autohide-time-modifier -int 0
 
 # Don't store screenshots on the desktop
+defaults write com.apple.screencapture location ~/Dropbox/Screenshots
+
+# Don't rearrange spaces automatically in Mission Control
+defaults write com.apple.dock mru-spaces -int 0
+
+# Don't store screenshots in ~/Desktop
 defaults write com.apple.screencapture location ~/Dropbox/Screenshots
 
 
