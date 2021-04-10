@@ -1,5 +1,12 @@
 {
+  "type": "module",
   "dependencies": {
-    "chalk": "^2.4.1"
+    "chalk": "^2.4.1",
+    "esm": "^3.2.25",
+    "globals": "./globals",
+    "node-fetch": "^2.6.1"
+  },
+  "esm": {
+    "await": true
   }
 }

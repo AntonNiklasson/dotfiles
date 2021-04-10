@@ -1,9 +1,8 @@
-#! /usr/bin/env node
+#! /usr/bin/env NODE_PATH="/Users/anton/.dotfiles/scripts/node_modules" node -r esm -r globals
 
-const chalk = require('chalk')
+log(chalk.green("\n+++ GOOD MORNING! 👋  +++"));
 
-console.log(chalk.green('\n+++ GOOD MORNING! 👋  +++'));
-console.log(`
+log(`
 - What was on your mind this morning?
 - What should have been done yesterday?
 - What is todays schedule?
