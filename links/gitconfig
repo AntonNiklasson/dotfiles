@@ -2,40 +2,40 @@
 	name = Anton Niklasson
 	email = anton@finhack.se
 [github]
-  user = AntonNiklasson
+	user = AntonNiklasson
 [core]
-  autocrlf = input
-  whitespace = fix,space-before-tab,tab-in-indent,trailing-space
-  excludesfile = ~/.gitignore
-  ignorecase = false
-	pager = diff-so-fancy | less --tabs=4 -RFX
+	autocrlf = input
+	whitespace = fix,space-before-tab,tab-in-indent,trailing-space
+	excludesfile = ~/.gitignore
+	ignorecase = false
+	#pager = diff-so-fancy | less --tabs=4 -RFX
 [apply]
-  whitespace = fix
+	whitespace = fix
 [color]
-  ui = auto
-  diff = auto
-  status = auto
-  branch = auto
+	ui = auto
+	diff = auto
+	status = auto
+	branch = auto
 [pull]
-  rebase = preserve
+	rebase = preserve
 [merge]
-  log = true
+	log = true
 [rerere]
-  enabled = 1
+	enabled = 1
 [url "git@github.com:"]
-  insteadOf = "gh:"
-  pushInsteadOf = "github:"
-  pushInsteadOf = "git://github.com/"
+	insteadOf = "gh:"
+	pushInsteadOf = "github:"
+	pushInsteadOf = "git://github.com/"
 [url "git://github.com/"]
-  insteadOf = "github:"
+	insteadOf = "github:"
 [url "git@gist.github.com:"]
-  insteadOf = "gst:"
-  pushInsteadOf = "gist:"
-  pushInsteadOf = "git://gist.github.com/"
+	insteadOf = "gst:"
+	pushInsteadOf = "gist:"
+	pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
-  insteadOf = "gist:"
+	insteadOf = "gist:"
 [push]
-  default = current
+	default = current
 [lfs]
 	locksverify = false
 [branch]

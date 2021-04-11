@@ -1,10 +1,29 @@
 #! /bin/bash
 
-# Install Homebrew.
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Clone the repo to ~/.dotfiles
+if [ ! -d ~/.dotfiles ] 
+then
+    git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
+fi
+
+
+# Install Homebrew if needed
+if ! command -v brew &> /dev/null
+then
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Reload zsh
+source ~/.zshrc
+
+# Link files.
+ln -is ~/.dotfiles/links/zshrc ~/.zshrc
+ln -is ~/.dotfiles/links/vimrc ~/.vimrc
+ln -is ~/.dotfiles/links/gitignore ~/.gitignore
+ln -is ~/.dotfiles/links/gitconfig ~/.gitconfig
+ln -is ~/.dotfiles/links/tmux.conf ~/.tmux.conf
 
 # Add taps
-brew tap homebrew/cask
 brew tap homebrew/cask-fonts
 brew tap homebrew/cask-drivers
 brew tap domt4/autoupdate
@@ -92,12 +111,6 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
 nvm install 12
 
 
-# Setup zsh
-echo "/usr/local/bin/zsh" >> /etc/shells
-chsh -s /usr/local/bin/zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
-
 # Clone the repo
 git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 
@@ -106,12 +119,9 @@ git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 
-# Link files.
-ln -is ~/.dotfiles/links/zshrc ~/.zshrc
-ln -is ~/.dotfiles/links/vimrc ~/.vimrc
-ln -is ~/.dotfiles/links/gitignore ~/.gitignore
-ln -is ~/.dotfiles/links/gitconfig ~/.gitconfig
-ln -is ~/.dotfiles/links/tmux.conf ~/.tmux.conf
+# Install vim-plug
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 
 ### macOS Preferences ###
