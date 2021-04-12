@@ -51,7 +51,7 @@ zsh \
 zsh-completions
 
 # Install GUI applications
-brew cask install --force \
+brew install --cask --force \
 alfred \
 appcleaner \
 basecamp \
@@ -64,8 +64,6 @@ firefox \
 flux \
 font-source-code-pro \
 google-chrome \
-google-chrome-canary \
-google-chrome-dev \
 hiddenbar \
 hyper \
 iterm2 \
@@ -79,7 +77,6 @@ p4v \
 postico \
 rectangle \
 runjs \
-safari-technology-preview \
 sequel-pro \
 slack \
 sonos \

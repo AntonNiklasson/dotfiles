@@ -4,8 +4,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'itchyny/lightline.vim'
 Plug 'xuyuanp/nerdtree-git-plugin'
-Plug 'dracula/vim'
-Plug 'morhetz/gruvbox'
+Plug 'dracula/vim.git'
 
 " Search
 Plug 'junegunn/fzf.vim'
@@ -35,11 +34,9 @@ filetype plugin indent on
 
 " Colors
 syntax enable
-set termguicolors
 set t_Co=256
 set background=dark
-colorscheme dracula
-colorscheme gruvbox
+color dracula
 
 " Font
 set guifont="Source Code Pro":h14
