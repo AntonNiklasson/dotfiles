@@ -4,11 +4,11 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'itchyny/lightline.vim'
 Plug 'xuyuanp/nerdtree-git-plugin'
-Plug 'dracula/vim.git'
+Plug 'dracula/vim'
 
 " Search
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug '/usr/local/opt/fzf'
 
 " Git
 Plug 'airblade/vim-gitgutter'
