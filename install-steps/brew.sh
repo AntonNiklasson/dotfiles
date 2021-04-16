@@ -66,4 +66,5 @@ sonos \
 spotify \
 telegram \
 tuple \
-visual-studio-code
+visual-studio-code \
+vlc

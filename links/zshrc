@@ -53,16 +53,13 @@ alias gs='git status'
 alias gst='git stash'
 alias ll='gls -lAFh --color --group-directories-first'
 alias t='tmux'
-alias ta='tmux attach'
+alias ta='t attach'
 alias tl='tmux ls'
 alias tn='tmux new-session -t'
 alias vimrc='vim ~/.vimrc'
 alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
-
-# Use Neovim
-# alias vim='nvim'
 
 # NVM
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
