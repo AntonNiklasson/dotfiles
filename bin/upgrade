@@ -1,0 +1,4 @@
+#! /bin/sh
+
+brew upgrade
+brew cleanup
