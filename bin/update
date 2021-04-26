@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+# homebrew
+brew upgrade
+brew cleanup
+
+# yarn globals
+yarn global upgrade
+
+# ohmyzsh
+/Users/anton/.oh-my-zsh/tools/upgrade.sh
+
+# macOS
+softwareupdate --list
+

@@ -35,6 +35,7 @@ brew install \
 	yarn \
 	zsh \
 	zsh-completions \
+	svn \
 ;
 
 # Install GUI applications
@@ -70,4 +71,5 @@ brew install --cask \
 	tuple \
 	visual-studio-code \
 	vlc \
+	1password \
 ;
