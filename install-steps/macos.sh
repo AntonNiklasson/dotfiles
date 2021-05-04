@@ -9,7 +9,7 @@ defaults write com.apple.screencapture location ~/Dropbox/Screenshots
 # Don't rearrange spaces automatically in Mission Control
 defaults write com.apple.dock mru-spaces -int 0
 
-# Don't store screenshots in ~/Desktop
+# Store screenshots in ~/Dropbox/Screenshots
 defaults write com.apple.screencapture location ~/Dropbox/Screenshots
 
 # Expand save panel by default
@@ -24,3 +24,6 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool t
 # Enable full keyboard access for all controls
 # (e.g. enable Tab in modal dialogs)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+
+# Disable the warning when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false

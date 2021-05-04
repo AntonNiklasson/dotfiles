@@ -72,4 +72,5 @@ brew install --cask \
 	visual-studio-code \
 	vlc \
 	1password \
+	obsidian \
 ;
