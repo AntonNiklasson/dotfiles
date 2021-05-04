@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+base=$1
+feature_branch=$2
+
+if [ $(git rev-parse --is-inside-work-tree) != 'true' ]; then
+  echo "you are not inside a git repo"
+  exit 0
+fi
+
+git checkout $base
+git pull
+git create-branch $feature_branch
+

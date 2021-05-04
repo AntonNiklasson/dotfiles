@@ -13,3 +13,5 @@ yarn global upgrade
 # macOS
 softwareupdate --list
 
+# app store
+mas upgrade
