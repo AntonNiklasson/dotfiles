@@ -10,6 +10,7 @@ fi
 brew tap homebrew/cask-fonts
 brew tap homebrew/cask-drivers
 brew tap domt4/autoupdate
+brew tap phrase/brewed
 
 # Install CLI tools
 brew install \
@@ -36,6 +37,7 @@ brew install \
 	zsh \
 	zsh-completions \
 	svn \
+	phrase \
 ;
 
 # Install GUI applications
@@ -73,4 +75,5 @@ brew install --cask \
 	vlc \
 	1password \
 	obsidian \
+	intellij-idea \
 ;

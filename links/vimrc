@@ -82,11 +82,6 @@ let g:ale_linters = {
   \ 'typescript': ['eslint', 'tslint', 'tsserver'],
   \ 'typescriptreact': ['eslint', 'tslint', 'tsserver'],
 \}
-let g:ale_fixer_aliases = {
-	\ 'javascript.jsx': ['javascript', 'css'],
-  \ 'typescriptreact': ['typescript'],
-  \ 'markdown.mdx': ['markdown']
-\}
 let g:ale_fixers = {
 	\ 'javascript': ['prettier'],
 	\ 'typescript': ['prettier'],
@@ -94,6 +89,10 @@ let g:ale_fixers = {
   \ 'json': ['prettier'],
   \ 'css': ['prettier', 'stylelint'],
 	\ 'markdown': ['prettier'],
+\}
+let g:ale_fixer_aliases = {
+	\ 'javascript.jsx': ['javascript', 'css'],
+  \ 'markdown.mdx': ['markdown']
 \}
 
 " Yarn PnP
