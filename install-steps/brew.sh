@@ -72,4 +72,5 @@ brew install --cask \
 	1password \
 	obsidian \
 	intellij-idea-ce \
+	messenger \
 ;
