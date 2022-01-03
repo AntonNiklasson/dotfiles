@@ -16,6 +16,7 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/lib:$PATH
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/opt/homebrew/sbin:$PATH
+export PATH=./node_modules/.bin:$PATH
 export HOMEBREW_PREFIX="/opt/homebrew";
 export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
 export HOMEBREW_REPOSITORY="/opt/homebrew";
@@ -35,14 +36,14 @@ alias gb='git branch'
 alias gba='git branch -a'
 alias gbc='git create-branch'
 alias gc='git commit'
-alias gcm='git commit -m'
 alias gca='git commit --amend'
+alias gcm='git commit -m'
 alias gco='git checkout'
 alias gcp='git cherry-pick'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gf='git fetch'
-alias gl='git log --pretty=format:"%Cred%h%Creset %Cgreen%cd%Creset %Cblue%an <%ae>%Creset%n%s%n" --date=short'
+alias gl='git log --pretty=format:"%Cred%h%Creset %Cgreen%cd%Creset %Cblue%ae%Creset%n%s%n" --date=short'
 alias gm='git merge'
 alias gp='git push'
 alias gpf='git push --force-with-lease'
@@ -50,11 +51,12 @@ alias gpl='git pull'
 alias gpnv='git push --no-verify'
 alias gpsu='git push --set-upstream origin'
 alias gr='git rebase'
-alias gri='git rebase -i'
-alias grc='git rebase --continue'
 alias gra='git rebase --abort'
+alias grc='git rebase --continue'
+alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
+alias iclouddrive='cd "~/Library/Mobile Documents/com~apple~CloudDocs"'
 alias ll='gls -lAFh --color --group-directories-first'
 alias t='tmux'
 alias ta='t attach'
@@ -64,7 +66,17 @@ alias vimrc='vim ~/.vimrc'
 alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
-alias iclouddrive='cd "~/Library/Mobile Documents/com~apple~CloudDocs"'
+
+
+rebase-feature-branch() {
+  base=${1:-"develop"}
+
+  git checkout $base &&
+  git pull &&
+  git checkout - && 
+  git rebase $base
+}
+
 
 # NVM
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"

@@ -20,6 +20,7 @@
 	rebase = preserve
 [merge]
 	log = true
+	conflictstyle = diff3
 [rerere]
 	enabled = 1
 [url "git@github.com:"]

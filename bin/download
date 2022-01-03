@@ -1,6 +1,0 @@
-#! /bin/sh
-
-http --quiet --download $1
-
-# I would like this to be `http -do ~/Download` then `open ~/Downloads`
-# Waiting for this: https://github.com/httpie/httpie/pull/991
