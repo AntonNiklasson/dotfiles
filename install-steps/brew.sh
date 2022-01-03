@@ -13,11 +13,10 @@ brew tap domt4/autoupdate
 brew tap phrase/brewed
 
 # Install CLI tools
-brew install \
+brew install -f \
 	bat \
 	coreutils \
 	diff-so-fancy \
-	docker \
 	docker-compose \
 	fzf \
 	gh \
@@ -42,10 +41,8 @@ brew install \
 
 # Install GUI applications
 brew install --cask \
-	alfred \
 	appcleaner \
 	discord \
-	docker \
 	dropbox \
 	fantastical \
 	figma \
@@ -54,21 +51,19 @@ brew install --cask \
 	google-chrome \
 	google-cloud-sdk \
 	hiddenbar \
-	hyper \
 	iterm2 \
 	kap \
 	logitech-options \
-	macmediakeyforwarder \
 	nordvpn \
 	notion \
 	numi \
 	postico \
-	rectangle \
 	runjs \
 	sequel-pro \
 	slack \
 	sonos \
 	spotify \
+	raycast \
 	telegram \
 	tuple \
 	visual-studio-code \

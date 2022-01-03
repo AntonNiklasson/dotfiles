@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# Create folders 
+# todo: dropbox setup conflicts with this folder
+mkdir -pv ~/code ~/Dropbox
+
 # Speed up dock animation
 defaults write com.apple.dock autohide-time-modifier -int 0
 
@@ -27,3 +31,6 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 
 # Disable the warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Turn on key repeat
+defaults write -g ApplePressAndHoldEnabled -bool false
