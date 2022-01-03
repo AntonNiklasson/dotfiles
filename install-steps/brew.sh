@@ -48,6 +48,7 @@ brew install --cask \
 	figma \
 	firefox \
 	font-source-code-pro \
+	font-fira-code \
 	google-chrome \
 	google-cloud-sdk \
 	hiddenbar \
