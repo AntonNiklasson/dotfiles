@@ -70,5 +70,5 @@ brew install --cask \
 	vlc \
 	1password \
 	obsidian \
-	intellij-idea \
+	intellij-idea-ce \
 ;
