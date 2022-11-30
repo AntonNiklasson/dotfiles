@@ -4,7 +4,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'itchyny/lightline.vim'
 Plug 'xuyuanp/nerdtree-git-plugin'
-Plug 'embark-theme/vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 " Search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -37,7 +37,7 @@ filetype plugin indent on
 syntax enable
 set t_Co=256
 set background=dark
-color Embark
+color Dracula
 
 " Font
 set guifont="Source Code Pro":h14
@@ -137,7 +137,7 @@ set mouse=a
 set expandtab
 set nolist
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
-set norelativenumber
+set relativenumber
 set noshowmode
 set noswapfile
 set nowrap

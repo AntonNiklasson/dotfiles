@@ -1,5 +1,15 @@
 #! /usr/bin/env bash
 
+# Required parameters:
+# @raycast.schemaVersion 1
+# @raycast.title Upgrade installations
+# @raycast.mode fullOutput
+
+# Optional parameters:
+# @raycast.icon 🎇
+
+#  --
+
 # homebrew
 brew upgrade
 brew cleanup

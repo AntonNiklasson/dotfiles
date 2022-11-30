@@ -16,8 +16,6 @@
 	diff = auto
 	status = auto
 	branch = auto
-[pull]
-	rebase = preserve
 [merge]
 	log = true
 	conflictstyle = diff3
@@ -46,3 +44,5 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge --skip -- %f
 	process = git-lfs filter-process --skip
+[push]
+	autoSetupRemote = true
