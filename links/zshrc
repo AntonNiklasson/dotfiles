@@ -4,7 +4,7 @@ ZSH_THEME="fwalch"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 export FZF_BASE=/opt/homebrew/bin/fzf
 
-plugins=(docker git git-extras yarn z brew vi-mode fzf)
+plugins=(docker git git-extras brew zsh-vi-mode fzf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -28,6 +28,8 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 export GEM_HOME="$HOME/.gem"
 
 alias d='docker'
+alias pn='pnpm'
+alias pnr='pnpm run'
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
 alias docker-remove-all-images='docker rmi $(docker images -q) || true'
 alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
@@ -69,26 +71,33 @@ alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 alias reload='omz reload' # https://github.com/ohmyzsh/ohmyzsh/wiki/FAQ#how-do-i-reload-the-zshrc-file
-alias i='yarn install'
 alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
+alias vim='nvim'
+alias pr='open-github-pull-request'
 
-
-rebase-feature-branch() {
+rebase-feature() {
   base=${1:-"develop"}
+  git fetch -a
+  git rebase origin/$base
+}
 
-  git checkout $base &&
-  git pull &&
-  git checkout - && 
-  git rebase $base
+open-gitlab-merge-request() {
+  base=${1:-"develop"}
+  glab mr create -wf -b $base
+}
 
-  yarn install
+open-github-pull-request() {
+  base=${1:-"develop"}
+  gh pr create --fill --web --base $base
+}
+
+copy-last-command-to-cliboard() {
+  fc -ln -1 | pbcopy
+  echo "Copied last command to clipboard!"
 }
 
 
-# NVM
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+eval "$(fnm env --use-on-cd)"
 
 # Google Cloud SDK
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
@@ -100,3 +109,10 @@ if type brew &>/dev/null; then
   autoload -Uz compinit
   compinit
 fi
+
+# z jumper
+source ~/.config/z.sh
+
+# tabtab source for packages
+# uninstall by removing these lines
+[[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
