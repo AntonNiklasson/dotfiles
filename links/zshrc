@@ -4,7 +4,7 @@ ZSH_THEME="fwalch"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 export FZF_BASE=/opt/homebrew/bin/fzf
 
-plugins=(docker git git-extras brew zsh-vi-mode fzf)
+plugins=(git git-extras brew zsh-vi-mode fzf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -27,9 +27,7 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 
 export GEM_HOME="$HOME/.gem"
 
-alias d='docker'
-alias pn='pnpm'
-alias pnr='pnpm run'
+alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
 alias docker-remove-all-images='docker rmi $(docker images -q) || true'
 alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
@@ -37,12 +35,12 @@ alias dotfiles='vim ~/.dotfiles'
 alias ga='git add'
 alias gb='git branch'
 alias gba='git branch -a'
-alias gcb='git create-branch'
 alias gc='git commit'
 alias gca='git commit --amend'
+alias gcb='git create-branch'
 alias gcm='git commit -m'
 alias gco="git checkout"
-alias gcof="git checkout \"\$(git branch --all | fzf | tr -d '[:space:]')\""
+alias gcof="git checkout \"\$(git for-each-ref --sort='-authordate:iso8601' --format='%(refname:short)' refs/heads | fzf | tr -d '[:space:]')\""
 alias gcp='git cherry-pick'
 alias gd='git diff'
 alias gdc='git diff --cached'
@@ -60,34 +58,32 @@ alias grc='git rebase --continue'
 alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
-alias iclouddrive='cd "~/Library/Mobile Documents/com~apple~CloudDocs"'
+alias iclouddrive='cd "/Users/anton/Library/Mobile Documents"'
 alias ll='gls -lAFh --color --group-directories-first'
+alias my-prs='gh pr list -A="@me"'
+alias nr='npm run'
+alias pn='pnpm'
+alias pnr='pnpm run'
+alias pr='open-github-pull-request'
+alias reload='omz reload' # https://github.com/ohmyzsh/ohmyzsh/wiki/FAQ#how-do-i-reload-the-zshrc-file
 alias t='tmux'
 alias ta='t attach'
 alias tl='tmux ls'
 alias tn='tmux new-session -t'
-alias vimrc='vim ~/.vimrc'
 alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
-alias reload='omz reload' # https://github.com/ohmyzsh/ohmyzsh/wiki/FAQ#how-do-i-reload-the-zshrc-file
-alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
+
 alias vim='nvim'
-alias pr='open-github-pull-request'
 
 rebase-feature() {
-  base=${1:-"develop"}
+  base=${1:-"master"}
   git fetch -a
   git rebase origin/$base
 }
 
-open-gitlab-merge-request() {
-  base=${1:-"develop"}
-  glab mr create -wf -b $base
-}
-
 open-github-pull-request() {
-  base=${1:-"develop"}
+  base=${1:-"master"}
   gh pr create --fill --web --base $base
 }
 
