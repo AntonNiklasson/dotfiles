@@ -1,12 +1,5 @@
 # Install packages from npm
-yarn global add \
-	yo \
-	alfred-fkill \
-	alfred-npms \
-	alfred-loremipsum \
-	alfred-ip \
-	gatsby-cli \
-	@bitwarden/cli
+npm install -g neovim@latest
 
-# Install NVM
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
+#
+corepack enable

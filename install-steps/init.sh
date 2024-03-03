@@ -1,19 +1,17 @@
 #! /bin/bash
 
 # Clone the repo to ~/.dotfiles
-if [ ! -d ~/.dotfiles ]
-then
-    echo "Cloning the dotfiles repo..."
-    git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
+if [ ! -d ~/.dotfiles ]; then
+	echo "Cloning the dotfiles repo..."
+	git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 fi
 
 echo "✅ dotfiles installed"
 
 # Install oh-my-zsh
-if [ ! -d ~/.oh-my-zsh ]
-then
-    echo "Installing oh-my-zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+if [ ! -d ~/.oh-my-zsh ]; then
+	echo "Installing oh-my-zsh..."
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
 echo "✅ ohmyzsh installed"
