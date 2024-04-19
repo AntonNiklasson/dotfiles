@@ -8,6 +8,8 @@ plugins=(git git-extras brew zsh-vi-mode fzf)
 
 source $ZSH/oh-my-zsh.sh
 
+export HOMEBREW_NO_AUTO_UPDATE=true
+
 export HISTCONTROL=ignoredups
 export VISUAL='vim'
 export EDITOR=$VISUAL
@@ -59,7 +61,8 @@ alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
 alias iclouddrive='cd "/Users/anton/Library/Mobile Documents"'
-alias ll='gls -lAFh --color --group-directories-first'
+alias ls='eza'
+alias ll='eza --long --group-directories-first --no-permissions --no-user --icons=always'
 alias my-prs='gh pr list -A="@me"'
 alias nr='npm run'
 alias pn='pnpm'
@@ -109,6 +112,30 @@ fi
 # z jumper
 source ~/.config/z.sh
 
+# fzf fuzzy finder
+eval "$(fzf --zsh)"
+
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+
+
+# Herd injected NVM configuration
+export NVM_DIR="/Users/anton/Library/Application Support/Herd/config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+[[ -f "/Applications/Herd.app/Contents/Resources/config/shell/zshrc.zsh" ]] && builtin source "/Applications/Herd.app/Contents/Resources/config/shell/zshrc.zsh"
+
+# Herd injected PHP 8.3 configuration.
+export HERD_PHP_83_INI_SCAN_DIR="/Users/anton/Library/Application Support/Herd/config/php/83/"
+
+
+# Herd injected PHP binary.
+export PATH="/Users/anton/Library/Application Support/Herd/bin/":$PATH
+
+# bun completions
+[ -s "/Users/anton/.bun/_bun" ] && source "/Users/anton/.bun/_bun"
+
+# Setup bat to replace cat
+alias cat='bat'
+export BAT_THEME='TwoDark'

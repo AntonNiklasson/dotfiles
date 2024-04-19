@@ -18,11 +18,11 @@ echo "✅ ohmyzsh installed"
 
 # Link files.
 printf "\nLinking files...\n"
-ln -is ~/.dotfiles/links/zshrc ~/.zshrc
-ln -is ~/.dotfiles/links/vimrc ~/.vimrc
-ln -is ~/.dotfiles/links/gitignore ~/.gitignore
-ln -is ~/.dotfiles/links/gitconfig ~/.gitconfig
+ln -is ~/.dotfiles/links/.zshrc ~/.zshrc
+ln -is ~/.dotfiles/links/.gitignore ~/.gitignore
+ln -is ~/.dotfiles/links/.gitconfig ~/.gitconfig
 ln -is ~/.dotfiles/links/tmux.conf ~/.tmux.conf
+ln -is ~/.dotfiles/links/nvim ~/.config/nvim
 
 source ~/.zshrc
 
