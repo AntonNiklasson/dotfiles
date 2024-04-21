@@ -63,6 +63,7 @@ alias gst='git stash'
 alias iclouddrive='cd "/Users/anton/Library/Mobile Documents"'
 alias ls='eza'
 alias ll='eza --long --group-directories-first --no-permissions --no-user --icons=always'
+alias lla='ll --all'
 alias my-prs='gh pr list -A="@me"'
 alias nr='npm run'
 alias pn='pnpm'
@@ -80,14 +81,9 @@ alias zshrcs='source ~/.zshrc'
 alias vim='nvim'
 
 rebase-feature() {
-  base=${1:-"master"}
+  base=${1:-"main"}
   git fetch -a
   git rebase origin/$base
-}
-
-open-github-pull-request() {
-  base=${1:-"master"}
-  gh pr create --fill --web --base $base
 }
 
 copy-last-command-to-cliboard() {
