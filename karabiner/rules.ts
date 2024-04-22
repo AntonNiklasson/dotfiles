@@ -1,43 +1,43 @@
 import fs from "fs";
-import { KarabinerRules } from "./types";
+import { KarabinerRules, Manipulator } from "./types";
 import { createLayers, app, raycast, key_code, open } from "./utils";
+
+const hyperManipulator: Manipulator = {
+  description: "CapsLock -> Hyper",
+  from: {
+    key_code: "caps_lock",
+    modifiers: {
+      optional: ["any"],
+    },
+  },
+  to: [
+    {
+      set_variable: {
+        name: "hyper",
+        value: 1,
+      },
+    },
+  ],
+  to_after_key_up: [
+    {
+      set_variable: {
+        name: "hyper",
+        value: 0,
+      },
+    },
+  ],
+  to_if_alone: [
+    {
+      key_code: "escape",
+    },
+  ],
+  type: "basic",
+};
 
 const rules: KarabinerRules[] = [
   {
     description: "Hyper (⌃⌥⇧⌘)",
-    manipulators: [
-      {
-        description: "CapsLock -> Hyper",
-        from: {
-          key_code: "caps_lock",
-          modifiers: {
-            optional: ["any"],
-          },
-        },
-        to: [
-          {
-            set_variable: {
-              name: "hyper",
-              value: 1,
-            },
-          },
-        ],
-        to_after_key_up: [
-          {
-            set_variable: {
-              name: "hyper",
-              value: 0,
-            },
-          },
-        ],
-        to_if_alone: [
-          {
-            key_code: "escape",
-          },
-        ],
-        type: "basic",
-      },
-    ],
+    manipulators: [hyperManipulator],
   },
   ...createLayers({
     // Window
@@ -48,12 +48,14 @@ const rules: KarabinerRules[] = [
       l: raycast("extensions/raycast/window-management/right-half"),
       u: raycast("extensions/raycast/window-management/previous-desktop"),
       i: raycast("extensions/raycast/window-management/next-desktop"),
+      n: raycast("extensions/raycast/window-management/next-display"),
     },
 
     // Open
     o: {
       a: app("Arc"),
       c: app("Calendar"),
+      d: open("'obsidian://advanced-uri?vault=notes&daily=true'"),
       e: app("Mail"),
       h: app("Home"),
       n: app("Obsidian"),
@@ -63,7 +65,7 @@ const rules: KarabinerRules[] = [
       x: app("iTerm"),
     },
 
-    // Search
+    // Find
     f: {
       g: open("https://google.com"),
       o: raycast(
@@ -92,8 +94,8 @@ const rules: KarabinerRules[] = [
       0: raycast("extensions/raycast/system/sleep"),
     },
 
-    // moVe
-    v: {
+    // Direction
+    d: {
       h: key_code("left_arrow"),
       j: key_code("down_arrow"),
       k: key_code("up_arrow"),
