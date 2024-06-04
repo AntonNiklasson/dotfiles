@@ -12,7 +12,7 @@ COL_NUMBER=$(echo "$input" | awk -F: '{ print $3 }')
 
 OPEN_COMMAND=":e $FILE_PATH | :$LINE_NUMBER"
 
-TERMINAL="Alacritty"
+TERMINAL="Kitty"
 SESSION="sana"
 WINDOW="client"
 PANE=0
