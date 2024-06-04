@@ -1,13 +1,13 @@
 return {
-	{
-		"shaunsingh/nord.nvim",
-		lazy = true,
-	},
-
-	{
-		"LazyVim/LazyVim",
-		opts = {
-			colorscheme = "tokyonight",
+	"folke/tokyonight.nvim",
+	lazy = true,
+	opts = {
+		style = "storm",
+		transparent = true,
+		styles = {
+			sidebars = "transparent",
+			floats = "transparent",
 		},
+		dim_inactive = false,
 	},
 }

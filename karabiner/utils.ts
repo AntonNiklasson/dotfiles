@@ -153,22 +153,22 @@ export function open(
   what: string,
   options = { background: false }
 ): LayerCommand {
+  const command = options.background ? `open -g ${what}` : `open ${what}`;
   return {
     to: [
       {
-        shell_command: options.background ? `open -g ${what}` : `open ${what}`,
+        shell_command: command,
       },
     ],
     description: `Open ${what}`,
   };
 }
 
-export function raycast(
-  command:
-    | `script-commands/${string}`
-    | `extensions/${string}/${string}/${string}`
-) {
-  return open(`raycast://${command}`, { background: true });
+export function raycast(command: `${string}/${string}/${string}`) {
+  const url = new URL(`raycast://extensions/${command}`);
+  url.searchParams.set("launchType", "background");
+
+  return open(url.toString(), { background: true });
 }
 
 export function app(name: string): LayerCommand {

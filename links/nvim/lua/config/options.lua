@@ -2,11 +2,15 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+-- setup colors
+vim.o.termguicolors = true
+vim.opt.background = "dark"
+
 -- set filetype for .mdx to 'markdown-mdx'
 vim.filetype.add({
-  extension = {
-    mdx = "markdown.mdx",
-  },
+	extension = {
+		mdx = "markdown.mdx",
+	},
 })
 
 -- set conceal to "none" by default
@@ -15,11 +19,16 @@ vim.opt.conceallevel = 0
 -- disable swapfiles
 vim.opt.swapfile = false
 
--- disable the tab line
--- vim.opt.showtabline = 0
-
 -- set tabsize to 4
-vim.opt.tabstop = 2
+vim.opt.tabstop = 4
 
--- highlight the current line
-vim.opt.cursorline = true
+-- disable a highglight for the current line
+vim.opt.cursorline = false
+
+-- stop auto changing directory
+vim.opt.autochdir = false
+
+-- set colors for line numbers
+vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#ff0000", bold = true })
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#00ff00", bold = true })
+vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#0000ff", bold = true })

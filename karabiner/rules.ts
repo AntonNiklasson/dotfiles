@@ -42,56 +42,63 @@ const rules: KarabinerRules[] = [
   ...createLayers({
     // Window
     w: {
-      h: raycast("extensions/raycast/window-management/left-half"),
-      j: raycast("extensions/raycast/window-management/maximize"),
-      k: raycast("extensions/raycast/window-management/center"),
-      l: raycast("extensions/raycast/window-management/right-half"),
-      u: raycast("extensions/raycast/window-management/previous-desktop"),
-      i: raycast("extensions/raycast/window-management/next-desktop"),
-      n: raycast("extensions/raycast/window-management/next-display"),
+      h: raycast("raycast/window-management/left-half"),
+      j: raycast("raycast/window-management/maximize"),
+      k: raycast("raycast/window-management/center"),
+      l: raycast("raycast/window-management/right-half"),
+      u: raycast("raycast/window-management/previous-desktop"),
+      i: raycast("raycast/window-management/next-desktop"),
+      g: raycast("raycast/window-management/next-display"),
+      n: key_code("tab", ["right_control", "right_shift"]),
+      m: key_code("tab", ["right_control"]),
+      o: key_code("mission_control"),
     },
 
     // Open
     o: {
       a: app("Arc"),
-      c: app("Calendar"),
-      d: open("'obsidian://advanced-uri?vault=notes&daily=true'"),
+      c: app("Fantastical"),
       e: app("Mail"),
       h: app("Home"),
       n: app("Obsidian"),
       p: app("Spotify"),
       s: app("Slack"),
       t: app("Todoist"),
-      x: app("iTerm"),
+      x: app("Kitty"),
+      b: app("Google Chrome"),
+
+      j: key_code("tab", ["right_command", "right_shift"]),
+      k: key_code("tab", ["right_command"]),
     },
 
     // Find
     f: {
-      g: open("https://google.com"),
       o: raycast(
         "extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D"
       ),
     },
 
-    // Email specific
+    // Email
     e: {
+      i: key_code("delete_or_backspace"), // delete
       j: key_code("down_arrow"),
       k: key_code("up_arrow"),
-      i: key_code("delete_or_backspace"), // delete
-      u: key_code("a", ["control", "right_command"]), // archive
       r: key_code("n", ["right_shift", "right_command"]),
+      u: key_code("a", ["control", "right_command"]), // archive
     },
 
     // System
     s: {
-      k: key_code("volume_increment"),
-      j: key_code("volume_decrement"),
-      u: key_code("display_brightness_decrement"),
-      i: key_code("display_brightness_increment"),
-      l: key_code("q", ["right_control", "right_command"]),
+      b: raycast("VladCuciureanu/toothpick/manage-bluetooth-connections"),
       e: key_code("spacebar", ["right_control", "right_command"]),
-      m: raycast("extensions/raycast/navigation/search-menu-items"),
-      0: raycast("extensions/raycast/system/sleep"),
+      j: key_code("volume_decrement"),
+      k: key_code("volume_increment"),
+      l: raycast("lucaschultz/input-switcher/toggle"),
+      m: raycast("raycast/navigation/search-menu-items"),
+      o: key_code("q", ["right_control", "right_command"]),
+      p: raycast("raycast/screenshots/paste-recent-screenshot"),
+      t: raycast("raycast/system/toggle-system-appearance"),
+      0: raycast("raycast/system/lock-screen"),
     },
 
     // Direction
@@ -100,6 +107,12 @@ const rules: KarabinerRules[] = [
       j: key_code("down_arrow"),
       k: key_code("up_arrow"),
       l: key_code("right_arrow"),
+
+      u: key_code("page_down"),
+      i: key_code("page_up"),
+
+      // trigger homerow
+      m: key_code("f12"),
     },
 
     // musiC
@@ -111,12 +124,10 @@ const rules: KarabinerRules[] = [
 
     // Raycast
     r: {
-      c: raycast("extensions/raycast/system/open-camera"),
-      n: raycast("script-commands/dismiss-notifications"),
-      p: raycast("extensions/raycast/raycast/confetti"),
-      a: raycast("extensions/raycast/raycast-ai/ai-chat"),
-      h: raycast("extensions/raycast/clipboard-history/clipboard-history"),
-      t: raycast("extensions/lucaschultz/input-switcher/toggle"),
+      c: raycast("raycast/system/open-camera"),
+      p: raycast("raycast/raycast/confetti"),
+      a: raycast("raycast/raycast-ai/ai-chat"),
+      h: raycast("raycast/clipboard-history/clipboard-history"),
     },
   }),
 ];
