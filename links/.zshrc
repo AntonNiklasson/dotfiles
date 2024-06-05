@@ -108,3 +108,6 @@ alias cat='bat'
 export BAT_THEME='TwoDark'
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
+# zsh autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+bindkey '^ ' autosuggest-accept
