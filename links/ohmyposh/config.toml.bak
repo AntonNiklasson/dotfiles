@@ -1,0 +1,5 @@
+    type = 'text'
+    style = 'plain'
+    foreground ='magenta'
+    background = 'transparent'
+    template = '▶︎'

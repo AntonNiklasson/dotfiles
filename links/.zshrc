@@ -1,6 +1,10 @@
-# Setup the spaceship theme
-source /opt/homebrew/opt/spaceship/spaceship.zsh
-ZSH_THEME="spaceship"
+# setup the prompt using oh-my-posh
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+  eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"
+fi
+
+# Setup vi mode
+source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
 # Editors
 export VISUAL='nvim'
@@ -8,13 +12,13 @@ export EDITOR=$VISUAL
 export REACT_EDITOR='codium'
 
 # Add folders to PATH
-export PATH=~/.dotfiles/bin:$PATH
+export PATH=./node_modules/.bin:$PATH
+export PATH=/opt/homebrew/bin:$PATH
+export PATH=/opt/homebrew/sbin:$PATH
 export PATH=/usr/bin:$PATH
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/lib:$PATH
-export PATH=/opt/homebrew/bin:$PATH
-export PATH=/opt/homebrew/sbin:$PATH
-export PATH=./node_modules/.bin:$PATH
+export PATH=~/.dotfiles/bin:$PATH
 
 # Aliases & Functions
 alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
@@ -48,7 +52,6 @@ alias grc='git rebase --continue'
 alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
-alias iclouddrive='cd "/Users/anton/Library/Mobile Documents"'
 alias ls='eza'
 alias ll='eza --long --group-directories-first --no-permissions --no-user --icons=always'
 alias lla='ll --all'
@@ -60,19 +63,15 @@ alias pnr='pnpm run'
 alias pr='open-github-pull-request'
 alias t='tmux'
 alias ta='t attach'
-alias tl='tmux ls'
-alias tn='tmux new-session -t'
 alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 alias vim='nvim'
-
 rebase-feature() {
   base=${1:-"main"}
   git fetch -a
   git rebase origin/$base
 }
-
 copy-last-command-to-cliboard() {
   fc -ln -1 | pbcopy
   echo "Copied last command to clipboard!"
