@@ -14,4 +14,4 @@ vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
 
 -- save file from insert mode with jk
-vim.keymap.set({ "i" }, "jk", "<Esc>:w<cr>", { silent = true, desc = "Save file from insert mode" })
+vim.keymap.set({ "i" }, "jj", "<Esc>:w<cr>l", { silent = true, desc = "Save file from insert mode" })

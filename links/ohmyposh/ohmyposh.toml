@@ -16,6 +16,9 @@ console_title_template = '{{ .Shell }} in {{ .Folder }}'
     foreground = 'blue'
     template = "{{ .Path }}"
 
+    [blocks.segments.properties]
+      style = 'full'
+
 [[blocks]]
   type = 'prompt'
   alignment = 'left'
@@ -30,4 +33,8 @@ console_title_template = '{{ .Shell }} in {{ .Folder }}'
       "{{if eq .Code 0}}green{{end}}",
     ]
     background = 'transparent'
-    template = '⇝'
+    template = '→'
+
+[transient_prompt]
+  foreground = "green"
+  template = '→ '

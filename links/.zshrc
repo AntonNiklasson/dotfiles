@@ -1,13 +1,13 @@
 # setup the prompt using oh-my-posh
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
-  eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"
+  eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/ohmyposh.toml)"
 fi
 
 # Setup vi mode
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
 # Editors
-export VISUAL='nvim'
+export VISUAL='vim'
 export EDITOR=$VISUAL
 export REACT_EDITOR='codium'
 
@@ -20,8 +20,43 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/lib:$PATH
 export PATH=~/.dotfiles/bin:$PATH
 
+# Fast Node Manager
+eval "$(fnm env --use-on-cd)"
+
+# Google Cloud SDK
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+
+# Homebrew
+export HOMEBREW_PREFIX="/opt/homebrew";
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+export HOMEBREW_REPOSITORY="/opt/homebrew";
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+  autoload -Uz compinit
+  compinit
+fi
+
+# z jumper
+source ~/.config/z.sh
+
+# fzf fuzzy finder
+eval "$(fzf --zsh)"
+export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
+export FZF_BASE=/opt/homebrew/bin/fzf
+
+# Use `bat` instead of `cat`
+alias cat='bat'
+export BAT_THEME='TwoDark'
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+
+# zsh autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+bindkey '^ ' autosuggest-accept
+
 # Aliases & Functions
 alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
+alias c='clear'
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
 alias docker-remove-all-images='docker rmi $(docker images -q) || true'
 alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
@@ -76,37 +111,3 @@ copy-last-command-to-cliboard() {
   fc -ln -1 | pbcopy
   echo "Copied last command to clipboard!"
 }
-
-# Fast Node Manager
-eval "$(fnm env --use-on-cd)"
-
-# Google Cloud SDK
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-
-# Homebrew
-export HOMEBREW_PREFIX="/opt/homebrew";
-export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-export HOMEBREW_REPOSITORY="/opt/homebrew";
-export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-  autoload -Uz compinit
-  compinit
-fi
-
-# z jumper
-source ~/.config/z.sh
-
-# fzf fuzzy finder
-eval "$(fzf --zsh)"
-export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
-export FZF_BASE=/opt/homebrew/bin/fzf
-
-# Use `bat` instead of `cat`
-alias cat='bat'
-export BAT_THEME='TwoDark'
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-
-# zsh autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-bindkey '^ ' autosuggest-accept

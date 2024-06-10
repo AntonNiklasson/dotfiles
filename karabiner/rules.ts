@@ -66,6 +66,8 @@ const rules: KarabinerRules[] = [
       t: app("Todoist"),
       x: app("Kitty"),
       b: app("Google Chrome"),
+      r: app("Tuple"),
+      w: app("Linear"),
 
       j: key_code("tab", ["right_command", "right_shift"]),
       k: key_code("tab", ["right_command"]),
