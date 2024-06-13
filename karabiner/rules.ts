@@ -131,6 +131,12 @@ const rules: KarabinerRules[] = [
       a: raycast("raycast/raycast-ai/ai-chat"),
       h: raycast("raycast/clipboard-history/clipboard-history"),
     },
+
+    // Notifications
+    n: {
+      g: raycast("raycast/github/notifications", { fg: true }),
+      l: raycast("linear/linear/notifications", { fg: true }),
+    },
   }),
 ];
 

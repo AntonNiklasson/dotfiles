@@ -164,9 +164,15 @@ export function open(
   };
 }
 
-export function raycast(command: `${string}/${string}/${string}`) {
+export function raycast(
+  command: `${string}/${string}/${string}`,
+  options?: { fg: boolean }
+) {
   const url = new URL(`raycast://extensions/${command}`);
-  url.searchParams.set("launchType", "background");
+
+  if (!options?.fg) {
+    url.searchParams.set("launchType", "background");
+  }
 
   return open(url.toString(), { background: true });
 }

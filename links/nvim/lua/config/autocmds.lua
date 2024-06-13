@@ -5,11 +5,3 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 		vim.cmd("silent !kill -SIGUSR1 $(pgrep -a kitty)")
 	end,
 })
-
--- autoreload Tmux with ~/.tmux.conf
-vim.api.nvim_create_autocmd("BufWritePost", {
-	pattern = { ".tmux.conf" },
-	callback = function()
-		vim.cmd("silent !kill -SIGUSR1 $(pgrep -a kitty)")
-	end,
-})

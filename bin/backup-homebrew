@@ -1,0 +1,8 @@
+#!/bin/bash
+
+BACKUP_FILE=~/.dotfiles/backups/Brewfile-$(date +%s)
+
+brew bundle dump --global --force
+mv ~/.Brewfile ${BACKUP_FILE}
+
+echo "Homebrew state backed up to ${BACKUP_FILE}"

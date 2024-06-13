@@ -1,3 +1,14 @@
+# Homebrew
+export HOMEBREW_PREFIX="/opt/homebrew";
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+export HOMEBREW_REPOSITORY="/opt/homebrew";
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+  autoload -Uz compinit
+  compinit
+fi
+
 # setup the prompt using oh-my-posh
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
   eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/ohmyposh.toml)"
@@ -26,20 +37,6 @@ eval "$(fnm env --use-on-cd)"
 # Google Cloud SDK
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 
-# Homebrew
-export HOMEBREW_PREFIX="/opt/homebrew";
-export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-export HOMEBREW_REPOSITORY="/opt/homebrew";
-export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-  autoload -Uz compinit
-  compinit
-fi
-
-# z jumper
-source ~/.config/z.sh
-
 # fzf fuzzy finder
 eval "$(fzf --zsh)"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
@@ -54,9 +51,13 @@ export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 bindkey '^ ' autosuggest-accept
 
+# zoxide jumper
+eval "$(zoxide init zsh)"
+
 # Aliases & Functions
+alias ..='cd ..'
 alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
-alias c='clear'
+alias cl='clear'
 alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
 alias docker-remove-all-images='docker rmi $(docker images -q) || true'
 alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
