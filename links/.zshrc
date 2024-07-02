@@ -1,96 +1,93 @@
-# Homebrew
-export HOMEBREW_PREFIX="/opt/homebrew";
-export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-export HOMEBREW_REPOSITORY="/opt/homebrew";
-export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-  autoload -Uz compinit
-  compinit
+# zinit (plugin manager)
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [ ! -d "$ZINIT_HOME" ]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
+source "${ZINIT_HOME}/zinit.zsh"
 
-# setup the prompt using oh-my-posh
+
+# plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light jeffreytse/zsh-vi-mode
+
+
+# .config
+export XDG_CONFIG_HOME="$HOME/.config"
+
+
+# setup PATH
+export PATH=$PATH:~/.dotfiles/bin
+
+
+# homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=true
+export HOMEBREW_NO_ENV_HINTS=true 
+brew tap domt4/autoupdate
+
+
+# prompt with ohmyposh
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
   eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/ohmyposh.toml)"
 fi
 
-# Setup vi mode
-source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
-# Editors
+# editor configurations
 export VISUAL='vim'
 export EDITOR=$VISUAL
-export REACT_EDITOR='codium'
+export REACT_EDITOR=launch-editor.sh
 
-# Add folders to PATH
-export PATH=./node_modules/.bin:$PATH
-export PATH=/opt/homebrew/bin:$PATH
-export PATH=/opt/homebrew/sbin:$PATH
-export PATH=/usr/bin:$PATH
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/lib:$PATH
-export PATH=~/.dotfiles/bin:$PATH
 
-# Fast Node Manager
+# fast node manager
 eval "$(fnm env --use-on-cd)"
 
-# Google Cloud SDK
+
+# google cloud sdk
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
 
-# fzf fuzzy finder
+
+# fzf
 eval "$(fzf --zsh)"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 export FZF_BASE=/opt/homebrew/bin/fzf
 
+
 # Use `bat` instead of `cat`
 alias cat='bat'
 export BAT_THEME='TwoDark'
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
-# zsh autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-bindkey '^ ' autosuggest-accept
 
 # zoxide jumper
 eval "$(zoxide init zsh)"
 
-# Aliases & Functions
+
+# aliases
 alias ..='cd ..'
-alias copy-branch='git rev-parse --abbrev-ref HEAD | pbcopy'
-alias cl='clear'
-alias docker-remove-all-containers='docker rm $(docker ps -a -q) || true'
-alias docker-remove-all-images='docker rmi $(docker images -q) || true'
-alias docker-stop-all-containers='docker stop $(docker ps -q) || true'
-alias dotfiles='vim ~/.dotfiles'
+alias g='git'
 alias ga='git add'
 alias gb='git branch'
-alias gba='git branch -a'
 alias gc='git commit'
 alias gca='git commit --amend'
 alias gcb='git create-branch'
 alias gcm='git commit -m'
 alias gco="git checkout"
 alias gcof="git checkout \"\$(git for-each-ref --sort='-authordate:iso8601' --format='%(refname:short)' refs/heads | fzf | tr -d '[:space:]')\""
-alias gcp='git cherry-pick'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gf='git fetch'
 alias gl='git log --pretty=format:"%Cred%h%Creset %Cgreen%cd%Creset %Cblue%ae%Creset%n%s%n" --date=short'
-alias gm='git merge'
 alias gp='git push'
 alias gpf='git push --force-with-lease'
 alias gpl='git pull'
-alias gpnv='git push --no-verify'
-alias gpsu='git push --set-upstream origin'
-alias gr='git rebase'
 alias gra='git rebase --abort'
 alias grc='git rebase --continue'
 alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
-alias ls='eza'
-alias ll='eza --long --group-directories-first --no-permissions --no-user --icons=always'
-alias lla='ll --all'
+alias l='eza --oneline --group-directories-first'
+alias ll='eza --oneline --group-directories-first --no-permissions --no-user --icons=always --all'
 alias lg='lazygit'
 alias my-prs='gh pr list -A="@me"'
 alias nr='npm run'

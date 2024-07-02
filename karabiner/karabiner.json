@@ -103,7 +103,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -126,10 +126,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/left-half?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/left-half"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/left-half?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/left-half",
                 "type": "basic",
                 "from": {
                   "key_code": "h",
@@ -150,10 +150,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/maximize?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/maximize"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/maximize?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/maximize",
                 "type": "basic",
                 "from": {
                   "key_code": "j",
@@ -174,10 +174,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/center?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/almost-maximize"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/center?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/almost-maximize",
                 "type": "basic",
                 "from": {
                   "key_code": "k",
@@ -198,10 +198,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/right-half?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/right-half"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/right-half?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/right-half",
                 "type": "basic",
                 "from": {
                   "key_code": "l",
@@ -222,10 +222,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/previous-desktop?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/previous-desktop"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/previous-desktop?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/previous-desktop",
                 "type": "basic",
                 "from": {
                   "key_code": "u",
@@ -246,10 +246,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/next-desktop?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/next-desktop"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/next-desktop?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/next-desktop",
                 "type": "basic",
                 "from": {
                   "key_code": "i",
@@ -270,10 +270,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/next-display?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/next-display"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/next-display?launchType=background",
+                "description": "Open raycast://extensions/raycast/window-management/next-display",
                 "type": "basic",
                 "from": {
                   "key_code": "g",
@@ -427,7 +427,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -457,6 +457,30 @@
                 "type": "basic",
                 "from": {
                   "key_code": "a",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "hyper_sublayer_o",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "to": [
+                  {
+                    "shell_command": "open -a 'Google Chrome.app'"
+                  }
+                ],
+                "description": "Open -a 'Google Chrome.app'",
+                "type": "basic",
+                "from": {
+                  "key_code": "b",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -522,6 +546,30 @@
               {
                 "to": [
                   {
+                    "shell_command": "open -a 'Figma.app'"
+                  }
+                ],
+                "description": "Open -a 'Figma.app'",
+                "type": "basic",
+                "from": {
+                  "key_code": "f",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "hyper_sublayer_o",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "to": [
+                  {
                     "shell_command": "open -a 'Home.app'"
                   }
                 ],
@@ -529,6 +577,30 @@
                 "type": "basic",
                 "from": {
                   "key_code": "h",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "hyper_sublayer_o",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "to": [
+                  {
+                    "shell_command": "open -a 'Spotify.app'"
+                  }
+                ],
+                "description": "Open -a 'Spotify.app'",
+                "type": "basic",
+                "from": {
+                  "key_code": "m",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -570,13 +642,13 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -a 'Spotify.app'"
+                    "shell_command": "open -a 'Tuple.app'"
                   }
                 ],
-                "description": "Open -a 'Spotify.app'",
+                "description": "Open -a 'Tuple.app'",
                 "type": "basic",
                 "from": {
-                  "key_code": "p",
+                  "key_code": "r",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -642,78 +714,6 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -a 'Kitty.app'"
-                  }
-                ],
-                "description": "Open -a 'Kitty.app'",
-                "type": "basic",
-                "from": {
-                  "key_code": "x",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "conditions": [
-                  {
-                    "type": "variable_if",
-                    "name": "hyper_sublayer_o",
-                    "value": 1
-                  }
-                ]
-              },
-              {
-                "to": [
-                  {
-                    "shell_command": "open -a 'Google Chrome.app'"
-                  }
-                ],
-                "description": "Open -a 'Google Chrome.app'",
-                "type": "basic",
-                "from": {
-                  "key_code": "b",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "conditions": [
-                  {
-                    "type": "variable_if",
-                    "name": "hyper_sublayer_o",
-                    "value": 1
-                  }
-                ]
-              },
-              {
-                "to": [
-                  {
-                    "shell_command": "open -a 'Tuple.app'"
-                  }
-                ],
-                "description": "Open -a 'Tuple.app'",
-                "type": "basic",
-                "from": {
-                  "key_code": "r",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "conditions": [
-                  {
-                    "type": "variable_if",
-                    "name": "hyper_sublayer_o",
-                    "value": 1
-                  }
-                ]
-              },
-              {
-                "to": [
-                  {
                     "shell_command": "open -a 'Linear.app'"
                   }
                 ],
@@ -738,42 +738,13 @@
               {
                 "to": [
                   {
-                    "key_code": "tab",
-                    "modifiers": [
-                      "right_command",
-                      "right_shift"
-                    ]
+                    "shell_command": "open -a 'Kitty.app'"
                   }
                 ],
+                "description": "Open -a 'Kitty.app'",
                 "type": "basic",
                 "from": {
-                  "key_code": "j",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "conditions": [
-                  {
-                    "type": "variable_if",
-                    "name": "hyper_sublayer_o",
-                    "value": 1
-                  }
-                ]
-              },
-              {
-                "to": [
-                  {
-                    "key_code": "tab",
-                    "modifiers": [
-                      "right_command"
-                    ]
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "k",
+                  "key_code": "x",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -848,7 +819,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -871,13 +842,37 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D&launchType=background"
+                    "shell_command": "open -g raycast://extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D"
                   }
                 ],
-                "description": "Open raycast://extensions/extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D&launchType=background",
+                "description": "Open raycast://extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D",
                 "type": "basic",
                 "from": {
                   "key_code": "o",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "hyper_sublayer_f",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "to": [
+                  {
+                    "shell_command": "open -g raycast://extensions/michaelschultz/figma-files-raycast-extension/index"
+                  }
+                ],
+                "description": "Open raycast://extensions/michaelschultz/figma-files-raycast-extension/index",
+                "type": "basic",
+                "from": {
+                  "key_code": "d",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -952,7 +947,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -1155,7 +1150,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -1178,10 +1173,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/system/lock-screen?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/system/lock-screen"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/system/lock-screen?launchType=background",
+                "description": "Open raycast://extensions/raycast/system/lock-screen",
                 "type": "basic",
                 "from": {
                   "key_code": "0",
@@ -1202,10 +1197,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/VladCuciureanu/toothpick/manage-bluetooth-connections?launchType=background"
+                    "shell_command": "open -g raycast://VladCuciureanu/toothpick/manage-bluetooth-connections"
                   }
                 ],
-                "description": "Open raycast://extensions/VladCuciureanu/toothpick/manage-bluetooth-connections?launchType=background",
+                "description": "Open raycast://VladCuciureanu/toothpick/manage-bluetooth-connections",
                 "type": "basic",
                 "from": {
                   "key_code": "b",
@@ -1323,10 +1318,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/navigation/search-menu-items?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/navigation/search-menu-items"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/navigation/search-menu-items?launchType=background",
+                "description": "Open raycast://extensions/raycast/navigation/search-menu-items",
                 "type": "basic",
                 "from": {
                   "key_code": "m",
@@ -1374,10 +1369,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/screenshots/paste-recent-screenshot?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/screenshots/paste-recent-screenshot"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/screenshots/paste-recent-screenshot?launchType=background",
+                "description": "Open raycast://extensions/raycast/screenshots/paste-recent-screenshot",
                 "type": "basic",
                 "from": {
                   "key_code": "p",
@@ -1398,10 +1393,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/system/toggle-system-appearance?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/system/toggle-system-appearance"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/system/toggle-system-appearance?launchType=background",
+                "description": "Open raycast://extensions/raycast/system/toggle-system-appearance",
                 "type": "basic",
                 "from": {
                   "key_code": "t",
@@ -1479,7 +1474,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -1663,13 +1658,13 @@
             ]
           },
           {
-            "description": "Hyper Key sublayer \"c\"",
+            "description": "Hyper Key sublayer \"i\"",
             "manipulators": [
               {
-                "description": "Toggle Hyper sublayer c",
+                "description": "Toggle Hyper sublayer i",
                 "type": "basic",
                 "from": {
-                  "key_code": "c",
+                  "key_code": "i",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -1679,7 +1674,7 @@
                 "to_after_key_up": [
                   {
                     "set_variable": {
-                      "name": "hyper_sublayer_c",
+                      "name": "hyper_sublayer_i",
                       "value": 0
                     }
                   }
@@ -1687,7 +1682,7 @@
                 "to": [
                   {
                     "set_variable": {
-                      "name": "hyper_sublayer_c",
+                      "name": "hyper_sublayer_i",
                       "value": 1
                     }
                   }
@@ -1743,12 +1738,13 @@
               {
                 "to": [
                   {
-                    "key_code": "play_or_pause"
+                    "shell_command": "open raycast://extensions/linear/linear/create-issue"
                   }
                 ],
+                "description": "Open raycast://extensions/linear/linear/create-issue",
                 "type": "basic",
                 "from": {
-                  "key_code": "p",
+                  "key_code": "l",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -1758,7 +1754,7 @@
                 "conditions": [
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 1
                   }
                 ]
@@ -1766,12 +1762,13 @@
               {
                 "to": [
                   {
-                    "key_code": "fastforward"
+                    "shell_command": "open raycast://extensions/doist/todoist/create-task"
                   }
                 ],
+                "description": "Open raycast://extensions/doist/todoist/create-task",
                 "type": "basic",
                 "from": {
-                  "key_code": "j",
+                  "key_code": "t",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -1781,30 +1778,7 @@
                 "conditions": [
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
-                    "value": 1
-                  }
-                ]
-              },
-              {
-                "to": [
-                  {
-                    "key_code": "rewind"
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "k",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "conditions": [
-                  {
-                    "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 1
                   }
                 ]
@@ -1874,7 +1848,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -1892,10 +1866,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/system/open-camera?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/system/open-camera"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/system/open-camera?launchType=background",
+                "description": "Open raycast://extensions/raycast/system/open-camera",
                 "type": "basic",
                 "from": {
                   "key_code": "c",
@@ -1916,10 +1890,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/raycast/confetti?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/raycast/confetti"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/raycast/confetti?launchType=background",
+                "description": "Open raycast://extensions/raycast/raycast/confetti",
                 "type": "basic",
                 "from": {
                   "key_code": "p",
@@ -1940,10 +1914,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/raycast-ai/ai-chat?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/raycast-ai/ai-chat"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/raycast-ai/ai-chat?launchType=background",
+                "description": "Open raycast://extensions/raycast/raycast-ai/ai-chat",
                 "type": "basic",
                 "from": {
                   "key_code": "a",
@@ -1964,13 +1938,37 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/clipboard-history/clipboard-history?launchType=background"
+                    "shell_command": "open -g raycast://extensions/raycast/clipboard-history/clipboard-history"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/clipboard-history/clipboard-history?launchType=background",
+                "description": "Open raycast://extensions/raycast/clipboard-history/clipboard-history",
                 "type": "basic",
                 "from": {
                   "key_code": "h",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "conditions": [
+                  {
+                    "type": "variable_if",
+                    "name": "hyper_sublayer_r",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "to": [
+                  {
+                    "shell_command": "open -g raycast://ai-commands/git-branch-name-generator"
+                  }
+                ],
+                "description": "Open raycast://ai-commands/git-branch-name-generator",
+                "type": "basic",
+                "from": {
+                  "key_code": "b",
                   "modifiers": {
                     "optional": [
                       "any"
@@ -2050,7 +2048,7 @@
                   },
                   {
                     "type": "variable_if",
-                    "name": "hyper_sublayer_c",
+                    "name": "hyper_sublayer_i",
                     "value": 0
                   },
                   {
@@ -2068,7 +2066,7 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/github/notifications"
+                    "shell_command": "open raycast://extensions/raycast/github/notifications"
                   }
                 ],
                 "description": "Open raycast://extensions/raycast/github/notifications",
@@ -2092,7 +2090,7 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/linear/linear/notifications"
+                    "shell_command": "open raycast://extensions/linear/linear/notifications"
                   }
                 ],
                 "description": "Open raycast://extensions/linear/linear/notifications",

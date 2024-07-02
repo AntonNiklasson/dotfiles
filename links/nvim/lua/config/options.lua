@@ -1,10 +1,4 @@
--- Options are automatically loaded before lazy.nvim startup
--- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
--- Add any additional options here
-
--- setup colors
-vim.o.termguicolors = true
-vim.opt.background = "dark"
+vim.opt.termguicolors = true
 
 -- set filetype for .mdx to 'markdown-mdx'
 vim.filetype.add({
@@ -25,10 +19,9 @@ vim.opt.tabstop = 4
 -- disable a highglight for the current line
 vim.opt.cursorline = false
 
--- stop auto changing directory
-vim.opt.autochdir = false
+-- root dir should always be cwd
+vim.g.root_spec = { "cwd" }
 
--- set colors for line numbers
-vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#ff0000", bold = true })
-vim.api.nvim_set_hl(0, "LineNr", { fg = "#00ff00", bold = true })
-vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#0000ff", bold = true })
+-- save undo history to disk
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undo"
+vim.opt.undofile = true

@@ -1,6 +1,6 @@
 import fs from "fs";
 import { KarabinerRules, Manipulator } from "./types";
-import { createLayers, app, raycast, key_code, open } from "./utils";
+import { createLayers, app, dl, key_code, open } from "./utils";
 
 const hyperManipulator: Manipulator = {
   description: "CapsLock -> Hyper",
@@ -40,15 +40,31 @@ const rules: KarabinerRules[] = [
     manipulators: [hyperManipulator],
   },
   ...createLayers({
-    // Window
+    // window
     w: {
-      h: raycast("raycast/window-management/left-half"),
-      j: raycast("raycast/window-management/maximize"),
-      k: raycast("raycast/window-management/center"),
-      l: raycast("raycast/window-management/right-half"),
-      u: raycast("raycast/window-management/previous-desktop"),
-      i: raycast("raycast/window-management/next-desktop"),
-      g: raycast("raycast/window-management/next-display"),
+      h: dl(
+        new URL("raycast://extensions/raycast/window-management/left-half")
+      ),
+      j: dl(new URL("raycast://extensions/raycast/window-management/maximize")),
+      k: dl(
+        new URL(
+          "raycast://extensions/raycast/window-management/almost-maximize"
+        )
+      ),
+      l: dl(
+        new URL("raycast://extensions/raycast/window-management/right-half")
+      ),
+      u: dl(
+        new URL(
+          "raycast://extensions/raycast/window-management/previous-desktop"
+        )
+      ),
+      i: dl(
+        new URL("raycast://extensions/raycast/window-management/next-desktop")
+      ),
+      g: dl(
+        new URL("raycast://extensions/raycast/window-management/next-display")
+      ),
       n: key_code("tab", ["right_control", "right_shift"]),
       m: key_code("tab", ["right_control"]),
       o: key_code("mission_control"),
@@ -57,26 +73,31 @@ const rules: KarabinerRules[] = [
     // Open
     o: {
       a: app("Arc"),
+      b: app("Google Chrome"),
       c: app("Fantastical"),
       e: app("Mail"),
+      f: app("Figma"),
       h: app("Home"),
+      m: app("Spotify"),
       n: app("Obsidian"),
-      p: app("Spotify"),
+      r: app("Tuple"),
       s: app("Slack"),
       t: app("Todoist"),
-      x: app("Kitty"),
-      b: app("Google Chrome"),
-      r: app("Tuple"),
       w: app("Linear"),
-
-      j: key_code("tab", ["right_command", "right_shift"]),
-      k: key_code("tab", ["right_command"]),
+      x: app("Kitty"),
     },
 
     // Find
     f: {
-      o: raycast(
-        "extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D"
+      o: dl(
+        new URL(
+          "raycast://extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D"
+        )
+      ),
+      d: dl(
+        new URL(
+          "raycast://extensions/michaelschultz/figma-files-raycast-extension/index"
+        )
       ),
     },
 
@@ -91,16 +112,32 @@ const rules: KarabinerRules[] = [
 
     // System
     s: {
-      b: raycast("VladCuciureanu/toothpick/manage-bluetooth-connections"),
+      b: dl(
+        new URL(
+          "raycast://VladCuciureanu/toothpick/manage-bluetooth-connections"
+        )
+      ),
       e: key_code("spacebar", ["right_control", "right_command"]),
       j: key_code("volume_decrement"),
       k: key_code("volume_increment"),
-      l: raycast("lucaschultz/input-switcher/toggle"),
-      m: raycast("raycast/navigation/search-menu-items"),
+      l: dl(
+        new URL(
+          "raycast://extensions/lucaschultz/input-switcher/toggle?launchType=background"
+        )
+      ),
+      m: dl(
+        new URL("raycast://extensions/raycast/navigation/search-menu-items")
+      ),
       o: key_code("q", ["right_control", "right_command"]),
-      p: raycast("raycast/screenshots/paste-recent-screenshot"),
-      t: raycast("raycast/system/toggle-system-appearance"),
-      0: raycast("raycast/system/lock-screen"),
+      p: dl(
+        new URL(
+          "raycast://extensions/raycast/screenshots/paste-recent-screenshot"
+        )
+      ),
+      t: dl(
+        new URL("raycast://extensions/raycast/system/toggle-system-appearance")
+      ),
+      0: dl(new URL("raycast://extensions/raycast/system/lock-screen")),
     },
 
     // Direction
@@ -117,25 +154,29 @@ const rules: KarabinerRules[] = [
       m: key_code("f12"),
     },
 
-    // musiC
-    c: {
-      p: key_code("play_or_pause"),
-      j: key_code("fastforward"),
-      k: key_code("rewind"),
+    // "Insert"
+    i: {
+      l: dl(new URL("raycast://extensions/linear/linear/create-issue"), true),
+      t: dl(new URL("raycast://extensions/doist/todoist/create-task"), true),
     },
 
     // Raycast
     r: {
-      c: raycast("raycast/system/open-camera"),
-      p: raycast("raycast/raycast/confetti"),
-      a: raycast("raycast/raycast-ai/ai-chat"),
-      h: raycast("raycast/clipboard-history/clipboard-history"),
+      c: dl(new URL("raycast://extensions/raycast/system/open-camera")),
+      p: dl(new URL("raycast://extensions/raycast/raycast/confetti")),
+      a: dl(new URL("raycast://extensions/raycast/raycast-ai/ai-chat")),
+      h: dl(
+        new URL(
+          "raycast://extensions/raycast/clipboard-history/clipboard-history"
+        )
+      ),
+      b: dl(new URL("raycast://ai-commands/git-branch-name-generator")),
     },
 
     // Notifications
     n: {
-      g: raycast("raycast/github/notifications", { fg: true }),
-      l: raycast("linear/linear/notifications", { fg: true }),
+      g: dl(new URL("raycast://extensions/raycast/github/notifications"), true),
+      l: dl(new URL("raycast://extensions/linear/linear/notifications"), true),
     },
   }),
 ];

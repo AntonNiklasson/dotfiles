@@ -151,9 +151,10 @@ function generateSubLayerVariableName(key: KeyCode) {
 
 export function open(
   what: string,
-  options = { background: false }
+  options = { foreground: true }
 ): LayerCommand {
-  const command = options.background ? `open -g ${what}` : `open ${what}`;
+  const command = options.foreground ? `open ${what}` : `open -g ${what}`;
+
   return {
     to: [
       {
@@ -164,17 +165,8 @@ export function open(
   };
 }
 
-export function raycast(
-  command: `${string}/${string}/${string}`,
-  options?: { fg: boolean }
-) {
-  const url = new URL(`raycast://extensions/${command}`);
-
-  if (!options?.fg) {
-    url.searchParams.set("launchType", "background");
-  }
-
-  return open(url.toString(), { background: true });
+export function dl(url: URL, foreground: boolean = false) {
+  return open(url.toString(), { foreground });
 }
 
 export function app(name: string): LayerCommand {
