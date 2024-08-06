@@ -4,6 +4,8 @@ version = 2
 final_space = true
 console_title_template = '{{ .Shell }} in {{ .Folder }}'
 
+autoupgrade = true
+
 [[blocks]]
   type = 'prompt'
   alignment = 'left'

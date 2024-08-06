@@ -17,15 +17,16 @@ zinit light jeffreytse/zsh-vi-mode
 export XDG_CONFIG_HOME="$HOME/.config"
 
 
-# setup PATH
-export PATH=$PATH:~/.dotfiles/bin
-
-
 # homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true 
 brew tap domt4/autoupdate
+
+
+# setup PATH
+export PATH=$PATH:~/.dotfiles/bin
+export PATH=$PATH:$(composer global config bin-dir --absolute)
 
 
 # prompt with ohmyposh
