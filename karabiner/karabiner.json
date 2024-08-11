@@ -174,10 +174,10 @@
               {
                 "to": [
                   {
-                    "shell_command": "open -g raycast://extensions/raycast/window-management/almost-maximize"
+                    "shell_command": "open -g raycast://extensions/raycast/window-management/center"
                   }
                 ],
-                "description": "Open raycast://extensions/raycast/window-management/almost-maximize",
+                "description": "Open raycast://extensions/raycast/window-management/center",
                 "type": "basic",
                 "from": {
                   "key_code": "k",

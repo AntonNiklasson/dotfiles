@@ -46,11 +46,7 @@ const rules: KarabinerRules[] = [
         new URL("raycast://extensions/raycast/window-management/left-half")
       ),
       j: dl(new URL("raycast://extensions/raycast/window-management/maximize")),
-      k: dl(
-        new URL(
-          "raycast://extensions/raycast/window-management/almost-maximize"
-        )
-      ),
+      k: dl(new URL("raycast://extensions/raycast/window-management/center")),
       l: dl(
         new URL("raycast://extensions/raycast/window-management/right-half")
       ),

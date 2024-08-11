@@ -165,8 +165,8 @@ export function open(
   };
 }
 
-export function dl(url: URL, foreground: boolean = false) {
-  return open(url.toString(), { foreground });
+export function dl(url: string, foreground: boolean = false) {
+  return open(url, { foreground });
 }
 
 export function app(name: string): LayerCommand {

@@ -1,7 +1,10 @@
 return {
 	"nvim-lualine/lualine.nvim",
 	event = "VeryLazy",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+		"yavorski/lualine-macro-recording.nvim",
+	},
 	config = function()
 		local lualine = require("lualine")
 		local lazy_status = require("lazy.status")
@@ -9,33 +12,11 @@ return {
 
 		lualine.setup({
 			sections = {
-				lualine_a = { "mode" },
-				lualine_b = {},
-				lualine_c = {
-					{
-						"branch",
-						max_length = 10,
-					},
-					{
-						"diff",
-						symbols = {
-							added = icons.git.added,
-							modified = icons.git.modified,
-							removed = icons.git.removed,
-						},
-						source = function()
-							local gitsigns = vim.b.gitsigns_status_dict
-							if gitsigns then
-								return {
-									added = gitsigns.added,
-									modified = gitsigns.changed,
-									removed = gitsigns.removed,
-								}
-							end
-						end,
-					},
+				lualine_a = {},
+				lualine_b = {
 					{ LazyVim.lualine.pretty_path() },
 				},
+				lualine_c = {},
 				lualine_x = {
 					{
 						lazy_status.updates,
@@ -54,7 +35,8 @@ return {
 				},
 				lualine_y = {},
 				lualine_z = {
-					"location",
+					"macro_recording",
+					"mode",
 				},
 			},
 			extensions = { "neo-tree", "lazy" },
