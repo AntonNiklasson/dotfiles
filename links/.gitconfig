@@ -8,7 +8,7 @@
 	whitespace = fix,space-before-tab,tab-in-indent,trailing-space
 	excludesfile = ~/.gitignore
 	ignorecase = false
-	pager = delta
+    pager = delta
 [apply]
 	whitespace = fix
 [color]

@@ -1,5 +1,13 @@
+gui:
+  statusPanelView: "allBranchesLog"
+git:
+  paging:
+    pager: 'delta --dark --paging=never --hyperlinks --hunk-header-style="omit"'
+theme:
+  nerdFontsVersion: "3"
+
 customCommands:
   - key: "<c-u>"
-    command: "gh pr create --fill --web"
+    command: "gh pr create --fill-verbose --web"
     context: "global"
-    loadingText: "Creating pull request on GitHub"
+    loadingText: "Creating PR..."

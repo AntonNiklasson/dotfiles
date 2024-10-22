@@ -1,13 +1,12 @@
 return {
 	"folke/tokyonight.nvim",
-	lazy = true,
 	opts = {
-		style = "storm",
+		style = "moon",
 		transparent = true,
 		styles = {
 			sidebars = "transparent",
 			floats = "transparent",
 		},
-		dim_inactive = false,
+		dim_inactive = true,
 	},
 }

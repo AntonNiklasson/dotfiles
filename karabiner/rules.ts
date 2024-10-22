@@ -64,23 +64,27 @@ const rules: KarabinerRules[] = [
       n: key_code("tab", ["right_control", "right_shift"]),
       m: key_code("tab", ["right_control"]),
       o: key_code("mission_control"),
+
+      s: dl(
+        new URL(
+          "raycast://customWindowManagementCommand?&name=Browser%20Screenshot"
+        )
+      ),
     },
 
     // Open
     o: {
       a: app("Arc"),
-      b: app("Google Chrome"),
-      c: app("Fantastical"),
-      e: app("Mail"),
+      c: app("Google Chrome"),
       f: app("Figma"),
-      h: app("Home"),
       m: app("Spotify"),
       n: app("Obsidian"),
-      r: app("Tuple"),
+      p: app("Tuple"),
       s: app("Slack"),
       t: app("Todoist"),
       w: app("Linear"),
       x: app("Kitty"),
+      r: app("Reader"),
     },
 
     // Find
@@ -145,9 +149,6 @@ const rules: KarabinerRules[] = [
 
       u: key_code("page_down"),
       i: key_code("page_up"),
-
-      // trigger homerow
-      m: key_code("f12"),
     },
 
     // "Insert"
@@ -167,6 +168,9 @@ const rules: KarabinerRules[] = [
         )
       ),
       b: dl(new URL("raycast://ai-commands/git-branch-name-generator")),
+      n: dl(
+        new URL("raycast://extensions/raycast/raycast-notes/raycast-notes")
+      ),
     },
 
     // Notifications

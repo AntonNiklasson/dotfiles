@@ -13,12 +13,13 @@ require("lazy").setup({
 
 		-- import any extras modules here
 		{ import = "lazyvim.plugins.extras.coding.yanky" },
-		{ import = "lazyvim.plugins.extras.editor.aerial" },
 		{ import = "lazyvim.plugins.extras.formatting.prettier" },
 		{ import = "lazyvim.plugins.extras.lang.json" },
 		{ import = "lazyvim.plugins.extras.lang.markdown" },
 		{ import = "lazyvim.plugins.extras.lang.tailwind" },
 		{ import = "lazyvim.plugins.extras.lang.typescript" },
+		{ import = "lazyvim.plugins.extras.coding.luasnip" },
+        { import = "lazyvim.plugins.extras.editor.harpoon2" },
 
 		-- import/override with your plugins
 		{ import = "plugins" }
@@ -32,7 +33,7 @@ require("lazy").setup({
 		version = false, -- always use the latest git commit
 		-- version = "*", -- try installing the latest stable version for plugins that support semver
 	},
-	install = { colorscheme = { "tokyonight", "catpuccin" } },
+	install = { colorscheme = { "tokyonight" } },
 	checker = { enabled = true, notify = false }, -- automatically check for plugin updates
 	performance = {
 		rtp = {

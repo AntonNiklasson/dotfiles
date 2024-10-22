@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.33.5",
+    "zx": "^8.1.9"
+  }
+}

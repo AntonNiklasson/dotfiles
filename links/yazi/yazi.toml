@@ -1,0 +1,4 @@
+[manager]
+ratio = [1, 1, 1]
+sort = "natural"
+sort_dir_first = true

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Create folders 
+# Create folders
 # todo: dropbox setup conflicts with this folder
 mkdir -pv ~/code ~/Dropbox
 
@@ -32,5 +32,5 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # Disable the warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
-# Turn on key repeat
+# Turn off key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false

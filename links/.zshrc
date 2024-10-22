@@ -26,7 +26,6 @@ brew tap domt4/autoupdate
 
 # setup PATH
 export PATH=$PATH:~/.dotfiles/bin
-export PATH=$PATH:$(composer global config bin-dir --absolute)
 
 
 # prompt with ohmyposh
@@ -38,7 +37,9 @@ fi
 # editor configurations
 export VISUAL='vim'
 export EDITOR=$VISUAL
-export REACT_EDITOR=launch-editor.sh
+export REACT_EDITOR=''
+export LAUNCH_EDITOR=launch-editor.sh
+
 
 
 # fast node manager
@@ -62,6 +63,14 @@ export BAT_THEME='TwoDark'
 
 # zoxide jumper
 eval "$(zoxide init zsh)"
+
+
+# integrate direnv
+eval "$(direnv hook zsh)"
+
+
+# pnpm completions
+source ~/completion-for-pnpm.zsh
 
 
 # aliases
@@ -94,19 +103,32 @@ alias my-prs='gh pr list -A="@me"'
 alias nr='npm run'
 alias pn='pnpm'
 alias pnr='pnpm run'
-alias pr='open-github-pull-request'
 alias t='tmux'
 alias ta='t attach'
 alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 alias vim='nvim'
+
+sierra-containers() {
+    local dir
+    dir=$(pwd)
+
+    cd ~/code/sana/sierra-platform
+    ./docker-compose-wrapper.sh down
+    ./docker-compose-wrapper.sh up
+    ./migrate-alloydb.sh docker
+
+    cd "$dir"
+}
+
 rebase-feature() {
   base=${1:-"main"}
   git fetch -a
   git rebase origin/$base
 }
-copy-last-command-to-cliboard() {
+
+copy-command() {
   fc -ln -1 | pbcopy
   echo "Copied last command to clipboard!"
 }
