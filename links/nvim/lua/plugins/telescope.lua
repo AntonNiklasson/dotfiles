@@ -16,5 +16,10 @@ return {
 			},
 			sorting_strategy = "ascending", -- works well with prompt_position=top
 		},
+		pickers = {
+			buffers = {
+				initial_mode = "normal",
+			},
+		},
 	},
 }

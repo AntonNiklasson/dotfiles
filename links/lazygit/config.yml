@@ -1,10 +1,11 @@
 gui:
   statusPanelView: "allBranchesLog"
+  theme:
+    nerdFontsVersion: "3"
+
 git:
   paging:
     pager: 'delta --dark --paging=never --hyperlinks --hunk-header-style="omit"'
-theme:
-  nerdFontsVersion: "3"
 
 customCommands:
   - key: "<c-u>"
