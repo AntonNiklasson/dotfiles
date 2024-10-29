@@ -109,6 +109,7 @@ alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 alias vim='nvim'
+alias finder='yazi'
 
 sierra-containers() {
     local dir
