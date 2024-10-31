@@ -20,6 +20,9 @@ return {
 			buffers = {
 				initial_mode = "normal",
 			},
+			lsp_references = {
+				initial_mode = "normal",
+			},
 		},
 	},
 }
