@@ -1,5 +1,8 @@
 gui:
+  sidePanelWidth: 0.35
   statusPanelView: "allBranchesLog"
+  expandFocusedSidePanel: true
+  border: "single"
   theme:
     nerdFontsVersion: "3"
 
