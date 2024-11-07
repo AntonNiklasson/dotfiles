@@ -1,4 +1,5 @@
 [manager]
-ratio = [1, 1, 1]
+ratio = [1, 3, 3]
 sort = "natural"
 sort_dir_first = true
+show_hidden = true
