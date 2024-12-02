@@ -1,0 +1,5 @@
+[[database]]
+Name = 'sierra-platform'
+Provider = 'postgres'
+DBName = ''
+URL = 'pg://postgres:postgres@localhost:5434?sslmode=disable'
