@@ -78,6 +78,7 @@ const rules: KarabinerRules[] = [
       b: app("Google Chrome"),
       c: app("Fantastical"),
       f: app("Figma"),
+      i: app("IntelliJ IDEA CE"),
       m: app("Spotify"),
       n: app("Obsidian"),
       p: app("Tuple"),
