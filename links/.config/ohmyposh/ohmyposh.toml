@@ -1,42 +1,47 @@
-#:schema https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
-
-version = 2
-final_space = true
 console_title_template = '{{ .Shell }} in {{ .Folder }}'
-
-autoupgrade = true
-
-[[blocks]]
-  type = 'prompt'
-  alignment = 'left'
-  newline = true
-
-  [[blocks.segments]]
-    type = 'path'
-    style = 'plain'
-    background = 'transparent'
-    foreground = 'blue'
-    template = "{{ .Path }}"
-
-    [blocks.segments.properties]
-      style = 'full'
-
-[[blocks]]
-  type = 'prompt'
-  alignment = 'left'
-  newline = true
-
-  [[blocks.segments]]
-    type = 'text'
-    style = 'plain'
-    foreground ='green'
-    foreground_templates = [
-      "{{if gt .Code 0}}red{{end}}",
-      "{{if eq .Code 0}}green{{end}}",
-    ]
-    background = 'transparent'
-    template = '→'
+version = 3
+final_space = true
 
 [transient_prompt]
-  foreground = "green"
   template = '→ '
+  foreground = 'green'
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    template = '{{ .Path }}'
+    foreground = 'blue'
+    background = 'transparent'
+    type = 'path'
+    style = 'plain'
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      style = 'full'
+  
+  [[blocks.segments]]
+    type = 'git'
+    style = 'plain'
+    background = 'transparent'
+    foreground = 'purple'
+    template = '  {{ .HEAD }}'
+    [blocks.segments.properties]
+      branch_icon = ' '
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    template = '→'
+    foreground = 'green'
+    background = 'transparent'
+    type = 'text'
+    style = 'plain'
+    foreground_templates = ['{{if gt .Code 0}}red{{end}}', '{{if eq .Code 0}}green{{end}}']
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
