@@ -8,35 +8,27 @@ return {
 	config = function()
 		local lualine = require("lualine")
 		local lazy_status = require("lazy.status")
-		local icons = LazyVim.config.icons
 
 		lualine.setup({
 			sections = {
-				lualine_a = {},
+				lualine_a = { "mode" },
 				lualine_b = {
 					{ LazyVim.lualine.pretty_path() },
+					"filetype",
 				},
-				lualine_c = {},
-				lualine_x = {
+				lualine_c = { "branch", "searchcount" },
+
+				lualine_x = {},
+				lualine_y = {
+					"diagnostics",
+				},
+				lualine_z = {
+					"macro_recording",
 					{
 						lazy_status.updates,
 						cond = lazy_status.has_updates,
-						color = { fg = "#ff9e64" },
+						color = { fg = "#c77b00" },
 					},
-					{
-						"diagnostics",
-						symbols = {
-							error = icons.diagnostics.Error,
-							warn = icons.diagnostics.Warn,
-							info = icons.diagnostics.Info,
-							hint = icons.diagnostics.Hint,
-						},
-					},
-				},
-				lualine_y = {},
-				lualine_z = {
-					"macro_recording",
-					"mode",
 				},
 			},
 			extensions = { "neo-tree", "lazy" },

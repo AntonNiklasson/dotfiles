@@ -1,6 +1,5 @@
 return {
 	"mfussenegger/nvim-lint",
-	optional = true,
 	opts = {
 		linters_by_ft = {
 			markdown = {},
@@ -9,6 +8,13 @@ return {
 			javascriptreact = { "eslint_d" },
 			typescript = { "eslint_d" },
 			typescriptreact = { "eslint_d" },
+		},
+		linters = {
+			eslint_d = {
+				-- cwd = function(ctx)
+				-- 	return vim.fn.getcwd(ctx.buf)
+				-- end,
+			},
 		},
 	},
 }
