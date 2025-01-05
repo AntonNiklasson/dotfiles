@@ -1,14 +1,16 @@
 gui:
-  sidePanelWidth: 0.35
-  statusPanelView: "allBranchesLog"
-  expandFocusedSidePanel: true
-  border: "single"
-  theme:
-    nerdFontsVersion: "3"
+  nerdFontsVersion: "2"
+  sidePanelWidth: 0.5
+  expandFocusedSidePanel: false
+  showListFooter: false
+  showNumStatInFilesView: true
+  showPanelJumps: false
+  statusPanelView: allBranchesLog
+  truncateListItem: true
 
 git:
   paging:
-    pager: 'delta --dark --paging=never --hyperlinks --hunk-header-style="omit"'
+    pager: diff-so-fancy
 
 customCommands:
   - key: "<c-u>"
