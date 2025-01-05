@@ -75,10 +75,11 @@ const rules: KarabinerRules[] = [
     // Open
     o: {
       a: app("Arc"),
-      b: app("Google Chrome"),
       c: app("Fantastical"),
       f: app("Figma"),
       i: app("IntelliJ IDEA CE"),
+      j: app("Kitty"),
+      h: app("Google Chrome"),
       m: app("Spotify"),
       n: app("Obsidian"),
       p: app("Tuple"),
@@ -86,7 +87,6 @@ const rules: KarabinerRules[] = [
       s: app("Slack"),
       t: app("Todoist"),
       w: app("Linear"),
-      x: app("Kitty"),
     },
 
     // Find

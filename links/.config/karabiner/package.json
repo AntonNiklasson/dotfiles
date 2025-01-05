@@ -11,7 +11,8 @@
     "tsm": "^2.2.2"
   },
   "scripts": {
-    "build": "tsm rules.ts",
+    "build": "tsm rules.ts && yarn karabiner:restart",
+    "karabiner:restart": "launchctl kickstart -k gui/$(id -u)/org.pqrs.service.agent.karabiner_console_user_server",
     "watch": "nodemon --exec yarn build -e ts"
   }
 }
