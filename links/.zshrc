@@ -34,12 +34,12 @@ if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
 fi
 
 
-# editor configurations
+# environment variables
 export VISUAL='vim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
 export LAUNCH_EDITOR=launch-editor.sh
-
+export TERM='tmux-256color'
 
 
 # fast node manager
@@ -67,10 +67,6 @@ eval "$(zoxide init zsh)"
 
 # integrate direnv
 eval "$(direnv hook zsh)"
-
-
-# pnpm completions
-source ~/completion-for-pnpm.zsh
 
 
 # aliases
@@ -114,6 +110,14 @@ alias finder='yazi'
 sierra-containers() {
     local dir
     dir=$(pwd)
+
+     # Check if the first argument is the flag for running only migrations
+    if [[ "$1" == "--migrate-only" ]]; then
+        cd ~/code/sana/sierra-platform
+        ./migrate-alloydb.sh docker
+        cd "$dir"
+        return
+    fi
 
     cd ~/code/sana/sierra-platform
     ./docker-compose-wrapper.sh down
