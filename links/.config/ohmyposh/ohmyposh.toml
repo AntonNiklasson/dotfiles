@@ -25,7 +25,7 @@ final_space = true
     type = 'git'
     style = 'plain'
     background = 'transparent'
-    foreground = 'purple'
+    foreground = 'green'
     template = '  {{ .HEAD }}'
     [blocks.segments.properties]
       branch_icon = ' '
