@@ -9,7 +9,7 @@ return {
 	opts = {
 		signs = {
 			mark = {
-				icon = "👉",
+				icon = "▶︎",
 			},
 		},
 	},

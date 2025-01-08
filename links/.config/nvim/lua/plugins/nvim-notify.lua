@@ -3,6 +3,6 @@ return {
 	opts = {
 		render = "compact",
 		stages = "fade_in_slide_out",
-		timeout = 2000,
+		timeout = 1500,
 	},
 }
