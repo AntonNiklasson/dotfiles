@@ -78,7 +78,7 @@ const rules: KarabinerRules[] = [
       c: app("Fantastical"),
       f: app("Figma"),
       i: app("IntelliJ IDEA CE"),
-      j: app("Kitty"),
+      j: app("Ghostty"),
       h: app("Google Chrome"),
       m: app("Spotify"),
       n: app("Obsidian"),
@@ -89,34 +89,11 @@ const rules: KarabinerRules[] = [
       w: app("Linear"),
     },
 
-    // Find
-    f: {
-      o: dl(
-        new URL(
-          "raycast://extensions/KevinBatdorf/obsidian/searchNoteCommand?arguments=%7B%22searchArgument%22%3A%22%22%2C%22tagArgument%22%3A%22%22%7D"
-        )
-      ),
-      d: dl(
-        new URL(
-          "raycast://extensions/michaelschultz/figma-files-raycast-extension/index"
-        )
-      ),
-    },
-
-    // Email
-    e: {
-      i: key_code("delete_or_backspace"), // delete
-      j: key_code("down_arrow"),
-      k: key_code("up_arrow"),
-      r: key_code("n", ["right_shift", "right_command"]),
-      u: key_code("a", ["control", "right_command"]), // archive
-    },
-
     // System
     s: {
       b: dl(
         new URL(
-          "raycast://VladCuciureanu/toothpick/manage-bluetooth-connections"
+          "raycast://extensions/VladCuciureanu/toothpick/manage-bluetooth-connections"
         )
       ),
       e: key_code("spacebar", ["right_control", "right_command"]),
@@ -162,15 +139,13 @@ const rules: KarabinerRules[] = [
     // Raycast
     r: {
       c: dl(new URL("raycast://extensions/raycast/system/open-camera")),
-      p: dl(new URL("raycast://extensions/raycast/raycast/confetti")),
-      a: dl(new URL("raycast://extensions/raycast/raycast-ai/ai-chat")),
-      h: dl(
+      j: dl("raycast://extensions/raycast/raycast-ai/ai-chat"),
+      p: dl(
         new URL(
           "raycast://extensions/raycast/clipboard-history/clipboard-history"
         )
       ),
-      b: dl(new URL("raycast://ai-commands/git-branch-name-generator")),
-      n: dl(
+      k: dl(
         new URL("raycast://extensions/raycast/raycast-notes/raycast-notes")
       ),
     },

@@ -165,7 +165,8 @@ export function open(
   };
 }
 
-export function dl(url: URL, foreground: boolean = false) {
+export function dl(location: string | URL, foreground: boolean = false) {
+  const url = location instanceof URL ? location.toString() : new URL(location);
   return open(url.toString(), { foreground });
 }
 
