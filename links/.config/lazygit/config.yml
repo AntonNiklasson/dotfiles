@@ -1,16 +1,14 @@
 gui:
-  nerdFontsVersion: "2"
-  sidePanelWidth: 0.5
-  expandFocusedSidePanel: false
+  nerdFontsVersion: "3"
   showListFooter: false
-  showNumStatInFilesView: true
   showPanelJumps: false
   statusPanelView: allBranchesLog
   truncateListItem: true
 
 git:
   paging:
-    pager: diff-so-fancy
+    colorArg: always
+    pager: delta --dark --paging=never
 
 customCommands:
   - key: "<c-u>"
