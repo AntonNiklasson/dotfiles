@@ -1,4 +1,4 @@
-# zinit (plugin manager)
+# setup the plugin manager
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 if [ ! -d "$ZINIT_HOME" ]; then
   mkdir -p "$(dirname $ZINIT_HOME)"
@@ -6,40 +6,33 @@ if [ ! -d "$ZINIT_HOME" ]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
-
 # plugins
+zinit ice depth=1
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light jeffreytse/zsh-vi-mode
 
+plugins+=(zsh-vi-mode)
 
-# .config
+
+# environment
 export XDG_CONFIG_HOME="$HOME/.config"
-
-
-# homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true 
 brew tap domt4/autoupdate
-
-
-# setup PATH
 export PATH=$PATH:~/.dotfiles/bin
-
-
-# prompt with ohmyposh
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
-  eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/ohmyposh.toml)"
-fi
-
-
-# environment variables
 export VISUAL='vim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
 export LAUNCH_EDITOR=launch-editor.sh
 export TERM='tmux-256color'
+
+
+# prompt
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+  eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/ohmyposh.toml)"
+fi
 
 
 # fast node manager
@@ -105,7 +98,15 @@ alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 alias vim='nvim'
-alias finder='yazi'
+
+finder() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 
 sierra-containers() {
     local dir
@@ -125,12 +126,6 @@ sierra-containers() {
     ./migrate-alloydb.sh docker
 
     cd "$dir"
-}
-
-rebase-feature() {
-  base=${1:-"main"}
-  git fetch -a
-  git rebase origin/$base
 }
 
 copy-command() {
