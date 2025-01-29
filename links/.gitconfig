@@ -8,7 +8,7 @@
 	whitespace = fix,space-before-tab,tab-in-indent,trailing-space
 	excludesfile = ~/.gitignore
 	ignorecase = false
-    pager = diff-so-fancy
+    pager = delta
 [apply]
 	whitespace = fix
 [color]
@@ -29,4 +29,7 @@
 [init]
     defaultBranch = main
 [rebase]
-    updateRefs = true
+  updateRefs = true
+[delta]
+  dark = true
+  side-by-side = false
