@@ -14,3 +14,5 @@ bower_components
 .idea
 .nvimrc
 .vimrc
+configstore
+gatsby
