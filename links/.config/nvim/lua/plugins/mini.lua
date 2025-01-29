@@ -1,23 +1,37 @@
 return {
+	{ "echasnovski/mini.cursorword", version = "*" },
 	{
-		"echasnovski/mini.nvim",
-		version = false,
-		recommended = true,
-		dependencies = {
-			"mini.icons",
-		},
+		"echasnovski/mini.move",
+		version = "*",
+	},
+	{ "echasnovski/mini.surround", version = "*" },
+	{
+		"echasnovski/mini.files",
+		version = "*",
+		dependencies = { "mini.icons" },
 		config = function()
-			require("mini.surround").setup()
 			require("mini.files").setup()
 
-			local files_toggle = function()
+			-- Toggle between mini.files open and closed
+			local files_open_close = function()
 				if not MiniFiles.close() then
 					local buffer = vim.api.nvim_buf_get_name(0)
 					MiniFiles.open(buffer)
 				end
 			end
+			vim.keymap.set("n", "<leader>ee", files_open_close)
 
-			vim.keymap.set("n", "<leader>eo", files_toggle)
+			-- Toggle preview mode in mini.files with `gp`
+			local files_toggle_preview = function()
+				MiniFiles.config.windows.preview = not MiniFiles.config.windows.preview
+				MiniFiles.refresh({})
+			end
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "MiniFilesBufferCreate",
+				callback = function(args)
+					vim.keymap.set("n", "gp", files_toggle_preview, { buffer = args.data.buf_id })
+				end,
+			})
 		end,
 	},
 }

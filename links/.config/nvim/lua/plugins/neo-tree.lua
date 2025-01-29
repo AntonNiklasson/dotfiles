@@ -39,7 +39,7 @@ return {
 
 		-- custom binds
 		{
-			"<leader>ee",
+			"<leader>et",
 			function()
 				require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
 			end,

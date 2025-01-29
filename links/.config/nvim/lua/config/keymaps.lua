@@ -1,6 +1,6 @@
 -- unmap alt + j/k to move lines
-vim.keymap.del({ "n", "i", "v" }, "<A-j>")
-vim.keymap.del({ "n", "i", "v" }, "<A-k>")
+-- vim.keymap.del({ "n", "i", "v" }, "<A-j>")
+-- vim.keymap.del({ "n", "i", "v" }, "<A-k>")
 
 -- center the current line after jumps
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
