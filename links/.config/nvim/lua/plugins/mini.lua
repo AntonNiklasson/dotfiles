@@ -1,10 +1,6 @@
 return {
 	{ "echasnovski/mini.cursorword", version = "*" },
-	{
-		"echasnovski/mini.move",
-		version = "*",
-	},
-	{ "echasnovski/mini.surround", version = "*" },
+	{ "echasnovski/mini.surround", version = "*", opts = {} },
 	{
 		"echasnovski/mini.files",
 		version = "*",
