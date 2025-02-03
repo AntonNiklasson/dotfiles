@@ -5,6 +5,9 @@ return {
 		{ "nvim-telescope/telescope.nvim" },
 		{ "stevearc/dressing.nvim" },
 	},
+	config = function()
+		require("bookmarks").setup({})
+	end,
 	keys = {
 		{
 			"<leader>mm",
