@@ -4,6 +4,8 @@ gui:
   showPanelJumps: false
   statusPanelView: allBranchesLog
   truncateListItem: true
+  expandFocusedSidePanel: false
+  sidePanelWidth: 0.4
 
 git:
   paging:
