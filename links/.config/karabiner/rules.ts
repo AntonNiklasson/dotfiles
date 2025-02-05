@@ -107,7 +107,9 @@ const rules: KarabinerRules[] = [
       m: dl(
         new URL("raycast://extensions/raycast/navigation/search-menu-items")
       ),
-      o: key_code("q", ["right_control", "right_command"]),
+      o: dl(
+        new URL("raycast://extensions/raycast/screenshots/search-screenshots")
+      ),
       p: dl(
         new URL(
           "raycast://extensions/raycast/screenshots/paste-recent-screenshot"
@@ -116,7 +118,6 @@ const rules: KarabinerRules[] = [
       t: dl(
         new URL("raycast://extensions/raycast/system/toggle-system-appearance")
       ),
-      0: dl(new URL("raycast://extensions/raycast/system/lock-screen")),
     },
 
     // Direction
