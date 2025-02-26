@@ -8,6 +8,9 @@ return {
 			vtsls = {
 				settings = {
 					typescript = {
+						tsserver = {
+							maxTsServerMemory = 8192,
+						},
 						preferences = {
 							importModuleSpecifier = "non-relative",
 						},
