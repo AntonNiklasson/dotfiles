@@ -1,0 +1,158 @@
+{
+  "actions" : [
+    {
+      "actions" : [
+        {
+          "key" : "j",
+          "label" : "terminal",
+          "type" : "application",
+          "value" : "/Applications/Ghostty.app"
+        },
+        {
+          "key" : "m",
+          "label" : "spotify",
+          "type" : "application",
+          "value" : "/Applications/Spotify.app"
+        },
+        {
+          "key" : "a",
+          "label" : "arc",
+          "type" : "application",
+          "value" : "/Applications/Arc.app"
+        },
+        {
+          "key" : "w",
+          "label" : "linear",
+          "type" : "application",
+          "value" : "/Applications/Linear.app"
+        },
+        {
+          "key" : "s",
+          "label" : "slack",
+          "type" : "application",
+          "value" : "/Applications/Slack.app"
+        },
+        {
+          "key" : "n",
+          "label" : "obsidian",
+          "type" : "application",
+          "value" : "/Applications/Obsidian.app"
+        },
+        {
+          "key" : "c",
+          "label" : "calendar",
+          "type" : "application",
+          "value" : "/Applications/Notion Calendar.app"
+        },
+        {
+          "key" : "f",
+          "label" : "figma",
+          "type" : "application",
+          "value" : "/Applications/Figma.app"
+        },
+        {
+          "key" : "t",
+          "label" : "todoist",
+          "type" : "application",
+          "value" : "/Applications/Todoist.app"
+        },
+        {
+          "key" : "p",
+          "label" : "tuple",
+          "type" : "application",
+          "value" : "/Applications/Tuple.app"
+        },
+        {
+          "key" : "o",
+          "label" : "cursor",
+          "type" : "application",
+          "value" : "/Applications/Cursor.app"
+        }
+      ],
+      "key" : "o",
+      "label" : "open",
+      "type" : "group"
+    },
+    {
+      "actions" : [
+        {
+          "key" : "k",
+          "label" : "center",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/center"
+        },
+        {
+          "key" : "j",
+          "label" : "fullsize",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/maximize"
+        },
+        {
+          "key" : "h",
+          "label" : "left half",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/left-half"
+        },
+        {
+          "key" : "l",
+          "label" : "right half",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/right-half"
+        },
+        {
+          "key" : "g",
+          "label" : "next display",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/next-display"
+        }
+      ],
+      "key" : "w",
+      "label" : "window",
+      "type" : "group"
+    },
+    {
+      "actions" : [
+        {
+          "key" : "s",
+          "label" : "browse screenshots",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/screenshots/search-screenshots"
+        },
+        {
+          "key" : "l",
+          "label" : "switch input",
+          "type" : "url",
+          "value" : "raycast://extensions/lucaschultz/input-switcher/toggle?launchType=background"
+        },
+        {
+          "key" : "m",
+          "label" : "search menu items",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/navigation/search-menu-items"
+        },
+        {
+          "key" : "t",
+          "label" : "toggle system theme",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/system/toggle-system-appearance"
+        }
+      ],
+      "key" : "s",
+      "label" : "system",
+      "type" : "group"
+    },
+    {
+      "key" : "v",
+      "label" : "clipboard history",
+      "type" : "url",
+      "value" : "raycast://extensions/raycast/clipboard-history/clipboard-history"
+    },
+    {
+      "key" : "a",
+      "label" : "ai chat",
+      "type" : "url",
+      "value" : "raycast://extensions/raycast/raycast-ai/ai-chat"
+    }
+  ],
+  "type" : "group"
+}
