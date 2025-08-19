@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch",
+      "Bash(claude mcp:*)",
+      "mcp__context7__resolve-library-id"
+    ],
+    "deny": []
+  }
+}
