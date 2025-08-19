@@ -1,5 +1,6 @@
-[manager]
+[mgr]
 ratio = [2, 3, 2]
 sort = "natural"
 sort_dir_first = true
 show_hidden = true
+linemode = "size"
