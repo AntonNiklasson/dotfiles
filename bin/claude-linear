@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Claude Linear Integration
+# Usage:
+#   claude-linear <ticket-id>      - Launch Claude with instruction to research the ticket
+
+TICKET_ID="${1:-}"
+
+if [ -z "$TICKET_ID" ]; then
+  echo "Usage: claude-linear <ticket-id>"
+  echo "Example: claude-linear APP-1931"
+  exit 1
+fi
+
+# Check if Linear MCP server is available
+if ! claude mcp list | grep -q "linear.*Connected"; then
+  echo "Error: Linear MCP server is not connected"
+  echo "Make sure the Linear MCP server is configured and running"
+  echo "Check with: claude mcp list"
+  exit 1
+fi
+
+# Launch Claude with instruction to research the ticket
+echo "Launching Claude to research Linear ticket $TICKET_ID..."
+
+CLAUDE_CONTEXT="Please use the Linear MCP server to research ticket $TICKET_ID. 
+
+IMPORTANT: The identifier '$TICKET_ID' is an issue identifier, not the actual id. To get full issue details:
+1. First use mcp__linear__list_issues with query='$TICKET_ID' to find the issue and get its UUID. Limit this query to 1, otherwise the response will be huge.
+2. Then use mcp__linear__get_issue with the UUID to get complete details
+
+Once you have the ticket details, understand the problem or feature request, analyze the requirements, and either:
+
+1. Propose a clear implementation approach with specific steps, OR
+2. Ask me clarifying questions if more information is needed to proceed
+
+Focus on understanding what needs to be built and how to approach it technically."
+
+# Launch Claude with context and allowed tools
+claude "$CLAUDE_CONTEXT" --allowedTools "Read Edit Write Grep Glob Bash(git:*) Base(pnpm:*) mcp__linear"
