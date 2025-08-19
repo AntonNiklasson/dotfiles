@@ -12,7 +12,6 @@ return {
 			},
 		},
 		window = {
-			position = "right",
 			mappings = {
 				["P"] = {
 					"toggle_preview",

@@ -17,9 +17,7 @@ return {
 		{
 			"<leader>fm",
 			"<cmd>BookmarksGoto<CR>",
-			{
-				desc = "Goto bookmark in the current list",
-			},
+			desc = "Goto bookmark in the current list",
 		},
 	},
 }

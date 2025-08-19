@@ -4,5 +4,10 @@ return {
 		presets = {
 			bottom_search = false,
 		},
+		lsp = {
+			signature = {
+				enabled = false,
+			},
+		},
 	},
 }

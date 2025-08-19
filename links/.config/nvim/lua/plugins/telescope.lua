@@ -24,6 +24,11 @@ return {
 			pickers = {
 				buffers = {
 					initial_mode = "normal",
+					mappings = {
+						n = {
+							["<C-x>"] = require("telescope.actions").delete_buffer,
+						},
+					},
 				},
 				lsp_references = {
 					initial_mode = "normal",
