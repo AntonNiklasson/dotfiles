@@ -1,13 +1,15 @@
-# Anton's dotfiles
+# dotfiles
 
-## Install
+## install
 
+```bash
+git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install.sh
 ```
-curl https://raw.githubusercontent.com/AntonNiklasson/dotfiles/master/install.sh | sh
-```
 
-### Link files
+## update brewfile
 
-```
-stow --target="$HOME" --dir="$HOME/.dotfiles/links" . --verbose --simulate
+```bash
+brew bundle dump --file=~/.dotfiles/Brewfile --force
 ```

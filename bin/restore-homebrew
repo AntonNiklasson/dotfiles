@@ -1,7 +1,0 @@
-#!/bin/bash
-
-RECENT_BACKUP=~/.dotfiles/backups/$(ls -Art ~/.dotfiles/backups | head -n 1)
-
-echo "Restoring homebrew state from ${RECENT_BACKUP}..."
-sleep 2
-brew bundle install --file ${RECENT_BACKUP}

@@ -10,11 +10,9 @@ vim.keymap.set("n", "N", "Nzz")
 vim.keymap.set("n", "*", "*zz")
 vim.keymap.set("n", "#", "#zz")
 
--- save file from insert mode with jj
-vim.keymap.set({ "i" }, "jj", "<Esc>:w<CR>l", { silent = true, desc = "Save file from insert mode" })
-
 -- save file
-vim.keymap.set("n", "<Leader>w", ":silent update<cr>")
+vim.keymap.set("i", "jj", "<Esc>:w<CR>l", { silent = true, desc = "Save file from insert mode" })
+vim.keymap.set("n", "<Leader>w", ":w<CR>l", { silent = true, desc = "Save file from normal mode" })
 
 -- auto-reloading files when they change
 vim.o.autoread = true

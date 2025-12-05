@@ -18,7 +18,8 @@
 	branch = auto
 [merge]
 	log = true
-	conflictstyle = zdiff3
+    conflictstyle = zdiff3
+	tool = p4merge
 [rerere]
 	enabled = 1
 [push]
@@ -33,3 +34,11 @@
 [delta]
   dark = true
   side-by-side = false
+[diff]
+	tool = p4merge
+[diff "tool.p4merge"]
+	path = /opt/homebrew/bin/p4merge
+[mergetool "p4merge"]
+	path = /opt/homebrew/bin/p4merge
+[mergetool]
+	keepBackup = false

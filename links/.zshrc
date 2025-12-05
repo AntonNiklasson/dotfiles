@@ -5,6 +5,7 @@ if [ ! -d "$ZINIT_HOME" ]; then
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "${ZINIT_HOME}/zinit.zsh"
+unalias zi
 
 # plugins
 zinit ice depth=1
@@ -22,11 +23,12 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true 
 brew tap domt4/autoupdate
 export PATH=$PATH:~/.dotfiles/bin
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export VISUAL='vim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
 export LAUNCH_EDITOR=launch-editor.sh
-export TERM='tmux-256color'
+export TERM='screen-256color'
 
 
 # prompt
@@ -51,7 +53,7 @@ export FZF_BASE=/opt/homebrew/bin/fzf
 
 # Use `bat` instead of `cat`
 alias cat='bat'
-export BAT_THEME='TwoDark'
+export BAT_THEME='tokyonight'
 
 
 # zoxide jumper
@@ -85,26 +87,34 @@ alias grc='git rebase --continue'
 alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
+alias show-commit='git show --no-patch --no-notes --pretty=format:"%h - %s"'
 alias l='eza --oneline --group-directories-first'
 alias ll='eza --oneline --group-directories-first --no-permissions --no-user --icons=always --all'
 alias lg='lazygit'
 alias my-prs='gh pr list -A="@me"'
 alias nr='npm run'
 alias pn='pnpm'
-alias pnr='pnpm run'
 alias t='tmux'
 alias ta='t attach'
-alias whatisrunningonport='lsof -i'
 alias zshrc='vim ~/.zshrc'
 alias zshrcs='source ~/.zshrc'
 alias vim='nvim'
+alias run='ntl -A'
+alias c='clear'
+
+function tree() {
+  # add depth as an optional argument
+  command tree -I 'node_modules|dist' -C --filesfirst -L 2 | less -RFS
+}
 
 finder() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
+
 	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
 		builtin cd -- "$cwd"
 	fi
+
 	rm -f -- "$tmp"
 }
 
@@ -132,3 +142,15 @@ copy-command() {
   fc -ln -1 | pbcopy
   echo "Copied last command to clipboard!"
 }
+
+# pnpm
+export PNPM_HOME="/Users/anton/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# Turso
+export PATH="$PATH:/Users/anton/.turso"
+export PATH=$PATH:$HOME/.maestro/bin

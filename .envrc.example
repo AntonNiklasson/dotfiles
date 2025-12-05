@@ -1,0 +1,5 @@
+# Environment variables for dotfiles
+# Copy this to .envrc and fill in your values
+
+# Linear API key (get from https://linear.app/settings/api)
+export LINEAR_API_KEY=""

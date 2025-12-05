@@ -1,42 +1,47 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zx
 
-set -euo pipefail
+import { $ } from 'zx'
 
-# Claude Linear Integration
-# Usage:
-#   claude-linear <ticket-id>      - Launch Claude with instruction to research the ticket
+// Claude Linear Integration
+// Usage:
+//   claude-linear <ticket-id>      - Launch Claude with instruction to research the ticket
 
-TICKET_ID="${1:-}"
+const TICKET_ID = process.argv[3] || ''
 
-if [ -z "$TICKET_ID" ]; then
-  echo "Usage: claude-linear <ticket-id>"
-  echo "Example: claude-linear APP-1931"
-  exit 1
-fi
+if (!TICKET_ID) {
+  console.log('Usage: claude-linear <ticket-id>')
+  console.log('Example: claude-linear APP-1931')
+  process.exit(1)
+}
 
-# Check if Linear MCP server is available
-if ! claude mcp list | grep -q "linear.*Connected"; then
-  echo "Error: Linear MCP server is not connected"
-  echo "Make sure the Linear MCP server is configured and running"
-  echo "Check with: claude mcp list"
-  exit 1
-fi
+// $`claude mcp add --transport sse linear https://mcp.linear.app/sse`
 
-# Launch Claude with instruction to research the ticket
-echo "Launching Claude to research Linear ticket $TICKET_ID..."
+console.log(`Researching ticket ${TICKET_ID}...`)
 
-CLAUDE_CONTEXT="Please use the Linear MCP server to research ticket $TICKET_ID. 
+const PROMPT = `You are tasked with researching a linear ticket, analyzing the current state of the codebase and try to come up with a solution to the mentioned bug or feature request from the ticket.
 
-IMPORTANT: The identifier '$TICKET_ID' is an issue identifier, not the actual id. To get full issue details:
-1. First use mcp__linear__list_issues with query='$TICKET_ID' to find the issue and get its UUID. Limit this query to 1, otherwise the response will be huge.
+- Linear ticket: ${TICKET_ID}. 
+
+IMPORTANT: The identifier '${TICKET_ID}' is an issue identifier, not the actual id. To get full issue details:
+1. First use mcp__linear__list_issues with query='${TICKET_ID}' to find the issue and get its UUID. Limit this query to 1, otherwise the response will be huge.
 2. Then use mcp__linear__get_issue with the UUID to get complete details
 
-Once you have the ticket details, understand the problem or feature request, analyze the requirements, and either:
+Once you have the ticket details, make sure you read it carefully. Including comments, screenshots, attached links and documents.
 
-1. Propose a clear implementation approach with specific steps, OR
-2. Ask me clarifying questions if more information is needed to proceed
+After understanding the ticket:
+- If it's a simple, straightforward change (e.g., small bug fix, minor UI tweak, configuration update), go ahead and implement it directly
+- If it's complex (e.g., new feature, architectural changes, multiple components affected), first present a plan for discussion including:
+  - Overview of the changes needed
+  - Testing strategies
+  - Feature flagging considerations (if applicable)
+  - Simplifications and common patterns from the codebase
+  - Any potential risks or concerns
+  - Alternative approaches that you deemed not as effective
 
-Focus on understanding what needs to be built and how to approach it technically."
+Use your judgment to decide which approach is appropriate based on the ticket's complexity and scope.`
 
-# Launch Claude with context and allowed tools
-claude "$CLAUDE_CONTEXT" --allowedTools "Read Edit Write Grep Glob Bash(git:*) Base(pnpm:*) mcp__linear"
+const flags = [
+  'allowedTools="Read,Grep,Glob,Bash(git:*),Bash(pnpm:*),mcp__linear",
+]
+
+$.sync`claude ${flags} ${PROMPT}`

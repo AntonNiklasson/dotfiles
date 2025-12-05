@@ -7,7 +7,7 @@ return {
 					settings = {
 						typescript = {
 							tsserver = {
-								maxTsServerMemory = 16384,
+								maxTsServerMemory = 8192,
 							},
 						},
 					},

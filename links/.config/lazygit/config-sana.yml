@@ -22,6 +22,6 @@ os:
 customCommands:
   - key: "<c-p>"
     context: "localBranches"
-    description: "Create a pull request"
-    loadingText: "Preparing PR ⏳"
-    command: "gh pr create --fill --web"
+    description: "Open/Create pull request (sana-pr)"
+    loadingText: "Opening or creating PR ⏳"
+    command: "if gh pr view --json url >/dev/null 2>&1; then gh pr view --web; else gh sana-pr --fill && gh pr view --web; fi"

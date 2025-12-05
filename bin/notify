@@ -1,8 +1,0 @@
-#! /bin/bash
-
-##
-# Usage:
-# notify "title" "subtitle"
-##
-
-osascript -e "display notification '$1'"

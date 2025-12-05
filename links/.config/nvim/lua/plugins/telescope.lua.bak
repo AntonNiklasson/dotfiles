@@ -7,6 +7,7 @@ return {
 		"nvim-telescope/telescope.nvim",
 		opts = {
 			defaults = {
+				initial_mode = "insert",
 				path_display = {
 					"filename_first",
 					"truncate",

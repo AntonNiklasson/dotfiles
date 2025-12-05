@@ -5,8 +5,8 @@ prSections:
     filters: is:open review-requested:@me
   - title: Involved
     filters: is:open involves:@me -author:@me
-  - title: sierra-platform
-    filters: is:open repo:sanalabs/sierra-platform
+  - title: sana ai
+    filters: is:open repo:sanalabs/sana-ai
 issuesSections:
   - title: My Issues
     filters: is:open author:@me
@@ -17,7 +17,7 @@ issuesSections:
 defaults:
   preview:
     open: true
-    width: 100
+    width: 65
   prsLimit: 20
   issuesLimit: 20
   view: prs
@@ -47,11 +47,7 @@ defaults:
       assignees:
         width: 20
         hidden: true
-  refetchIntervalMinutes: 5
-keybindings:
-  issues: []
-  prs: []
-  universal: []
+  refetchIntervalMinutes: 20
 repoPaths:
   sanalabs/*: ~/code/sana/*
 theme:
@@ -60,4 +56,4 @@ theme:
       showSeparator: false
 pager:
   diff: ""
-confirmQuit: false
+confirmQuit: true
