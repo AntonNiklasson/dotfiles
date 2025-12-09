@@ -34,11 +34,3 @@
 [delta]
   dark = true
   side-by-side = false
-[diff]
-	tool = p4merge
-[diff "tool.p4merge"]
-	path = /opt/homebrew/bin/p4merge
-[mergetool "p4merge"]
-	path = /opt/homebrew/bin/p4merge
-[mergetool]
-	keepBackup = false
