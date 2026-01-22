@@ -1,19 +1,20 @@
 theme=dark:TokyoNight Night,light:TokyoNight Day
 
+font-family = GeistMono Nerd Font Mono
 font-thicken = true
 font-size = 14
 font-feature = -liga
 
 adjust-cell-height = 70%
-background-opacity = .90
+background-opacity = 1.0
 background-blur-radius = 20
 mouse-hide-while-typing = true
 shell-integration-features = no-title
 
 window-colorspace = display-p3
 window-save-state = always
-window-padding-x = 0
-window-padding-y = 0
+window-padding-x = 4
+window-padding-y = 4
 window-padding-balance = true
 
 copy-on-select = clipboard
@@ -21,3 +22,4 @@ copy-on-select = clipboard
 desktop-notifications = true
 
 keybind = cmd+d=unbind
+keybind = shift+enter=text:\x1b\r
