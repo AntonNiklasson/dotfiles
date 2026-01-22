@@ -49,7 +49,7 @@ defaults:
         hidden: true
   refetchIntervalMinutes: 20
 repoPaths:
-  sanalabs/*: ~/code/sana/*
+  sanalabs/*: ~/code/*
 theme:
   ui:
     table:
