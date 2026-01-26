@@ -12,7 +12,6 @@ zinit ice depth=1
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light jeffreytse/zsh-vi-mode
-
 plugins+=(zsh-vi-mode)
 
 
@@ -22,13 +21,15 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true 
 brew tap domt4/autoupdate
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 export PATH=$PATH:~/.dotfiles/bin
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export VISUAL='vim'
+export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
 export LAUNCH_EDITOR=launch-editor.sh
-export TERM='screen-256color'
+# export TERM='screen-256color'
+export TERM='xterm-256color'
 
 
 # prompt
@@ -38,11 +39,7 @@ fi
 
 
 # fast node manager
-eval "$(fnm env --use-on-cd)"
-
-
-# google cloud sdk
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+eval "$(fnm env --use-on-cd --shell zsh)"
 
 
 # fzf
@@ -91,13 +88,12 @@ alias show-commit='git show --no-patch --no-notes --pretty=format:"%h - %s"'
 alias l='eza --oneline --group-directories-first'
 alias ll='eza --oneline --group-directories-first --no-permissions --no-user --icons=always --all'
 alias lg='lazygit'
-alias my-prs='gh pr list -A="@me"'
-alias nr='npm run'
-alias pn='pnpm'
+alias p='pnpm'
+alias pr='pnpm run'
 alias t='tmux'
 alias ta='t attach'
-alias zshrc='vim ~/.zshrc'
-alias zshrcs='source ~/.zshrc'
+alias rc='vim ~/.zshrc'
+alias rcs='source ~/.zshrc'
 alias vim='nvim'
 alias run='ntl -A'
 alias c='clear'
@@ -144,7 +140,7 @@ copy-command() {
 }
 
 # pnpm
-export PNPM_HOME="/Users/anton/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -152,5 +148,9 @@ esac
 # pnpm end
 
 # Turso
-export PATH="$PATH:/Users/anton/.turso"
+export PATH="$PATH:$HOME/.turso"
 export PATH=$PATH:$HOME/.maestro/bin
+
+
+
+[[ -f ~/.workday-setup ]] && source ~/.workday-setup
