@@ -3,135 +3,10 @@
     {
       "actions" : [
         {
-          "key" : "j",
-          "label" : "terminal",
-          "type" : "application",
-          "value" : "/Applications/Ghostty.app"
-        },
-        {
-          "key" : "m",
-          "label" : "spotify",
-          "type" : "application",
-          "value" : "/Applications/Spotify.app"
-        },
-        {
-          "key" : "w",
-          "label" : "linear",
-          "type" : "application",
-          "value" : "/Applications/Linear.app"
-        },
-        {
-          "key" : "s",
-          "label" : "slack",
-          "type" : "application",
-          "value" : "/Applications/Slack.app"
-        },
-        {
-          "key" : "o",
-          "label" : "obsidian",
-          "type" : "application",
-          "value" : "/Applications/Obsidian.app"
-        },
-        {
-          "key" : "c",
-          "label" : "calendar",
-          "type" : "application",
-          "value" : "/Applications/Fantastical.app"
-        },
-        {
-          "key" : "t",
-          "label" : "todoist",
-          "type" : "application",
-          "value" : "/Applications/Todoist.app"
-        },
-        {
-          "key" : "a",
-          "label" : "browser",
-          "type" : "application",
-          "value" : "/Applications/Zen Browser.app"
-        },
-        {
-          "key" : "e",
-          "label" : "email",
-          "type" : "application",
-          "value" : "/Applications/Email.app"
-        },
-        {
-          "key" : "k",
-          "label" : "browser",
-          "type" : "application",
-          "value" : "/Applications/Google Chrome.app"
-        },
-        {
-          "iconPath" : "/Applications/Raycast Companion.app",
-          "key" : "n",
-          "label" : "raycast notes",
+          "key" : "enter",
+          "label" : "sleep",
           "type" : "url",
-          "value" : "raycast://extensions/raycast/raycast-notes/search-notes?launchType=foreground"
-        }
-      ],
-      "iconPath" : "rectangle.portrait.and.arrow.right",
-      "key" : "o",
-      "label" : "open",
-      "type" : "group"
-    },
-    {
-      "actions" : [
-        {
-          "key" : "k",
-          "label" : "center",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/almost-maximize"
-        },
-        {
-          "key" : "j",
-          "label" : "fullsize",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/maximize"
-        },
-        {
-          "key" : "h",
-          "label" : "left half",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/left-half"
-        },
-        {
-          "key" : "l",
-          "label" : "right half",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/right-half"
-        },
-        {
-          "key" : "g",
-          "label" : "next display",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/next-display"
-        },
-        {
-          "key" : "n",
-          "label" : "previous desktop",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/previous-desktop"
-        },
-        {
-          "key" : "m",
-          "label" : "next desktop",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/next-desktop"
-        }
-      ],
-      "iconPath" : "note",
-      "key" : "w",
-      "label" : "window",
-      "type" : "group"
-    },
-    {
-      "actions" : [
-        {
-          "key" : "s",
-          "label" : "browse screenshots",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/screenshots/search-screenshots"
+          "value" : "raycast://extensions/raycast/system/sleep"
         },
         {
           "key" : "l",
@@ -146,6 +21,18 @@
           "value" : "raycast://extensions/raycast/navigation/search-menu-items"
         },
         {
+          "key" : "p",
+          "label" : "paste screenshot",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/screenshots/paste-recent-screenshot"
+        },
+        {
+          "key" : "s",
+          "label" : "browse screenshots",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/screenshots/search-screenshots"
+        },
+        {
           "key" : "t",
           "label" : "toggle system theme",
           "type" : "url",
@@ -156,42 +43,18 @@
           "label" : "reset volume",
           "type" : "url",
           "value" : "raycast://extensions/raycast/system/set-volume-to-50"
-        },
-        {
-          "key" : "enter",
-          "label" : "sleep",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/system/sleep"
-        },
-        {
-          "key" : "p",
-          "label" : "paste screenshot",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/screenshots/paste-recent-screenshot"
         }
       ],
       "iconPath" : "gearshape",
-      "key" : "s",
+      "key" : ",",
       "label" : "system",
       "type" : "group"
-    },
-    {
-      "key" : "v",
-      "label" : "clipboard",
-      "type" : "url",
-      "value" : "raycast://extensions/raycast/clipboard-history/clipboard-history"
     },
     {
       "key" : "a",
       "label" : "ai",
       "type" : "url",
       "value" : "raycast://extensions/raycast/raycast-ai/ai-chat"
-    },
-    {
-      "key" : "n",
-      "label" : "notes",
-      "type" : "url",
-      "value" : "raycast://extensions/raycast/raycast-notes/raycast-notes"
     },
     {
       "actions" : [
@@ -208,6 +71,138 @@
       ],
       "key" : "f",
       "label" : "folders",
+      "type" : "group"
+    },
+    {
+      "key" : "h",
+      "type" : "application",
+      "value" : "/Applications/Google Chrome.app"
+    },
+    {
+      "key" : "j",
+      "type" : "application",
+      "value" : "/Applications/Zen.app"
+    },
+    {
+      "key" : "k",
+      "type" : "application",
+      "value" : "/Applications/Ghostty.app"
+    },
+    {
+      "key" : "l",
+      "type" : "application",
+      "value" : "/Applications/Slack.app"
+    },
+    {
+      "key" : "n",
+      "label" : "notes",
+      "type" : "url",
+      "value" : "raycast://extensions/raycast/raycast-notes/raycast-notes"
+    },
+    {
+      "actions" : [
+        {
+          "key" : "c",
+          "label" : "calendar",
+          "type" : "application",
+          "value" : "/Applications/Fantastical.app"
+        },
+        {
+          "key" : "k",
+          "label" : "browser",
+          "type" : "application",
+          "value" : "/Applications/Google Chrome.app"
+        },
+        {
+          "key" : "m",
+          "label" : "spotify",
+          "type" : "application",
+          "value" : "/Applications/Spotify.app"
+        },
+        {
+          "key" : "o",
+          "label" : "obsidian",
+          "type" : "application",
+          "value" : "/Applications/Obsidian.app"
+        },
+        {
+          "key" : "s",
+          "label" : "slack",
+          "type" : "application",
+          "value" : "/Applications/Slack.app"
+        },
+        {
+          "key" : "t",
+          "label" : "todoist",
+          "type" : "application",
+          "value" : "/Applications/Todoist.app"
+        },
+        {
+          "key" : "w",
+          "label" : "linear",
+          "type" : "application",
+          "value" : "/Applications/Linear.app"
+        }
+      ],
+      "iconPath" : "rectangle.portrait.and.arrow.right",
+      "key" : "o",
+      "label" : "open",
+      "type" : "group"
+    },
+    {
+      "key" : "v",
+      "label" : "clipboard",
+      "type" : "url",
+      "value" : "raycast://extensions/raycast/clipboard-history/clipboard-history"
+    },
+    {
+      "actions" : [
+        {
+          "key" : "g",
+          "label" : "next display",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/next-display"
+        },
+        {
+          "key" : "h",
+          "label" : "left half",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/left-half"
+        },
+        {
+          "key" : "j",
+          "label" : "fullsize",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/maximize"
+        },
+        {
+          "key" : "k",
+          "label" : "center",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/almost-maximize"
+        },
+        {
+          "key" : "l",
+          "label" : "right half",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/right-half"
+        },
+        {
+          "key" : "m",
+          "label" : "next desktop",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/next-desktop"
+        },
+        {
+          "key" : "n",
+          "label" : "previous desktop",
+          "type" : "url",
+          "value" : "raycast://extensions/raycast/window-management/previous-desktop"
+        }
+      ],
+      "iconPath" : "note",
+      "key" : "w",
+      "label" : "window",
       "type" : "group"
     }
   ],
