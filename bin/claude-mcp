@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Collect MCP servers from project and user configs
+PROJECT_CONFIG="./.mcp.json"
+USER_CONFIG="$HOME/.mcp.json"
+
+# Extract servers: project uses mcpServers key, user is direct
+project_servers='{}'
+user_servers='{}'
+
+if [[ -f "$PROJECT_CONFIG" ]]; then
+  project_servers=$(jq -r '.mcpServers // {}' "$PROJECT_CONFIG" 2>/dev/null || echo '{}')
+fi
+
+if [[ -f "$USER_CONFIG" ]]; then
+  user_servers=$(jq -r '.' "$USER_CONFIG" 2>/dev/null || echo '{}')
+fi
+
+# Build list with source labels for fzf
+# Format: "server_name [source]"
+server_list=""
+
+while IFS= read -r name; do
+  [[ -n "$name" ]] && server_list+="$name [project]"$'\n'
+done < <(echo "$project_servers" | jq -r 'keys[]' 2>/dev/null)
+
+while IFS= read -r name; do
+  [[ -n "$name" ]] && server_list+="$name [user]"$'\n'
+done < <(echo "$user_servers" | jq -r 'keys[]' 2>/dev/null)
+
+# Remove trailing newline and check if empty
+server_list="${server_list%$'\n'}"
+
+if [[ -z "$server_list" ]]; then
+  echo "No MCP servers found"
+  exec claude "$@"
+fi
+
+# Pick servers with fzf
+selected=$(echo "$server_list" | fzf --multi --prompt="Select MCP servers: " --header="tab=multi-select, enter=launch")
+
+if [[ -z "$selected" ]]; then
+  echo "No servers selected, launching without MCP"
+  exec claude --strict-mcp-config "$@"
+fi
+
+# Build config from selections
+config='{"mcpServers":{}}'
+
+while IFS= read -r line; do
+  name="${line% \[*\]}"
+  source="${line##*\[}"
+  source="${source%\]}"
+
+  if [[ "$source" == "project" ]]; then
+    server_config=$(echo "$project_servers" | jq --arg n "$name" '.[$n]')
+  else
+    server_config=$(echo "$user_servers" | jq --arg n "$name" '.[$n]')
+  fi
+
+  config=$(echo "$config" | jq --arg n "$name" --argjson c "$server_config" '.mcpServers[$n] = $c')
+done <<< "$selected"
+
+exec claude --mcp-config "$config" --strict-mcp-config "$@"

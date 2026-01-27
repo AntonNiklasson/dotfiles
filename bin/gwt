@@ -16,8 +16,9 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 1
 fi
 
-# Get repo info
-REPO_ROOT=$(git rev-parse --show-toplevel)
+# Get repo info (use git-common-dir to always get main repo, even from inside a worktree)
+GIT_COMMON_DIR=$(cd "$(git rev-parse --git-common-dir)" && pwd)
+REPO_ROOT=$(dirname "$GIT_COMMON_DIR")
 WORKTREES_DIR="$REPO_ROOT/worktrees"
 BASE_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo "main")
 
@@ -52,21 +53,56 @@ else
     WINDOW_NAME="$BRANCH_OR_PATH"
     echo "Switching to existing worktree: $WORKTREE_PATH"
   else
-    # Create new worktree
-    NORMALIZED_BRANCH=$(echo "$BRANCH_OR_PATH" | sed 's/[^a-zA-Z0-9_-]/-/g')
-    FULL_BRANCH_NAME="an/$NORMALIZED_BRANCH"
-    WORKTREE_PATH="$WORKTREES_DIR/$NORMALIZED_BRANCH"
-    WINDOW_NAME="$NORMALIZED_BRANCH"
+    # Ask user: new branch or existing?
+    echo "Worktree '$BRANCH_OR_PATH' doesn't exist."
+    echo "1) New branch (an/$BRANCH_OR_PATH)"
+    echo "2) Existing branch"
+    read -p "Choice [1/2]: " -n 1 -r BRANCH_CHOICE
+    echo
 
-    echo "Creating worktree for: $BRANCH_OR_PATH"
-    echo "Branch: $FULL_BRANCH_NAME"
-    echo "Path: $WORKTREE_PATH"
+    if [[ "$BRANCH_CHOICE" == "2" ]]; then
+      # Existing branch - use fzf to select
+      if ! command -v fzf >/dev/null 2>&1; then
+        echo "Error: fzf not found."
+        exit 1
+      fi
 
-    # Create worktrees directory if needed
-    mkdir -p "$WORKTREES_DIR"
+      # List all branches (local + remote), filter with provided name
+      SELECTED_BRANCH=$(git branch -a --format='%(refname:short)' | \
+        sed 's|^origin/||' | \
+        sort -u | \
+        grep -v '^HEAD$' | \
+        fzf --prompt="Select branch: " --query="$BRANCH_OR_PATH" --height=15)
 
-    # Create worktree with new branch
-    git worktree add -b "$FULL_BRANCH_NAME" "$WORKTREE_PATH" "$BASE_BRANCH"
+      if [ -z "$SELECTED_BRANCH" ]; then
+        echo "No branch selected"
+        exit 0
+      fi
+
+      # Normalize for path
+      NORMALIZED_BRANCH=$(echo "$SELECTED_BRANCH" | sed 's|/|_|g' | sed 's/[^a-zA-Z0-9_-]/-/g')
+      WORKTREE_PATH="$WORKTREES_DIR/$NORMALIZED_BRANCH"
+      WINDOW_NAME="$NORMALIZED_BRANCH"
+
+      echo "Creating worktree for existing branch: $SELECTED_BRANCH"
+      echo "Path: $WORKTREE_PATH"
+
+      mkdir -p "$WORKTREES_DIR"
+      git worktree add "$WORKTREE_PATH" "$SELECTED_BRANCH"
+    else
+      # New branch (default)
+      NORMALIZED_BRANCH=$(echo "$BRANCH_OR_PATH" | sed 's/[^a-zA-Z0-9_-]/-/g')
+      FULL_BRANCH_NAME="an/$NORMALIZED_BRANCH"
+      WORKTREE_PATH="$WORKTREES_DIR/$NORMALIZED_BRANCH"
+      WINDOW_NAME="$NORMALIZED_BRANCH"
+
+      echo "Creating worktree for: $BRANCH_OR_PATH"
+      echo "Branch: $FULL_BRANCH_NAME"
+      echo "Path: $WORKTREE_PATH"
+
+      mkdir -p "$WORKTREES_DIR"
+      git worktree add -b "$FULL_BRANCH_NAME" "$WORKTREE_PATH" "$BASE_BRANCH"
+    fi
 
     # Ask if user wants to copy ignored files
     echo
