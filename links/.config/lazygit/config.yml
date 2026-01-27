@@ -10,9 +10,9 @@ gui:
     selectedLineBgColor:
       - reverse
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
 os:
   editTemplate: cursor --reuse-window -- {{filename}}
   editAtLineTemplate: cursor --reuse-window --goto -- {{filename}}:{{line}}
