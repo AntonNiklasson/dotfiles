@@ -11,25 +11,43 @@ unalias zi
 zinit ice depth=1
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
-zinit light jeffreytse/zsh-vi-mode
-plugins+=(zsh-vi-mode)
-
 
 # environment
 export XDG_CONFIG_HOME="$HOME/.config"
-eval "$(/opt/homebrew/bin/brew shellenv)"
-export HOMEBREW_NO_AUTO_UPDATE=true
-export HOMEBREW_NO_ENV_HINTS=true 
-brew tap domt4/autoupdate
-export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+export PATH=$PATH:~/.local/share/bob/nvim-bin
 export PATH=$PATH:~/.dotfiles/bin
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH=$PATH:/opt/homebrew/opt/ruby/bin
+export PATH=$PATH:~/.local/bin
 export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
 export LAUNCH_EDITOR=launch-editor.sh
-# export TERM='screen-256color'
 export TERM='xterm-256color'
+
+# vi mode
+bindkey -v
+export KEYTIMEOUT=1
+bindkey -M viins '^?' backward-delete-char
+
+function zle-keymap-select {
+  if [[ $KEYMAP == vicmd ]]; then
+    echo -ne '\e[2 q'  # block cursor
+  else
+    echo -ne '\e[6 q'  # beam cursor
+  fi
+}
+zle -N zle-keymap-select
+
+function zle-line-init {
+  echo -ne '\e[6 q'  # start in insert mode with beam cursor
+}
+zle -N zle-line-init
+
+# homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=true
+export HOMEBREW_NO_ENV_HINTS=true 
+brew tap domt4/autoupdate
 
 
 # prompt
@@ -42,10 +60,23 @@ fi
 eval "$(fnm env --use-on-cd --shell zsh)"
 
 
+# history
+setopt EXTENDED_HISTORY       # save timestamp with each command
+setopt HIST_IGNORE_ALL_DUPS   # no duplicates
+HISTSIZE=10000
+SAVEHIST=10000
+
 # fzf
 eval "$(fzf --zsh)"
 export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 export FZF_BASE=/opt/homebrew/bin/fzf
+export FZF_CTRL_R_OPTS="--with-nth=2.."  # hide line numbers
+function fzf-history-clean {
+  zle kill-whole-line
+  zle fzf-history-widget
+}
+zle -N fzf-history-clean
+bindkey -M vicmd '/' fzf-history-clean
 
 
 # Use `bat` instead of `cat`
