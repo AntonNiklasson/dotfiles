@@ -127,7 +127,15 @@ alias ta='t attach'
 alias rc='vim ~/.zshrc'
 alias rcs='source ~/.zshrc'
 alias vim='nvim'
-alias run='ntl -A'
+
+function r() {
+  local runner=npm
+  if [[ -f pnpm-lock.yaml ]]; then runner=pnpm
+  elif [[ -f yarn.lock ]]; then runner=yarn
+  elif [[ -f bun.lockb || -f bun.lock ]]; then runner=bun
+  fi
+  NTL_RUNNER=$runner ntl -A "$@"
+}
 alias c='clear'
 
 function tree() {
