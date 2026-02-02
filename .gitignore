@@ -4,6 +4,7 @@
 # whitelist for links/.config
 links/.config/*
 !links/.config/gh/
+links/.config/gh/hosts.yml
 !links/.config/gh-dash/
 !links/.config/ghostty/
 !links/.config/lazygit/
