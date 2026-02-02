@@ -11,6 +11,7 @@ unalias zi
 zinit ice depth=1
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
+zinit light Aloxaf/fzf-tab
 
 # environment
 export XDG_CONFIG_HOME="$HOME/.config"
