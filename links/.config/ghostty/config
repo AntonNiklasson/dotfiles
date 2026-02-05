@@ -4,8 +4,8 @@ font-family = GeistMono Nerd Font Mono
 font-thicken = true
 font-size = 14
 font-feature = -liga
+adjust-cell-height=50%
 
-adjust-cell-height = 70%
 background-opacity = 1.0
 background-blur-radius = 20
 mouse-hide-while-typing = true
