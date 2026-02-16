@@ -47,6 +47,8 @@ const insideTmux = !!process.env.TMUX
 
 let worktreePath
 let windowName
+let initialPrompt
+let commands = []
 
 if (command === 'switch') {
   const worktreeList = (await $`git worktree list`).stdout.trim()
@@ -61,6 +63,21 @@ if (command === 'switch') {
 
   worktreePath = selection.split(/\s+/)[0]
   windowName = path.basename(worktreePath)
+
+  // Check if a tmux window already exists for this worktree
+  if (insideTmux) {
+    try {
+      const panes = (await $`tmux list-panes -a -F ${'#{session_name}:#{window_index} #{pane_current_path}'}`).stdout.trim()
+      for (const line of panes.split('\n')) {
+        const [windowTarget, panePath] = [line.split(' ')[0], line.split(' ').slice(1).join(' ')]
+        if (panePath.startsWith(worktreePath)) {
+          await $`tmux select-window -t ${windowTarget}`
+          console.log(`Switched to existing window: ${windowTarget}`)
+          process.exit(0)
+        }
+      }
+    } catch {}
+  }
 }
 
 if (command === 'rm') {
@@ -93,46 +110,59 @@ if (command === 'rm') {
     console.log('')
 
     const { showDiff } = await prompts({
-      type: 'confirm',
+      type: 'toggle',
       name: 'showDiff',
       message: 'Show full diff?',
-      initial: false
+      initial: true,
+      active: 'yes',
+      inactive: 'skip'
     })
 
     if (showDiff) {
-      await $({ stdio: 'inherit' })`git -C ${wtPath} diff`
+      await $({ stdio: 'inherit' })`git -C ${wtPath} diff`.catch(() => { })
       console.log('')
     }
   }
 
   const { confirmed } = await prompts({
-    type: 'confirm',
+    type: 'toggle',
     name: 'confirmed',
     message: `Remove worktree "${wtName}"?`,
-    initial: false
+    initial: false,
+    active: 'yes',
+    inactive: 'no'
   })
 
   if (!confirmed) {
     process.exit(0)
   }
 
-  await $`git worktree remove ${wtPath} --force`.catch(() => {})
+  let s = ora('Removing worktree').start()
+  await $`git worktree remove ${wtPath} --force`.catch(() => { })
+  s.succeed()
+
+  s = ora('Cleaning up files').start()
   await fs.remove(wtPath)
-  console.log(`Removed worktree: ${wtPath}`)
+  s.succeed()
 
   // Kill tmux window whose pane cwd matches the worktree path
   if (insideTmux) {
+    s = ora('Closing tmux window').start()
     try {
       const panes = (await $`tmux list-panes -a -F ${'#{session_name}:#{window_index} #{pane_current_path}'}`).stdout.trim()
+      let killed = false
       for (const line of panes.split('\n')) {
         const [windowTarget, panePath] = [line.split(' ')[0], line.split(' ').slice(1).join(' ')]
         if (panePath.startsWith(wtPath)) {
           await $`tmux kill-window -t ${windowTarget}`
-          console.log(`Killed tmux window: ${windowTarget}`)
+          killed = true
           break
         }
       }
-    } catch {}
+      killed ? s.succeed() : s.info('No matching tmux window found')
+    } catch {
+      s.info('No matching tmux window found')
+    }
   }
 
   process.exit(0)
@@ -190,7 +220,23 @@ if (command === 'new') {
 
   windowName = normalizedName
   const defaultBranch = `an/${normalizedName}`
-  let branchName = argv._[2] || defaultBranch
+
+  const { branch: branchInput, initialPrompt: promptInput } = await prompts([
+    {
+      type: 'text',
+      name: 'branch',
+      message: 'Branch name (esc for default)',
+      initial: defaultBranch
+    },
+    {
+      type: 'text',
+      name: 'initialPrompt',
+      message: 'Initial prompt (esc to skip)'
+    }
+  ])
+
+  initialPrompt = promptInput?.trim() || undefined
+  let branchName = branchInput?.trim() || defaultBranch
 
   // Check if branch already exists
   let branchExists = false
@@ -198,31 +244,6 @@ if (command === 'new') {
     await $`git rev-parse --verify ${branchName}`
     branchExists = true
   } catch { }
-
-  if (branchExists) {
-    const { action } = await prompts({
-      type: 'select',
-      name: 'action',
-      message: `Branch "${branchName}" already exists`,
-      choices: [
-        { title: 'Use existing branch', value: 'use' },
-        { title: 'Enter new branch name', value: 'new' }
-      ]
-    })
-    if (action === 'new') {
-      const { newBranch } = await prompts({
-        type: 'text',
-        name: 'newBranch',
-        message: 'New branch name'
-      })
-      if (!newBranch?.trim()) {
-        console.log('Branch name required')
-        process.exit(1)
-      }
-      branchName = newBranch.trim()
-      branchExists = false
-    }
-  }
 
   console.log(`Creating worktree: ${worktreePath}`)
   console.log(`Branch: ${branchName}`)
@@ -260,7 +281,7 @@ if (command === 'new') {
     .filter(line => line && !line.startsWith('#'))
 
   const filesToCopy = lines.filter(line => !line.startsWith('$'))
-  const commands = lines.filter(line => line.startsWith('$')).map(line => line.slice(1).trim())
+  commands = lines.filter(line => line.startsWith('$')).map(line => line.slice(1).trim())
 
   if (filesToCopy.length > 0) {
     console.log('Copying files from .worktree-setup...')
@@ -293,18 +314,6 @@ if (command === 'new') {
     }
   }
 
-  if (commands.length > 0) {
-    console.log('Running setup commands...')
-    for (const cmd of commands) {
-      const s = ora(`  $ ${cmd}`).start()
-      try {
-        await $({ cwd: worktreePath, quiet: true })`${cmd.split(/\s+/)}`
-        s.succeed()
-      } catch (e) {
-        s.fail(`  $ ${cmd} — ${e.message}`)
-      }
-    }
-  }
 }
 
 // Tmux integration
@@ -313,9 +322,28 @@ if (!insideTmux) {
   process.exit(1)
 }
 
-// Create new window with claude on left, nvim top-right, terminal bottom-right
-await $`tmux new-window -c ${worktreePath} -n ${windowName} claude`
+const background = !!initialPrompt
+const newWindowFlags = background ? ['-d'] : []
+
+await $`tmux new-window ${newWindowFlags} -c ${worktreePath} -n ${windowName} claude --permission-mode plan`
 await $`sleep 1 && tmux send-keys -t ${windowName}.0 Enter`
-await $`tmux split-window -h -c ${worktreePath} -l 60% nvim`
-await $`tmux split-window -v -c ${worktreePath} -l 30%`
-console.log(`Switched to worktree: ${worktreePath}`)
+if (initialPrompt) {
+  await $`sleep 1 && tmux send-keys -t ${windowName}.0 -l ${initialPrompt}`
+  await $`tmux send-keys -t ${windowName}.0 Enter`
+}
+await $`tmux split-window -d -h -t ${windowName}.0 -c ${worktreePath} -l 60% nvim`
+await $`tmux split-window -d -v -t ${windowName}.1 -c ${worktreePath} -l 30%`
+
+// Run setup commands in the terminal pane
+if (commands.length > 0) {
+  const setupCmd = commands.join(' && ')
+  await $`tmux send-keys -t ${windowName}.2 -l ${setupCmd}`
+  await $`tmux send-keys -t ${windowName}.2 Enter`
+}
+
+// Open lazygit in nvim when switching to existing worktree
+if (command === 'switch') {
+  await $`sleep 1 && tmux send-keys -t ${windowName}.1 Space g g`
+}
+
+console.log(`${background ? 'Started' : 'Switched to'} worktree: ${windowName}`)
