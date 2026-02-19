@@ -11,7 +11,6 @@ unalias zi
 zinit ice depth=1
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
-zinit light Aloxaf/fzf-tab
 
 # environment
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -39,10 +38,26 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 
+typeset -g _ZSH_VIM_MODE=vicmd
+
+function zle-line-finish {
+  _ZSH_VIM_MODE=$KEYMAP
+}
+zle -N zle-line-finish
+
 function zle-line-init {
-  echo -ne '\e[6 q'  # start in insert mode with beam cursor
+  zle -K "${_ZSH_VIM_MODE:-vicmd}"
+  if [[ $_ZSH_VIM_MODE == viins ]]; then
+    echo -ne '\e[6 q'  # beam cursor
+  else
+    echo -ne '\e[2 q'  # block cursor
+  fi
 }
 zle -N zle-line-init
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd '^e' edit-command-line
 
 # homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -120,6 +135,7 @@ alias show-commit='git show --no-patch --no-notes --pretty=format:"%h - %s"'
 alias l='eza --oneline --group-directories-first'
 alias ll='eza --oneline --group-directories-first --no-permissions --no-user --icons=always --all'
 alias lg='lazygit'
+alias ld='lazydocker'
 alias p='pnpm'
 alias pr='pnpm run'
 alias t='tmux'
@@ -194,3 +210,5 @@ export PATH=$PATH:$HOME/.maestro/bin
 
 
 [[ -f ~/.workday-setup ]] && source ~/.workday-setup
+
+export DOCKER_HOST="unix://$HOME/.orbstack/run/docker.sock"
