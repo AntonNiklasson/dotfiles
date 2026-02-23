@@ -19,3 +19,4 @@ links/.config/tmux/plugins/
 links/.config/tmux/resurrect/
 
 node_modules
+links/.config/gh/hosts.yml
