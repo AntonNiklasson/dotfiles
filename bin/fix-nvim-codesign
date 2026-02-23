@@ -1,0 +1,11 @@
+#!/bin/bash
+# Re-sign neovim and treesitter parsers for macOS Sequoia.
+# Run this after :TSUpdate or when nvim crashes with "Code Signature Invalid".
+
+codesign --force --deep --sign - ~/.local/share/bob/nightly/bin/nvim
+
+for f in ~/.local/share/nvim/site/parser/*.so; do
+  codesign --force --sign - "$f"
+done
+
+echo "Done. Restart macOS if nvim still crashes."
