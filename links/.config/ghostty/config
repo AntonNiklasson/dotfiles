@@ -1,8 +1,10 @@
 theme=dark:TokyoNight Night,light:TokyoNight Day
 
+title = ""
+
 font-family = GeistMono Nerd Font Mono
 font-thicken = true
-font-size = 14
+font-size = 15
 font-feature = -liga
 adjust-cell-height=50%
 
