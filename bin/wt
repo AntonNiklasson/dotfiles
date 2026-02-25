@@ -50,18 +50,38 @@ let windowName
 let initialPrompt
 let commands = []
 
-if (command === 'switch') {
-  const worktreeList = (await $`git worktree list`).stdout.trim()
+async function pickWorktree(promptText, filterFn = () => true) {
+  const wtListOutput = (await $`git worktree list`).stdout.trim()
+  const wtLines = wtListOutput.split('\n').filter(filterFn)
+
+  if (wtLines.length === 0) return null
+
+  const enriched = []
+  for (const line of wtLines) {
+    const wtPath = line.split(/\s+/)[0]
+    const dirName = path.basename(wtPath)
+    enriched.push(`${wtPath}\t${dirName}`)
+  }
+
+  const input = enriched.join('\n')
+  const preview = "git -C {1} status --short"
 
   let selection
   try {
-    selection = (await $`echo ${worktreeList} | fzf --prompt="Select worktree: " --height=10 --delimiter=' ' --with-nth=1,3`).stdout.trim()
+    selection = (await $`echo ${input} | fzf --prompt=${promptText} --height=15 --delimiter='\t' --with-nth=2.. --preview=${preview} --preview-window=right:50%`).stdout.trim()
   } catch {
+    return null
+  }
+
+  return selection.split('\t')[0]
+}
+
+if (command === 'switch') {
+  worktreePath = await pickWorktree('Select worktree: ')
+  if (!worktreePath) {
     console.log('No worktree selected')
     process.exit(0)
   }
-
-  worktreePath = selection.split(/\s+/)[0]
   windowName = path.basename(worktreePath)
 
   // Check if a tmux window already exists for this worktree
@@ -81,25 +101,11 @@ if (command === 'switch') {
 }
 
 if (command === 'rm') {
-  const worktreeList = (await $`git worktree list`).stdout.trim()
-  const lines = worktreeList.split('\n')
-
-  // Filter out main worktree (first line)
-  const removable = lines.slice(1).join('\n')
-  if (!removable.trim()) {
-    console.log('No removable worktrees (main worktree cannot be removed)')
-    process.exit(0)
-  }
-
-  let selection
-  try {
-    selection = (await $`echo ${removable} | fzf --prompt="Remove worktree: " --height=10 --delimiter=' ' --with-nth=1,3`).stdout.trim()
-  } catch {
+  const wtPath = await pickWorktree('Remove worktree: ', (_, i) => i > 0)
+  if (!wtPath) {
     console.log('No worktree selected')
     process.exit(0)
   }
-
-  const wtPath = selection.split(/\s+/)[0]
   const wtName = path.basename(wtPath)
 
   // Check for uncommitted changes
