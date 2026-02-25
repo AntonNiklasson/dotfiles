@@ -12,8 +12,17 @@ vim.filetype.add({
 	extension = {
 		mdx = "markdown.mdx",
 	},
+	pattern = {
+		[".*"] = {
+			priority = -math.huge,
+			function(path, bufnr)
+				local content = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1] or ""
+				if content:match("^#!.*zx") then
+					return "typescript"
+				end
+			end,
+		},
+	},
 })
 
 vim.g.lazyvim_prettier_needs_config = true
-
-vim.lsp.inlay_hints = false
