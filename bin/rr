@@ -1,0 +1,57 @@
+#!/usr/bin/env zx
+
+import { $ } from 'zx'
+
+// rr - review request
+// Generates a review request message for the current PR (or a given URL)
+// and copies it to the clipboard.
+
+$.quiet = true
+
+let prUrl = process.argv[3]
+
+if (!prUrl) {
+  // Get current branch PR url as default
+  let currentPrUrl
+  try {
+    currentPrUrl = (await $`gh pr view --json url -q '.url'`).stdout.trim()
+  } catch {}
+
+  // List open PRs authored by me
+  const prs = JSON.parse((await $`gh pr list --author @me --json url,title,number,headRefName`).stdout)
+
+  if (prs.length === 0) {
+    const repo = (await $`gh repo view --json nameWithOwner -q '.nameWithOwner'`).stdout.trim()
+    console.error(`No open PRs found in ${repo}`)
+    process.exit(1)
+  }
+
+  // Sort so current branch PR is first
+  const sorted = prs.sort((a, b) => {
+    if (a.url === currentPrUrl) return -1
+    if (b.url === currentPrUrl) return 1
+    return 0
+  })
+
+  const input = sorted.map(pr => `${pr.url}\t#${pr.number} ${pr.title}`).join('\n')
+
+  try {
+    const selection = (await $`echo ${input} | fzf --prompt="PR: " --height=15 --delimiter='\t' --with-nth=2..`).stdout.trim()
+    prUrl = selection.split('\t')[0]
+  } catch {
+    process.exit(0)
+  }
+}
+
+const data = JSON.parse((await $`gh pr view ${prUrl} --json title,additions,deletions`).stdout)
+const { title, additions, deletions } = data
+
+const cleanTitle = title
+  .replace(/\[?[A-Z]+-\d+\]?\s*/g, '')
+  .replace(/\s*\[?[A-Z]+-\d+\]?$/, '')
+  .trim()
+
+const message = `[${cleanTitle}](${prUrl}) \`+${additions}/-${deletions}\``
+
+await $`echo -n ${message} | pbcopy`
+console.log('✓ copied')
