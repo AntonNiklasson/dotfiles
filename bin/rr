@@ -15,7 +15,7 @@ if (!prUrl) {
   let currentPrUrl
   try {
     currentPrUrl = (await $`gh pr view --json url -q '.url'`).stdout.trim()
-  } catch {}
+  } catch { }
 
   // List open PRs authored by me
   const prs = JSON.parse((await $`gh pr list --author @me --json url,title,number,headRefName`).stdout)
@@ -36,7 +36,7 @@ if (!prUrl) {
   const input = sorted.map(pr => `${pr.url}\t#${pr.number} ${pr.title}`).join('\n')
 
   try {
-    const selection = (await $`echo ${input} | fzf --prompt="PR: " --height=15 --delimiter='\t' --with-nth=2..`).stdout.trim()
+    const selection = (await $`echo ${input} | fzf --prompt="PR: " --height=12 --delimiter='\t' --with-nth=2..`).stdout.trim()
     prUrl = selection.split('\t')[0]
   } catch {
     process.exit(0)
@@ -54,4 +54,4 @@ const cleanTitle = title
 const message = `[${cleanTitle}](${prUrl}) \`+${additions}/-${deletions}\``
 
 await $`echo -n ${message} | pbcopy`
-console.log('✓ copied')
+console.log('\x1b[32m✓\x1b[0m copied')
