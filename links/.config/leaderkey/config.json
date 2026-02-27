@@ -138,7 +138,7 @@
           "value" : "/Applications/Todoist.app"
         },
         {
-          "key" : "w",
+          "key" : "l",
           "label" : "linear",
           "type" : "application",
           "value" : "/Applications/Linear.app"
@@ -204,6 +204,12 @@
       "key" : "w",
       "label" : "window",
       "type" : "group"
+    },
+    {
+      "key" : "c",
+      "label" : "goto claude code",
+      "type" : "url",
+      "value" : "raycast://extensions/anton-niklasson/claude-focus/focus-claude"
     }
   ],
   "type" : "group"
