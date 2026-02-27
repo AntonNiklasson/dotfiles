@@ -1,11 +1,6 @@
 tap "cormacrelf/tap"
 tap "dhth/tap"
 tap "domt4/autoupdate"
-tap "homebrew/bundle"
-tap "homebrew/cask-drivers"
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"
-tap "homebrew/services"
 tap "jakehilborn/jakehilborn"
 tap "jandedobbeleer/oh-my-posh"
 tap "jorgerojas26/lazysql"
@@ -29,7 +24,6 @@ brew "bottom"
 brew "pixman"
 brew "cairo"
 brew "coreutils"
-brew "cask"
 brew "ruby"
 brew "cocoapods"
 brew "curl"
@@ -71,10 +65,6 @@ brew "neovim"
 brew "phrase-cli"
 brew "pkgconf"
 brew "pnpm"
-brew "postgresql@13"
-brew "postgresql@15"
-brew "python@3.10"
-brew "python@3.9"
 brew "qemu"
 brew "qpdf"
 brew "rename"
@@ -160,8 +150,6 @@ cask "sonos"
 cask "spotify"
 cask "superwhisper"
 cask "tableplus"
-cask "telegram"
-cask "thunderbird"
 cask "ticktick"
 cask "todoist-app"
 cask "tuple"
@@ -173,10 +161,8 @@ mas "Bitwarden", id: 1352778147
 mas "Day One", id: 1055511498
 mas "Email", id: 1489591003
 mas "Gifski", id: 1351639930
-mas "iMovie", id: 408981434
 mas "keymapp", id: 6472865291
 mas "Keynote", id: 409183694
-mas "Klack", id: 6446206067
 mas "Numbers", id: 409203825
 mas "Onigiri", id: 1639917298
 mas "Pages", id: 409201541
