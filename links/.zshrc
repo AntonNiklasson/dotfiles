@@ -12,6 +12,10 @@ zinit ice depth=1
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 
+# pure prompt
+zinit ice compile'(pure|async).zsh' pick'async.zsh' src'pure.zsh'
+zinit light sindresorhus/pure
+
 # environment
 export XDG_CONFIG_HOME="$HOME/.config"
 export PATH=$PATH:/opt/homebrew/opt/ruby/bin
@@ -52,14 +56,7 @@ bindkey -M vicmd '^e' edit-command-line
 # homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=true
-export HOMEBREW_NO_ENV_HINTS=true 
-brew tap domt4/autoupdate
-
-
-# prompt
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
-  eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/ohmyposh.toml)"
-fi
+export HOMEBREW_NO_ENV_HINTS=true
 
 
 # fast node manager
