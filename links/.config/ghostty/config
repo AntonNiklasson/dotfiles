@@ -25,3 +25,5 @@ desktop-notifications = true
 
 keybind = cmd+d=unbind
 keybind = shift+enter=text:\x1b\r
+
+mouse-hide-while-typing = true
