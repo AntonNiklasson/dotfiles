@@ -14,10 +14,11 @@ zinit light zsh-users/zsh-completions
 
 # environment
 export XDG_CONFIG_HOME="$HOME/.config"
-export PATH=$PATH:~/.local/share/bob/nvim-bin
-export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:/opt/homebrew/opt/ruby/bin
+export PATH=$PATH:/usr/local/bin
+export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:~/.local/bin
+export PATH=$PATH:~/.local/share/bob/nvim-bin
 export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
@@ -38,20 +39,9 @@ function zle-keymap-select {
 }
 zle -N zle-keymap-select
 
-typeset -g _ZSH_VIM_MODE=vicmd
-
-function zle-line-finish {
-  _ZSH_VIM_MODE=$KEYMAP
-}
-zle -N zle-line-finish
-
 function zle-line-init {
-  zle -K "${_ZSH_VIM_MODE:-vicmd}"
-  if [[ $_ZSH_VIM_MODE == viins ]]; then
-    echo -ne '\e[6 q'  # beam cursor
-  else
-    echo -ne '\e[2 q'  # block cursor
-  fi
+  zle -K viins
+  echo -ne '\e[6 q'  # beam cursor
 }
 zle -N zle-line-init
 
@@ -132,17 +122,20 @@ alias gri='git rebase -i'
 alias gs='git status'
 alias gst='git stash'
 alias show-commit='git show --no-patch --no-notes --pretty=format:"%h - %s"'
-alias l='eza --oneline --group-directories-first'
-alias ll='eza --oneline --group-directories-first --no-permissions --no-user --icons=always --all'
+export EZA_CONFIG_DIR="$HOME/.config/eza"
+alias ls='eza --long --group-directories-first --icons=always --all --no-user --no-permissions --no-time'
 alias lg='lazygit'
 alias ld='lazydocker'
 alias p='pnpm'
 alias pr='pnpm run'
+alias pi='pnpm install'
 alias t='tmux'
 alias ta='t attach'
 alias rc='vim ~/.zshrc'
 alias rcs='source ~/.zshrc'
 alias vim='nvim'
+alias k='HTTPS_PROXY=socks5://localhost:8888 kubectl'
+alias oc='opencode --agent plan'
 
 function r() {
   local runner=npm
@@ -170,26 +163,6 @@ finder() {
 	rm -f -- "$tmp"
 }
 
-sierra-containers() {
-    local dir
-    dir=$(pwd)
-
-     # Check if the first argument is the flag for running only migrations
-    if [[ "$1" == "--migrate-only" ]]; then
-        cd ~/code/sana/sierra-platform
-        ./migrate-alloydb.sh docker
-        cd "$dir"
-        return
-    fi
-
-    cd ~/code/sana/sierra-platform
-    ./docker-compose-wrapper.sh down
-    ./docker-compose-wrapper.sh up
-    ./migrate-alloydb.sh docker
-
-    cd "$dir"
-}
-
 copy-command() {
   fc -ln -1 | pbcopy
   echo "Copied last command to clipboard!"
@@ -210,5 +183,3 @@ export PATH=$PATH:$HOME/.maestro/bin
 
 
 [[ -f ~/.workday-setup ]] && source ~/.workday-setup
-
-export DOCKER_HOST="unix://$HOME/.orbstack/run/docker.sock"
