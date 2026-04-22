@@ -14,6 +14,13 @@ vim.keymap.set("n", "#", "#zz")
 vim.keymap.set("i", "jj", "<Esc>:w<CR>l", { silent = true, desc = "Save file from insert mode" })
 vim.keymap.set("n", "<Leader>w", ":w<CR>l", { silent = true, desc = "Save file from normal mode" })
 
+-- copy relative file path to clipboard
+vim.keymap.set("n", "<Leader>yp", function()
+	local path = vim.fn.expand("%:.")
+	vim.fn.setreg("+", path)
+	vim.notify(path, vim.log.levels.INFO, { title = "Copied path" })
+end, { desc = "Copy relative file path" })
+
 -- auto-reloading files when they change
 vim.o.autoread = true
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
