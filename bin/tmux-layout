@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+LAYOUTS=(
+  "claude-vim;claude + vim + terminal"
+)
+
+preview_layout() {
+  case "$1" in
+    claude-vim)
+      cat <<'ART'
+┌──────────┬────────────────┐
+│          │                │
+│  claude  │      vim       │
+│   40%    │                │
+│          │                │
+│          ├────────────────┤
+│          │   terminal     │
+│          │     20%        │
+└──────────┴────────────────┘
+ART
+      ;;
+  esac
+}
+
+apply_claude_vim() {
+  local pane_count dir
+
+  # kill panes beyond the 3rd (from last down to index 3)
+  pane_count=$(tmux list-panes | wc -l | tr -d ' ')
+  while [ "$pane_count" -gt 3 ]; do
+    tmux kill-pane -t ":.{last}"
+    pane_count=$((pane_count - 1))
+  done
+
+  # create missing panes if fewer than 3
+  dir=$(tmux display-message -p '#{pane_current_path}')
+  pane_count=$(tmux list-panes | wc -l | tr -d ' ')
+  if [ "$pane_count" -eq 1 ]; then
+    tmux split-window -h -c "$dir"
+    tmux split-window -v -c "$dir" -t 1
+  elif [ "$pane_count" -eq 2 ]; then
+    tmux split-window -v -c "$dir" -t 1
+  fi
+
+  # resize: pane 0 = 40% width, pane 2 = 20% height
+  tmux resize-pane -t 0 -x 40%
+  tmux resize-pane -t 2 -y 20%
+  tmux select-pane -t 0
+}
+
+if [ "${1:-}" = "--preview" ]; then
+  preview_layout "$2"
+  exit 0
+elif [ -n "${1:-}" ]; then
+  name="$1"
+else
+  name=$(
+    printf '%s\n' "${LAYOUTS[@]}" |
+      fzf --reverse --no-info --prompt='layout> ' --delimiter=';' --with-nth=2 \
+        --preview="$0 --preview {1}" --preview-window=right:35 |
+      cut -d';' -f1
+  )
+fi
+
+case "$name" in
+  claude-vim) apply_claude_vim ;;
+  *) echo "Unknown layout: $name"; exit 1 ;;
+esac

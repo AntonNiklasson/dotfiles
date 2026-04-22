@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "pixelmatch": "^6.0.0",
-    "pngjs": "^7.0.0",
-    "sharp": "^0.33.5",
+    "minimist": "^1.2.8",
+    "ora": "^9.3.0",
+    "prompts": "^2.4.2",
     "zx": "^8.1.9"
   }
 }

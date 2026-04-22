@@ -1,0 +1,165 @@
+#!/bin/bash
+set -euo pipefail
+
+BREWFILE="${BREWFILE:-$HOME/.dotfiles/Brewfile}"
+
+usage() {
+  cat <<EOF
+brew-dotfiles — manage $BREWFILE
+
+usage: brew-dotfiles <command>
+
+commands:
+  install   run brew bundle install from Brewfile
+  check     list declared in Brewfile but not installed (missing)
+  extras    list installed-on-request but not declared in Brewfile
+  status    show both missing and extras
+  dump      regenerate Brewfile from current install state (backs up first)
+  clean     uninstall extras (prompts per category)
+  edit      open Brewfile in \$EDITOR
+EOF
+}
+
+# Normalize tap-prefixed names: "oven-sh/bun/bun" -> "bun"
+strip_tap() { awk -F/ '{print $NF}'; }
+
+declared_formulae() {
+  grep -E '^brew "' "$BREWFILE" 2>/dev/null \
+    | sed -E 's/^brew "([^"]+)".*/\1/' \
+    | strip_tap | sort -u
+}
+
+declared_casks() {
+  grep -E '^cask "' "$BREWFILE" 2>/dev/null \
+    | sed -E 's/^cask "([^"]+)".*/\1/' | sort -u
+}
+
+declared_mas() {
+  grep -E '^mas "' "$BREWFILE" 2>/dev/null \
+    | sed -E 's/^mas "([^"]+)".*/\1/' | sort -u
+}
+
+installed_formulae() {
+  brew list --installed-on-request 2>/dev/null | sort -u
+}
+
+installed_casks() {
+  brew list --cask 2>/dev/null | sort -u
+}
+
+installed_mas() {
+  command -v mas &>/dev/null || return 0
+  # mas list output: "[whitespace]<id>  <name>  (<version>)"
+  mas list 2>/dev/null \
+    | sed -E 's/^[[:space:]]*[0-9]+[[:space:]]+//; s/[[:space:]]+\([^)]*\)$//' \
+    | sort -u
+}
+
+# items in first not in second
+diff_only() {
+  comm -23 <(echo "$1") <(echo "$2")
+}
+
+print_section() {
+  local title="$1" body="$2"
+  [[ -z "$body" ]] && return
+  echo "# $title"
+  echo "$body"
+  echo
+}
+
+cmd_install() {
+  brew bundle install --file="$BREWFILE"
+}
+
+cmd_check() {
+  print_section "formulae (missing)" "$(diff_only "$(declared_formulae)" "$(installed_formulae)")"
+  print_section "casks (missing)"    "$(diff_only "$(declared_casks)"    "$(installed_casks)")"
+  print_section "mas (missing)"      "$(diff_only "$(declared_mas)"      "$(installed_mas)")"
+}
+
+cmd_extras() {
+  print_section "formulae (extra)" "$(diff_only "$(installed_formulae)" "$(declared_formulae)")"
+  print_section "casks (extra)"    "$(diff_only "$(installed_casks)"    "$(declared_casks)")"
+  print_section "mas (extra)"      "$(diff_only "$(installed_mas)"      "$(declared_mas)")"
+}
+
+cmd_status() {
+  echo "== missing =="
+  cmd_check
+  echo "== extras =="
+  cmd_extras
+}
+
+cmd_dump() {
+  local backup="$BREWFILE.bak.$(date +%Y%m%d%H%M%S)"
+  cp "$BREWFILE" "$backup"
+  echo "backed up to $backup" >&2
+
+  {
+    brew tap | sed 's/^/tap "/;s/$/"/'
+    echo
+    brew list --installed-on-request | sed 's/^/brew "/;s/$/"/'
+    echo
+    brew list --cask | sed 's/^/cask "/;s/$/"/'
+    if command -v mas &>/dev/null; then
+      echo
+      mas list | awk '{id=$1; $1=""; sub(/^ +/,""); sub(/ \([^)]*\)$/,""); printf "mas \"%s\", id: %s\n", $0, id}'
+    fi
+  } > "$BREWFILE"
+
+  echo "wrote $BREWFILE" >&2
+}
+
+confirm() {
+  read -p "$1 (y/n) " -n 1 -r
+  echo
+  [[ $REPLY =~ ^[Yy]$ ]]
+}
+
+cmd_clean() {
+  local extras_f extras_c extras_m
+  extras_f=$(diff_only "$(installed_formulae)" "$(declared_formulae)")
+  extras_c=$(diff_only "$(installed_casks)"    "$(declared_casks)")
+  extras_m=$(diff_only "$(installed_mas)"      "$(declared_mas)")
+
+  if [[ -z "$extras_f$extras_c$extras_m" ]]; then
+    echo "nothing to clean"
+    return
+  fi
+
+  if [[ -n "$extras_f" ]]; then
+    echo "extra formulae:"; echo "$extras_f"
+    if confirm "uninstall?"; then
+      echo "$extras_f" | xargs brew uninstall
+    fi
+  fi
+
+  if [[ -n "$extras_c" ]]; then
+    echo "extra casks:"; echo "$extras_c"
+    if confirm "uninstall?"; then
+      echo "$extras_c" | xargs brew uninstall --cask
+    fi
+  fi
+
+  if [[ -n "$extras_m" ]]; then
+    echo "extra mas apps:"; echo "$extras_m"
+    echo "(mas uninstall needs sudo + app id — remove manually or via App Store)"
+  fi
+}
+
+cmd_edit() {
+  ${EDITOR:-vim} "$BREWFILE"
+}
+
+case "${1:-}" in
+  install)       cmd_install ;;
+  check|missing) cmd_check ;;
+  extras)        cmd_extras ;;
+  status)        cmd_status ;;
+  dump)          cmd_dump ;;
+  clean)         cmd_clean ;;
+  edit)          cmd_edit ;;
+  ""|-h|--help)  usage ;;
+  *)             echo "unknown command: $1" >&2; usage; exit 1 ;;
+esac
