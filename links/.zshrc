@@ -23,11 +23,14 @@ export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:~/.local/share/bob/nvim-bin
+export JAVA_HOME=$(brew --prefix openjdk@21)
 export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
 export LAUNCH_EDITOR=launch-editor.sh
 export TERM='xterm-256color'
+
+export CLAUDE_CODE_NO_FLICKER=1
 
 # vi mode
 bindkey -v
@@ -90,6 +93,14 @@ export BAT_THEME='tokyonight'
 # zoxide jumper
 eval "$(zoxide init zsh)"
 
+zd() {
+  local dir
+  dir=$(fd --type d --hidden --exclude .git 2>/dev/null | fzf --query="${1:-}" --select-1 --exit-0 --no-info)
+  if [[ -n "$dir" ]]; then
+    cd "$dir"
+  fi
+}
+
 
 # integrate direnv
 eval "$(direnv hook zsh)"
@@ -125,7 +136,6 @@ alias lg='lazygit'
 alias ld='lazydocker'
 alias p='pnpm'
 alias pr='pnpm run'
-alias pi='pnpm install'
 alias t='tmux'
 alias ta='t attach'
 alias rc='vim ~/.zshrc'
@@ -133,6 +143,7 @@ alias rcs='source ~/.zshrc'
 alias vim='nvim'
 alias k='HTTPS_PROXY=socks5://localhost:8888 kubectl'
 alias oc='opencode --agent plan'
+alias prv='gh pr view --web'
 
 function r() {
   local runner=npm
