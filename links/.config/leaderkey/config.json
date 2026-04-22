@@ -206,10 +206,10 @@
       "type" : "group"
     },
     {
-      "key" : "c",
-      "label" : "goto claude code",
-      "type" : "url",
-      "value" : "raycast://extensions/anton-niklasson/claude-focus/focus-claude"
+      "key" : "t",
+      "label" : "todo",
+      "type" : "application",
+      "value" : "/Applications/Todoist.app"
     }
   ],
   "type" : "group"
