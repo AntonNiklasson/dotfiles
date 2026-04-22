@@ -19,3 +19,4 @@ gatsby
 .worktree-setup
 .config/gh/hosts.yml
 .config/gh-dash/config-work.yml
+.claude/settings.local.json
