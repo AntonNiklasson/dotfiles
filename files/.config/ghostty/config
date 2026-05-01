@@ -15,15 +15,14 @@ shell-integration-features = no-title
 
 window-colorspace = display-p3
 window-save-state = always
-window-padding-x = 4
-window-padding-y = 4
+window-padding-x = 16
+window-padding-y = 16
 window-padding-balance = true
 
 copy-on-select = clipboard
 
 desktop-notifications = true
 
-keybind = cmd+d=unbind
 keybind = shift+enter=text:\x1b\r
 
 mouse-hide-while-typing = true
