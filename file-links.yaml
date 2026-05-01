@@ -1,0 +1,21 @@
+- defaults:
+    link:
+      relink: true
+      create: true
+
+- clean: ['~', '~/.config']
+
+- link:
+    ~/.zshrc: links/.zshrc
+    ~/.gitconfig: links/.gitconfig
+    ~/.gitignore: links/.gitignore
+    ~/.hushlogin: links/.hushlogin
+    ~/AGENTS.md: links/AGENTS.md
+
+    ~/.config: links/.config
+
+    ~/.claude/settings.json: links/.claude/settings.json
+    ~/.claude/CLAUDE.md: links/.claude/CLAUDE.md
+
+    ~/.claude/skills: skills
+    ~/.agents/skills: skills

@@ -13,7 +13,7 @@ brew "zsh-vi-mode"
 brew "coreutils"
 brew "gnu-sed"
 brew "curl"
-brew "stow"
+brew "dotbot"
 brew "mas"
 brew "direnv"
 

@@ -19,7 +19,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # 1.5. prerequisites needed before brew bundle + dotfile linking
-for pkg in mas stow; do
+for pkg in mas dotbot; do
   command -v "$pkg" &>/dev/null || brew install "$pkg"
 done
 
@@ -27,16 +27,7 @@ done
 "$DOTFILES/bin/brew-dotfiles" extras
 
 # 2. link dotfiles to $HOME
-for item in "$HOME/.dotfiles/links"/.*; do
-  name=$(basename "$item")
-  [[ "$name" == "." || "$name" == ".." ]] && continue
-  target="$HOME/$name"
-  if [[ -e "$target" && ! -L "$target" ]]; then
-    mv "$target" "$target.backup"
-    echo "moved $name to $name.backup"
-  fi
-done
-stow --target="$HOME" --dir="$HOME/.dotfiles/links" .
+dotbot -d "$DOTFILES" -c "$DOTFILES/file-links.yaml"
 
 # 3. brew packages (sudo already primed at top of script)
 "$DOTFILES/bin/brew-dotfiles" install
