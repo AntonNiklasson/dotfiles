@@ -1,22 +1,22 @@
 .DS_Store
 .envrc
 
-# whitelist for links/.config
-links/.config/*
-!links/.config/gh/
-links/.config/gh/hosts.yml
-!links/.config/gh-dash/
-!links/.config/ghostty/
-!links/.config/lazygit/
-!links/.config/leaderkey/
-!links/.config/nvim/
-!links/.config/ohmyposh/
-!links/.config/tmux/
-!links/.config/yazi/
+# whitelist for files/.config
+files/.config/*
+!files/.config/gh/
+files/.config/gh/hosts.yml
+!files/.config/gh-dash/
+!files/.config/ghostty/
+!files/.config/lazygit/
+!files/.config/leaderkey/
+!files/.config/nvim/
+!files/.config/ohmyposh/
+!files/.config/tmux/
+!files/.config/yazi/
 
 # tmux plugins (installed by tpm)
-links/.config/tmux/plugins/
-links/.config/tmux/resurrect/
+files/.config/tmux/plugins/
+files/.config/tmux/resurrect/
 
 node_modules
-links/.config/gh/hosts.yml
+files/.config/gh/hosts.yml

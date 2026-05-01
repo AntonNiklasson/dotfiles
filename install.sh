@@ -27,7 +27,7 @@ done
 "$DOTFILES/bin/brew-dotfiles" extras
 
 # 2. link dotfiles to $HOME
-dotbot -d "$DOTFILES" -c "$DOTFILES/file-links.yaml"
+dotbot -d "$DOTFILES" -c "$DOTFILES/links.yml"
 
 # 3. brew packages (sudo already primed at top of script)
 "$DOTFILES/bin/brew-dotfiles" install
