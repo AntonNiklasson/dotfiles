@@ -3,12 +3,14 @@
     "commit": "",
     "pr": ""
   },
+  "spinnerTipsEnabled": false,
+  "effortLevel": "xhigh",
+  "awaySummaryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "autoCompactEnabled": false,
+  "fileCheckpointingEnabled": false,
+  "skipAutoPermissionPrompt": true,
   "permissions": {
     "defaultMode": "auto"
-  },
-  "spinnerTipsEnabled": false,
-  "awaySummaryEnabled": false,
-  "effortLevel": "xhigh",
-  "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true
+  }
 }
