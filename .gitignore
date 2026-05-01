@@ -12,6 +12,9 @@ files/.config/gh/hosts.yml
 !files/.config/leaderkey/
 !files/.config/nvim/
 !files/.config/ohmyposh/
+!files/.config/opencode/
+files/.config/opencode/*
+!files/.config/opencode/opencode.json
 !files/.config/tmux/
 !files/.config/yazi/
 
