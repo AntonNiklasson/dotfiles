@@ -10,15 +10,15 @@ preview_layout() {
   case "$1" in
     claude-vim)
       cat <<'ART'
-┌──────────┬────────────────┐
-│          │                │
-│  claude  │      vim       │
-│   40%    │                │
-│          │                │
-│          ├────────────────┤
-│          │   terminal     │
-│          │     20%        │
-└──────────┴────────────────┘
+┌───────────────┬───────────────┐
+│               │               │
+│    claude     │      vim      │
+│     50%       │               │
+│               │               │
+│               ├───────────────┤
+│               │   terminal    │
+│               │     20%       │
+└───────────────┴───────────────┘
 ART
       ;;
   esac
@@ -44,8 +44,8 @@ apply_claude_vim() {
     tmux split-window -v -c "$dir" -t 1
   fi
 
-  # resize: pane 0 = 40% width, pane 2 = 20% height
-  tmux resize-pane -t 0 -x 40%
+  # resize: pane 0 = 50% width, pane 2 = 20% height
+  tmux resize-pane -t 0 -x 50%
   tmux resize-pane -t 2 -y 20%
   tmux select-pane -t 0
 }
