@@ -69,6 +69,7 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 # history
 setopt EXTENDED_HISTORY       # save timestamp with each command
 setopt HIST_IGNORE_ALL_DUPS   # no duplicates
+setopt INC_APPEND_HISTORY     # append to histfile after each command (so copylast sees fresh entries)
 HISTSIZE=10000
 SAVEHIST=10000
 
@@ -169,11 +170,6 @@ finder() {
 	fi
 
 	rm -f -- "$tmp"
-}
-
-copy-command() {
-  fc -ln -1 | pbcopy
-  echo "Copied last command to clipboard!"
 }
 
 # pnpm
