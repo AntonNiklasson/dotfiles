@@ -104,6 +104,8 @@ zd() {
 
 
 # integrate direnv
+# work around bash 5.3.x hang on large here-strings
+export DIRENV_BASH=/bin/bash
 eval "$(direnv hook zsh)"
 
 
@@ -187,3 +189,4 @@ export PATH=$PATH:$HOME/.maestro/bin
 
 
 [[ -f ~/.workday-setup ]] && source ~/.workday-setup
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
