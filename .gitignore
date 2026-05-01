@@ -3,6 +3,7 @@
 
 # whitelist for files/.config
 files/.config/*
+!files/.config/eza/
 !files/.config/gh/
 files/.config/gh/hosts.yml
 !files/.config/gh-dash/
