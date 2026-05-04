@@ -69,6 +69,7 @@ brew "flyway"
 
 # casks — apps
 cask "1password"
+cask "bitwarden"
 cask "caffeine"
 cask "cursor"
 cask "docker-desktop"
