@@ -16,13 +16,13 @@ if (!hasPrompt) {
 
 const command = argv._[0]
 
-if (!command || !['new', 'switch', 'rm', 'setup'].includes(command)) {
+if (!command || !['new', 'switch', 'rm', 'warmup'].includes(command)) {
   console.log('')
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
   console.log('  wt switch               - Switch to existing worktree')
   console.log('  wt rm                   - Remove a worktree')
-  console.log('  wt setup [path]         - Setup/reconfigure an existing worktree')
+  console.log('  wt warmup [path]        - Apply .worktree-setup to an existing worktree (cwd by default)')
   process.exit(1)
 }
 
@@ -92,6 +92,85 @@ async function pickWorktree(promptText, filterFn = () => true, { multi = false }
     return selection.split('\n').map(line => line.split('\t')[0]).filter(Boolean)
   }
   return selection.split('\t')[0]
+}
+
+async function applyWorktreeSetup({ targetPath, runCommands }) {
+  const includesFile = `${repoRoot}/.worktree-setup`
+  if (!fs.existsSync(includesFile)) {
+    console.log('')
+    console.log('Error: .worktree-setup not found')
+    console.log('')
+    console.log('This file lists paths to copy into new worktrees (e.g. .env, node_modules).')
+    console.log(`Create it at: ${includesFile}`)
+    console.log('')
+    console.log('Example contents:')
+    console.log('  .env')
+    console.log('  .env.local')
+    console.log('  $ pnpm install')
+    console.log('')
+    console.log(`To create an empty one: touch ${includesFile}`)
+    process.exit(1)
+  }
+
+  const lines = fs.readFileSync(includesFile, 'utf-8')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line && !line.startsWith('#'))
+
+  const filesToCopy = lines.filter(line => !line.startsWith('$'))
+  const cmds = lines.filter(line => line.startsWith('$')).map(line => line.slice(1).trim())
+
+  if (filesToCopy.length > 0) {
+    console.log('Copying files from .worktree-setup...')
+    for (const pattern of filesToCopy) {
+      if (pattern.includes('*')) {
+        const matches = await glob(pattern, { cwd: repoRoot, dot: true })
+        for (const match of matches) {
+          const srcPath = `${repoRoot}/${match}`
+          const destPath = `${targetPath}/${match}`
+          console.log(`  Copying ${match}...`)
+          await fs.ensureDir(path.dirname(destPath))
+          await fs.copy(srcPath, destPath)
+        }
+        if (matches.length === 0) {
+          console.log(`  Warning: no matches for ${pattern}`)
+        }
+      } else {
+        const srcPath = `${repoRoot}/${pattern}`
+        if (fs.existsSync(srcPath)) {
+          console.log(`  Copying ${pattern}...`)
+          const destPath = `${targetPath}/${pattern}`
+          await fs.ensureDir(path.dirname(destPath))
+          await fs.copy(srcPath, destPath)
+        } else {
+          console.log(`  Warning: ${pattern} not found, skipping`)
+        }
+      }
+    }
+  }
+
+  if (runCommands && cmds.length > 0) {
+    console.log('Running setup commands...')
+    $.quiet = false
+    for (const c of cmds) {
+      console.log(`  $ ${c}`)
+      await $({ cwd: targetPath, stdio: 'inherit' })`sh -c ${c}`
+    }
+    $.quiet = true
+  }
+
+  return cmds
+}
+
+if (command === 'warmup') {
+  const targetPath = argv._[1] ? path.resolve(argv._[1]) : process.cwd()
+  if (!fs.existsSync(targetPath)) {
+    console.log(`Error: ${targetPath} does not exist`)
+    process.exit(1)
+  }
+  console.log(`Warming up worktree: ${targetPath}`)
+  await applyWorktreeSetup({ targetPath, runCommands: true })
+  process.exit(0)
 }
 
 if (command === 'switch') {
@@ -328,63 +407,7 @@ if (command === 'new') {
   }
   $.quiet = true
 
-  // Copy files from .worktree-setup
-  const includesFile = `${repoRoot}/.worktree-setup`
-  if (!fs.existsSync(includesFile)) {
-    console.log('')
-    console.log('Error: .worktree-setup not found')
-    console.log('')
-    console.log('This file lists paths to copy into new worktrees (e.g. .env, node_modules).')
-    console.log(`Create it at: ${includesFile}`)
-    console.log('')
-    console.log('Example contents:')
-    console.log('  .env')
-    console.log('  .env.local')
-    console.log('  $ pnpm install')
-    console.log('')
-    console.log(`To create an empty one: touch ${includesFile}`)
-    process.exit(1)
-  }
-
-  const lines = fs.readFileSync(includesFile, 'utf-8')
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line && !line.startsWith('#'))
-
-  const filesToCopy = lines.filter(line => !line.startsWith('$'))
-  commands = lines.filter(line => line.startsWith('$')).map(line => line.slice(1).trim())
-
-  if (filesToCopy.length > 0) {
-    console.log('Copying files from .worktree-setup...')
-    for (const pattern of filesToCopy) {
-      if (pattern.includes('*')) {
-        // Glob pattern - find matching paths
-        const matches = await glob(pattern, { cwd: repoRoot, dot: true })
-        for (const match of matches) {
-          const srcPath = `${repoRoot}/${match}`
-          const destPath = `${worktreePath}/${match}`
-          console.log(`  Copying ${match}...`)
-          await fs.ensureDir(path.dirname(destPath))
-          await fs.copy(srcPath, destPath)
-        }
-        if (matches.length === 0) {
-          console.log(`  Warning: no matches for ${pattern}`)
-        }
-      } else {
-        // Direct path
-        const srcPath = `${repoRoot}/${pattern}`
-        if (fs.existsSync(srcPath)) {
-          console.log(`  Copying ${pattern}...`)
-          const destPath = `${worktreePath}/${pattern}`
-          await fs.ensureDir(path.dirname(destPath))
-          await fs.copy(srcPath, destPath)
-        } else {
-          console.log(`  Warning: ${pattern} not found, skipping`)
-        }
-      }
-    }
-  }
-
+  commands = await applyWorktreeSetup({ targetPath: worktreePath, runCommands: false })
 }
 
 // Tmux integration
