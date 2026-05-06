@@ -10,8 +10,6 @@ require("lazy").setup({
 	spec = {
 		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
 		{ import = "lazyvim.plugins.extras.coding.yanky" },
-		{ import = "lazyvim.plugins.extras.formatting.prettier" },
-		{ import = "lazyvim.plugins.extras.formatting.biome" },
 		{ import = "lazyvim.plugins.extras.lang.typescript" },
 		{ import = "plugins" },
 	},
@@ -19,16 +17,12 @@ require("lazy").setup({
 		lazy = false,
 		version = false,
 	},
-	install = { colorscheme = { "tokyonight" } },
-	checker = { enabled = true, notify = false },
+	checker = { enabled = true, notify = true },
 	performance = {
 		rtp = {
-			-- disable some rtp plugins
 			disabled_plugins = {
 				"gzip",
-				-- "matchit",
-				-- "matchparen",
-				-- "netrwPlugin",
+				"netrwPlugin",
 				"tarPlugin",
 				"tohtml",
 				"tutor",
