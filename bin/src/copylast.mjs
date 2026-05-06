@@ -27,7 +27,11 @@ for (const line of raw.split('\n')) {
 const self = 'copylast'
 const cmds = lines
   .map(l => l.replace(/^: \d+:\d+;/, ''))
-  .filter(l => l.length > 0 && l.trim().split(/\s+/)[0] !== self)
+  .filter(l => l.length > 0)
+
+if (cmds.length > 0 && cmds[cmds.length - 1].trim().split(/\s+/)[0] === self) {
+  cmds.pop()
+}
 
 const seen = new Set()
 const unique = []
