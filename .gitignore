@@ -1,5 +1,6 @@
 .DS_Store
 .envrc
+bin/launch-editor.log
 
 # whitelist for files/.config
 files/.config/*

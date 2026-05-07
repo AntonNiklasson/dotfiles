@@ -1,75 +1,62 @@
-#! /bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Launch Editor Script
-# 
-# Opens a file in Neovim within a specific tmux session at a given line/column
+# launch-editor — open a file in the Neovim instance running in the tmux
+# window for the worktree that contains the file.
 #
-# Usage:
-#   launch-editor.sh <file-path>:<line>:<column>
-#   launch-editor.sh <file-path>:<line>
-#   launch-editor.sh <file-path>
+# Usage: launch-editor.sh <file> [<line> [<column>]]
 #
-# Examples:
-#   launch-editor.sh src/app.tsx:25:10    # Opens app.tsx at line 25, column 10
-#   launch-editor.sh src/app.tsx:25       # Opens app.tsx at line 25
-#   launch-editor.sh src/app.tsx          # Opens app.tsx at line 1
-#
-# Required tmux setup:
-#   - Session named "sana-code" must exist (create with: tmux new-session -s sana-code)
-#   - Window named "main" in that session
-#   - Neovim should be running in one of the panes (automatically detected)
-#
-# The script will:
-#   1. Parse the file path and optional line/column from the input
-#   2. Send vim commands to the tmux pane to open the file
-#   3. Activate the Ghostty terminal application
-#
-# This is typically used by external tools (e.g., error reporters, test runners)
-# to jump directly to specific code locations.
+# Invoked by the `launch-editor` npm package when $LAUNCH_EDITOR points at
+# this script: it falls through to the unknown-editor branch in get-args.js
+# and spawns us with three separate args. The target tmux window is the one
+# whose nvim pane is rooted in the file's git worktree (typically created
+# by `wt new`).
 
-# Parse argument in format: file-path.tsx:12:34
-ARG=$1
+LOG="$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")")/launch-editor.log"
+log() {
+  local line
+  line="[$(date '+%H:%M:%S')] $*"
+  printf '%s\n' "$line"
+  printf '%s\n' "$line" >>"$LOG"
+}
 
-# Split by colon to get file path and line/column
-FILE=$(echo "$ARG" | cut -d':' -f1)
-LINE=$(echo "$ARG" | cut -d':' -f2)
-COLUMN=$(echo "$ARG" | cut -d':' -f3)
+FILE=${1:-}
+LINE=${2:-1}
+COLUMN=${3:-}
+log "input: file=$FILE line=$LINE column=$COLUMN"
+[ -z "$FILE" ] && { echo "Usage: launch-editor.sh <file> [<line> [<column>]]" >&2; exit 1; }
 
-# If no line provided, default to 1
-if [ -z "$LINE" ]; then
-  LINE=1
+if [[ "$FILE" != /* ]]; then
+  FILE="$PWD/$FILE"
 fi
 
-# If column is provided, use it; otherwise just use line
-if [ -n "$COLUMN" ]; then
-  OPEN_COMMAND=":e $FILE | :$LINE | normal! ${COLUMN}|"
+WORKTREE=$(git -C "$(dirname "$FILE")" rev-parse --show-toplevel 2>/dev/null) || {
+  echo "launch-editor: $FILE is not inside a git worktree" >&2
+  exit 1
+}
+
+TARGET=$(tmux list-panes -a \
+  -F '#{session_name}:#{window_index}.#{pane_index}|#{pane_current_path}|#{pane_current_command}' 2>/dev/null \
+  | awk -F'|' -v wt="$WORKTREE" '
+      ($2 == wt || index($2, wt"/") == 1) && $3 ~ /^(n?vim|neovim)$/ { print $1; exit }')
+
+if [ -z "$TARGET" ]; then
+  echo "launch-editor: no nvim pane found for worktree $WORKTREE" >&2
+  exit 1
+fi
+
+WINDOW=${TARGET%.*}
+
+if [ -n "${COLUMN:-}" ]; then
+  OPEN=":e +$LINE $FILE | normal! ${COLUMN}|"
 else
-  OPEN_COMMAND=":e $FILE | :$LINE"
+  OPEN=":e +$LINE $FILE"
 fi
 
-TERMINAL="Ghostty"
-SESSION="sana-code"
-WINDOW="main"
+log "target: pane=$TARGET worktree=$WORKTREE"
+log "send: $OPEN"
 
-tmux has-session -t $SESSION 2>/dev/null
-
-if [ $? != 0 ]; then
-  echo "Session $SESSION does not exist."
-else
-  # Find the first pane running nvim/neovim
-  PANE=$(tmux list-panes -t "$SESSION:$WINDOW" -F '#{pane_index} #{pane_current_command}' | grep -E 'nvim|neovim' | head -1 | cut -d' ' -f1)
-  
-  if [ -z "$PANE" ]; then
-    echo "No Neovim instance found in $SESSION:$WINDOW"
-    exit 1
-  fi
-  
-  # Switch the client to the sana-code session and main window
-  tmux switch-client -t "$SESSION:$WINDOW" 2>/dev/null
-  # Send the vim command to open the file (escape to ensure normal mode)
-  tmux send-keys -t "$SESSION:$WINDOW.$PANE" Escape "$OPEN_COMMAND" Enter
-  # Focus the Neovim pane
-  tmux select-pane -t "$SESSION:$WINDOW.$PANE"
-  # Activate the terminal
-  osascript -e 'tell application "'$TERMINAL'" to activate' 2>/dev/null
-fi
+tmux switch-client -t "$WINDOW" 2>/dev/null || true
+tmux send-keys -t "$TARGET" Escape "$OPEN" Enter
+tmux select-pane -t "$TARGET"
+osascript -e 'tell application "Ghostty" to activate' 2>/dev/null || true
