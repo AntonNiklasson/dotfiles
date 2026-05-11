@@ -25,7 +25,7 @@ return {
 	opts = {
 		formatters_by_ft = {
 			["markdown.mdx"] = { "prettier" },
-			astro = { "prettier" },
+			astro = { js_fmt },
 			javascript = js_fmt,
 			javascriptreact = js_fmt,
 			typescript = js_fmt,
