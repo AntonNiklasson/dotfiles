@@ -137,6 +137,7 @@ export EZA_CONFIG_DIR="$HOME/.config/eza"
 alias ls='eza --long --group-directories-first --icons=always --all --no-user --no-permissions --no-time'
 alias lg='lazygit'
 alias ld='lazydocker'
+alias lk='k9s'
 alias p='pnpm'
 alias pr='pnpm run'
 alias t='tmux'
@@ -145,6 +146,7 @@ alias rc='vim ~/.zshrc'
 alias rcs='source ~/.zshrc'
 alias vim='nvim'
 alias k='HTTPS_PROXY=socks5://localhost:8888 kubectl'
+function k9s() { HTTPS_PROXY=socks5://localhost:8888 command k9s "$@"; }
 alias oc='opencode --agent plan'
 alias prv='gh pr view --web'
 
