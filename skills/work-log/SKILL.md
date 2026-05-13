@@ -1,11 +1,11 @@
 ---
-name: work-summary
+name: work-log
 description: Pull Anton's work signal for a given ISO week from GitHub, Linear, Fantastical, Obsidian daily notes, and Todoist, and print a dense research brief he uses to draft his Work Log bullets manually. Use for the Friday ritual (current week) or backfilling past weeks.
 ---
 
-# Work Summary
+# Work Log
 
-**Anton writes the Work Log bullets himself.** The agent's job is to surface enough signal across his work systems that drafting becomes a 5-minute scan rather than a memory exercise. Don't write to Work Log.md.
+**Anton writes the Work Log bullets himself.** The agent's job is to surface enough signal across his work systems that drafting becomes a 5-minute scan rather than a memory exercise. Default flow ends at the printed brief — only draft and write to Work Log.md if Anton explicitly asks (see "After the brief" below).
 
 End goal context: bullets eventually go under the right ISO-week heading in `~/notes/02 Areas/Sana/Work Log.md`. The log is low-bar and matter-of-fact; see `~/notes/02 Areas/Sana/My weekly approach to logging work.md` for the philosophy ("log, don't curate"). Knowing this shapes the output: it's research material *for* a Work Log entry, not a polished summary.
 
@@ -13,13 +13,17 @@ End goal context: bullets eventually go under the right ISO-week heading in `~/n
 
 | Source | Tool | What to pull |
 |--------|------|--------------|
-| GitHub | `gh` CLI | PRs opened/merged, reviews, commits |
+| GitHub (all hosts) | `gh` CLI | PRs opened/merged, reviews — across every authenticated host |
 | Linear | `linear-server` MCP | Issues completed/created, cycle progress |
 | Fantastical | `fantastical` MCP | Calendar events, meeting load |
 | Obsidian | `obsidian` CLI | Daily notes (vault: `~/notes`, daily folder: `calendar/days/`) |
 | Todoist | `td` CLI | Completed and added tasks |
 
-If a tool is missing or unauthenticated, say abort and let me reconfigure it.
+## Pre-flight tool check
+
+Before fanning out, probe every source. If any is missing, expired, or broken, stop and tell Anton which one — wait for him to fix it (`/mcp` re-auth, etc.) before continuing. Don't paper over a missing source by guessing from memory.
+
+For GitHub specifically: discover hosts at runtime rather than hardcoding them. `gh auth status` lists every authenticated host (e.g. `github.com`, plus any GitHub Enterprise instance). Cross-check against `git -C ~/code/<repo> remote -v` if you want to confirm a host shows up in real work. Run every GitHub query once per authenticated host using `GH_HOST=<host>` — Anton's day-job code typically lives on a different host than personal projects, and missing one is the biggest failure mode of this skill.
 
 ## Resolving the week
 
@@ -36,28 +40,12 @@ Compute the Mon/Sun boundaries and the ISO week number, and state both at the st
 
 ### GitHub — `gh` CLI
 
-Prefer the events API over `gh search` (no rate limits, includes draft activity):
+Run every query once per authenticated host (see Pre-flight). For each host, pull:
+- PRs **opened** by `@me` in the date range
+- PRs **merged** by `@me` in the date range — use `--merged --merged-at=">=YYYY-MM-DD"`. Don't use `--state=merged`; that flag only takes `open|closed`.
+- PRs **reviewed** by `@me` in the date range — `--reviewed-by=@me --updated=">=YYYY-MM-DD"`
 
-```bash
-gh api user/events --paginate | jq --arg since "<ISO>" '
-  [.[] | select(.created_at >= $since)
-        | select(.type | IN("PullRequestEvent","PullRequestReviewEvent","PushEvent","IssuesEvent"))]'
-```
-
-For PRs specifically (clearer titles + state):
-
-```bash
-gh search prs --author=@me --created=">=YYYY-MM-DD" --json number,title,state,repository,url,createdAt,closedAt
-gh search prs --author=@me --updated=">=YYYY-MM-DD" --state=merged --json number,title,repository,mergedAt,url
-```
-
-For reviews given to others:
-
-```bash
-gh search prs --reviewed-by=@me --updated=">=YYYY-MM-DD" --json number,title,repository,author,url
-```
-
-Group by repo. Note draft vs. ready vs. merged. Skip dependabot/renovate noise unless asked.
+Group by repo. Note draft vs. ready vs. merged. Skip dependabot/renovate noise unless asked. If a snippet is needed, derive it from `gh search prs --help` rather than copying old patterns — the flags drift.
 
 ### Linear — `linear-server` MCP
 
@@ -83,25 +71,15 @@ Report meeting count and rough total hours, then 5–10 highlights grouped by th
 
 ### Obsidian — `obsidian` CLI
 
-The vault is `~/notes`. Daily notes live in `calendar/days/YYYY-MM-DD.md`. Read them directly:
-
-```bash
-obsidian daily:read date=YYYY-MM-DD     # if the date is "today" or relative this works
-cat ~/notes/calendar/days/YYYY-MM-DD.md  # exact path read; faster for ranges
-```
+The vault is `~/notes`. Daily notes live in `calendar/days/YYYY-MM-DD.md`. Always go via the `obsidian` CLI per the obsidian skill — don't `cat` the files directly.
 
 Iterate the date range, read each daily note, and surface: explicit work items, people mentioned (`[[@Name]]`), projects (`[[Project Name]]`), and decisions/blockers. Skip empty or near-empty notes. Daily notes are the richest signal for *why* something happened — quote them sparingly when they explain context the other sources can't.
 
 ### Todoist — `td` CLI
 
-`td` is `@doist/todoist-cli`, installed globally under fnm-managed node. Non-interactive shells (like this Bash tool) don't load fnm, so invoke via the stable shim:
+Use the **`todoist` skill** for all `td` invocations — it's the single source of truth for the shim path, JSON shape, and known quirks. For work-summary specifically, you want completed-in-range; the todoist skill recommends `td activity --event completed --by me --since/--until` over `td completed` (richer event log).
 
-```bash
-~/.local/share/fnm/aliases/default/bin/td completed --since YYYY-MM-DD --until YYYY-MM-DD --json
-~/.local/share/fnm/aliases/default/bin/td activity --json   # added/completed/edits feed
-```
-
-Use `--json` (or `--ndjson` for streaming) — the CLI explicitly recommends it for agent use. Surface operational/admin work that doesn't show up in GitHub or Linear; group by project where useful.
+Surface operational/admin work that doesn't show up in GitHub or Linear; group by project where useful. If output looks wrong (open tasks instead of completions, etc.), flag it and skip — don't guess.
 
 ## Output shape
 
@@ -130,11 +108,21 @@ Keep it dense and skimmable. No prose paragraphs, no narrative — Anton wants t
 
 The W17 entry in `Work Log.md` is a useful reference for what kind of detail level eventually lands in the log — that informs which bullets are worth surfacing in the brief.
 
+## After the brief — drafting and writing
+
+Default flow:
+1. Print the research brief.
+2. If Anton asks for a draft, propose bullets in chat *first* (matching the prior week's tone — open `Work Log.md` and skim 1–2 recent entries to calibrate detail level). **Don't write to the file yet.**
+3. Wait for explicit go-ahead ("looks good, add it", "yes write it"). Only then append the new ISO-week heading above the most recent week in `~/notes/02 Areas/Sana/Work Log.md` via the `obsidian` CLI.
+4. Preserve any existing edits Anton made manually — only insert the new heading + bullets, don't rewrite surrounding weeks.
+
+Keep the brief itself dense and over-inclusive. Boiling down to bullets happens at step 2, not step 1 — better to have too much context and trim than to filter prematurely.
+
 ## Guardrails
 
 - **Don't fabricate.** If a source is empty, say so and skip it. No plausible-sounding work to fill gaps.
-- **Don't write to Work Log.md.** Anton drafts the bullets himself.
-- **Pull from artifacts, not memory.** If a source is unavailable, abort that source rather than guessing — matches the rule on line 20.
+- **Don't write to Work Log.md without explicit consent.** Default is print-and-wait. Anton drives when bullets land.
+- **Pull from artifacts, not memory.** If a source is unavailable after the pre-flight check, abort that source rather than guessing.
 
 ## Common requests
 
