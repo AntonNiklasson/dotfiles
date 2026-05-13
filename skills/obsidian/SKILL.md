@@ -81,4 +81,10 @@ Full help: `timeout 5 obsidian --help`. Per-command help: `obsidian help <comman
 
 ## When to use CLI vs direct filesystem
 
-Prefer the CLI — it understands wikilinks, tags, backlinks, daily-note config, templates, and frontmatter, and updates backlinks on rename/move. Fall back to `Read` + `rg ~/notes` only for raw multi-file scans the CLI can't express, or when the app isn't available.
+Always go via the `obsidian` CLI for both reads and writes. It understands wikilinks, tags, backlinks, daily-note config, templates, and frontmatter, and updates backlinks on rename/move. Direct `Read` / `Write` / `rg ~/notes` is only acceptable for raw multi-file scans the CLI can't express, or if the app is genuinely unavailable. Convenience is not a reason to bypass it.
+
+## Note conventions
+
+- **No H1 with the note title.** Obsidian renders the filename as the title inline; an H1 duplicates it. Start the body with frontmatter, then content (subheadings as `##` and below).
+- Frontmatter is required (`type:` at minimum) — see vault rules in `~/notes/.claude/CLAUDE.md`.
+- Link liberally with `[[wiki links]]`. People are `[[@Name]]`.
