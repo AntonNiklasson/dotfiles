@@ -27,22 +27,22 @@ ART
 apply_claude_vim() {
   local pane_count dir
 
-  # kill panes beyond the 3rd (from last down to index 3)
+  # kill panes beyond the 3rd
   pane_count=$(tmux list-panes | wc -l | tr -d ' ')
   while [ "$pane_count" -gt 3 ]; do
     tmux kill-pane -t ":.{last}"
     pane_count=$((pane_count - 1))
   done
 
-  # create missing panes if fewer than 3
+  # add panes until we have 3
   dir=$(tmux display-message -p '#{pane_current_path}')
-  pane_count=$(tmux list-panes | wc -l | tr -d ' ')
-  if [ "$pane_count" -eq 1 ]; then
+  while [ "$pane_count" -lt 3 ]; do
     tmux split-window -h -c "$dir"
-    tmux split-window -v -c "$dir" -t 1
-  elif [ "$pane_count" -eq 2 ]; then
-    tmux split-window -v -c "$dir" -t 1
-  fi
+    pane_count=$((pane_count + 1))
+  done
+
+  # normalize: main-vertical puts pane 0 left, panes 1/2 stacked on right
+  tmux select-layout main-vertical
 
   # resize: pane 0 = 50% width, pane 2 = 20% height
   tmux resize-pane -t 0 -x 50%

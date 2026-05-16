@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+list_entries() {
+  local s d base name
+  local icon_session=$'\033[32m\xee\x9a\xb6\033[0m'  # nf-cod-terminal_tmux (green)
+  local icon_folder=$'\xef\x81\xbb'                  # nf-fa-folder
+
+  declare -A session_set=()
+  while IFS= read -r s; do
+    [ -n "$s" ] || continue
+    session_set[$s]=1
+    printf 's\t%s\t%s  %s\n' "$s" "$icon_session" "$s"
+  done < <(tmux list-sessions -F '#{session_last_attached} #{session_name}' 2>/dev/null \
+            | sort -rn | cut -d' ' -f2- || true)
+
+  while IFS= read -r d; do
+    base=${d##*/}
+    name=${base#.}
+    name=${name//[.:]/_}
+    [ -n "${session_set[$name]:-}" ] && continue
+    printf 'd\t%s\t%s  %s\n' "$d" "$icon_folder" "$base"
+  done < <(
+    find "$HOME/code" -maxdepth 1 -mindepth 1 -type d ! -name '*--*' 2>/dev/null
+    echo "$HOME/.dotfiles"
+  )
+}
+
+if [ "${1:-}" = "--list" ]; then
+  list_entries
+  exit 0
+fi
+
+selected=$(
+  list_entries |
+    fzf --ansi --reverse --no-info --prompt='> ' \
+        --with-nth=3 --delimiter=$'\t' --tiebreak=index \
+        --header='ctrl-x: kill session' \
+        --bind "ctrl-x:execute-silent([ {1} = s ] && tmux kill-session -t {2})+reload($0 --list)"
+)
+[ -z "$selected" ] && exit 0
+
+type=${selected%%$'\t'*}
+rest=${selected#*$'\t'}
+key=${rest%%$'\t'*}
+
+if [ "$type" = "s" ]; then
+  name=$key
+else
+  base=${key##*/}
+  name=${base#.}
+  name=${name//[.:]/_}
+  if ! tmux has-session -t="$name" 2>/dev/null; then
+    tmux new-session -ds "$name" -c "$key"
+  fi
+fi
+
+if [ -n "${TMUX:-}" ]; then
+  tmux switch-client -t "$name"
+else
+  tmux attach -t "$name"
+fi
