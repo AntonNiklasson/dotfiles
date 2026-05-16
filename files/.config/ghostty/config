@@ -1,6 +1,7 @@
 theme=TokyoNight Night
 
-title = ""
+macos-window-buttons = hidden
+macos-titlebar-style = tabs
 
 font-family = GeistMono Nerd Font Mono
 font-thicken = true
@@ -13,7 +14,10 @@ background-blur-radius = 20
 mouse-hide-while-typing = true
 shell-integration-features = no-title
 
+title = ""
+
 window-colorspace = display-p3
+window-decoration = server
 window-save-state = always
 window-padding-x = 8
 window-padding-y = 8
