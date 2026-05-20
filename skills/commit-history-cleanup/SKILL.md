@@ -7,7 +7,18 @@ description: Reshape the commit history of the current branch / PR. Soft-reset b
 
 Take a branch with messy history (WIP commits, fixups, "address review", out-of-order changes) and rewrite it as a tidy sequence of focused commits. Net diff vs. base is unchanged; only the commit boundaries move.
 
-Anton prefers small, focused commits. The point of this skill is to optimise for *reviewability of each commit*, not commit count.
+## North star: make the PR easy to review
+
+The single goal is to make the PR understandable to a reviewer reading it commit-by-commit. Commit count, "cleanliness", and aesthetic tidiness are not goals — they're side effects of doing the real job: turning a blob of changes into a narrative the reviewer can follow.
+
+Concretely, after the rewrite a reviewer should be able to:
+
+- Read the commit subjects top-to-bottom and predict roughly what the PR does and in what order.
+- Open any single commit and understand it without holding the rest of the diff in their head.
+- Tell at a glance which commits are the *interesting* ones (real behaviour change) and which are noise (renames, formatting, generated files, lockfiles, mechanical refactors).
+- Skip the noise commits with confidence and spend their attention on the substance.
+
+Every decision below — chunk boundaries, ordering, what gets its own commit, what gets merged — is in service of that.
 
 ## Flow
 
@@ -16,7 +27,7 @@ Anton prefers small, focused commits. The point of this skill is to optimise for
 - Current branch: `git rev-parse --abbrev-ref HEAD`
 - Base branch is usually `main`. Verify with `git merge-base --fork-point main HEAD` or just `git merge-base main HEAD`.
 - Count commits being rewritten: `git log --oneline <base>..HEAD`
-- If the branch is already pushed, note that the cleanup will require `git push --force-with-lease` afterwards. **Ask Anton before force-pushing.**
+- If the branch is already pushed, note that the cleanup will require `git push --force-with-lease` afterwards. **Ask the human for confirmation before force-pushing.**
 
 ### 2. Safety net
 
@@ -46,15 +57,19 @@ git diff --cached -- <path>              # one file at a time when the blob is b
 
 Read everything once before deciding on chunks. Look for:
 
-- **Mixed concerns** in one file (e.g. an unrelated rename alongside the real change) — these split at the hunk level.
-- **Refactor vs. behaviour change** — almost always belong in separate commits, refactor first.
+- **Mixed concerns** in one file (e.g. an unrelated rename alongside the real change) — these split at the hunk level, so the reviewer isn't decoding two things at once.
+- **Refactor vs. behaviour change** — almost always belong in separate commits, refactor first. Reviewer reads the no-op move, then the real change against a stable baseline.
 - **Dependency order** — if commit B won't build without commit A, A must come first.
 - **Tests** — colocate with the code they cover unless tests stand alone.
-- **Generated files / lockfiles / formatting** — usually their own commit.
+- **Generated files / lockfiles / formatting / mass renames** — usually their own commit so the reviewer can skip them.
 
 ### 5. Plan the chunks
 
-Write out the planned commits (subject lines) before staging anything. Each commit should answer: "what does this change, and why is it its own commit?" If two chunks have the same answer, merge them.
+Write out the planned commits (subject lines) before staging anything. For each one, answer: "if a reviewer reads only this commit's subject + diff, will they understand it?" If two chunks have the same answer, merge them. If one chunk needs two answers, split it.
+
+**"and" in a subject is a smell.** If the subject reads "do X and Y", that's usually two commits hiding as one. Try dropping the "and" — if the remaining half still describes the diff honestly, split. If both halves are genuinely one cohesive change ("rename and reflow `foo.ts`", "add user and admin endpoints"), leave it. The point is to force the question, not to ban the word.
+
+Order the chunks the way you'd want a reviewer to encounter them: setup / refactors / mechanical noise first, the meaty behaviour change next, follow-ups (docs, tests that exercise the new behaviour) last. The PR should read like a story, not a checklist.
 
 ### 6. Stage and commit, chunk by chunk
 
@@ -77,7 +92,7 @@ git status                           # confirm remaining changes
 
 Repeat until `git status` is clean.
 
-Per Anton's global rules: **do not commit without explicit approval**. Surface the planned commits for sign-off first, then execute.
+**Do not commit without explicit approval.** Surface the planned commits for sign-off first, then execute.
 
 ### 7. Each commit must pass formatting
 
@@ -96,8 +111,6 @@ If a pre-commit hook enforces formatting and the commit fails: fix and re-stage,
 
 ### 8. Verify
 
-### 7. Verify
-
 ```sh
 git log --oneline <base>..HEAD                    # the new history
 git diff <base>..HEAD --stat                      # should match step 4's stat
@@ -106,13 +119,15 @@ git diff <backup-branch>..HEAD                    # MUST be empty — net change
 
 The last check is the important one: if `git diff backup..HEAD` is non-empty, something was dropped or added. Investigate before pushing.
 
+Then sanity-check from a reviewer's seat: read just the `git log --oneline` output. Does it tell a coherent story? If a subject is vague ("misc fixes", "updates") or you can't guess what's inside, rename or re-split before pushing.
+
 ### 9. Push (with confirmation)
 
 ```sh
 git push --force-with-lease
 ```
 
-Only after Anton confirms. `--force-with-lease` (not `--force`) refuses to overwrite if the remote moved.
+Only after the human confirms. `--force-with-lease` (not `--force`) refuses to overwrite if the remote moved.
 
 ## Tips
 
@@ -120,4 +135,4 @@ Only after Anton confirms. `--force-with-lease` (not `--force`) refuses to overw
 - If a planned chunk turns out to need pieces from multiple files, stage them all before committing — don't make a separate commit per file just because the chunking command was per-file.
 - If the soft reset reveals the branch is actually clean enough already, abort and `git reset --hard <original-sha>` (the backup branch or reflog SHA). No shame in doing nothing.
 - If hunks are entangled (same hunk contains two concerns), use `git add -p` with `e` to edit the hunk, or `git stash -p` to set aside the part you don't want yet.
-- For commits that need a body: `git commit -m "subject" -m "body"` or `git commit` (opens editor) — but Anton's commits tend to be subject-only unless context is genuinely needed.
+- For commits that need a body: `git commit -m "subject" -m "body"` or `git commit` (opens editor) — but prefer subject-only unless context is genuinely needed.
