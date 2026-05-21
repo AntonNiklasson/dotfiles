@@ -138,6 +138,7 @@ alias ls='eza --long --group-directories-first --icons=always --all --no-user --
 alias lg='lazygit'
 alias ld='lazydocker'
 alias lk='k9s'
+alias top='btop'
 alias p='pnpm'
 alias pr='pnpm run'
 alias t='tmux'
