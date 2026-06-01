@@ -3,18 +3,19 @@
     "commit": "",
     "pr": ""
   },
-  "spinnerTipsEnabled": false,
-  "effortLevel": "xhigh",
-  "awaySummaryEnabled": false,
-  "skipDangerousModePermissionPrompt": true,
-  "autoCompactEnabled": false,
-  "fileCheckpointingEnabled": false,
-  "skipAutoPermissionPrompt": true,
   "permissions": {
     "defaultMode": "auto"
   },
   "statusLine": {
     "type": "command",
     "command": "input=$(cat); used=$(echo \"$input\" | jq -r '(.context_window.current_usage.input_tokens // 0) + (.context_window.current_usage.cache_creation_input_tokens // 0) + (.context_window.current_usage.cache_read_input_tokens // 0)'); total=$(echo \"$input\" | jq -r '.context_window.context_window_size // 200000'); awk -v u=\"$used\" -v t=\"$total\" 'function f(n){if(n>=1000000)return sprintf(\"%.1fM\",n/1000000);if(n>=1000)return sprintf(\"%.1fk\",n/1000);return \"0k\"} BEGIN{printf \"%s / %s\",f(u),f(t)}'; branch=$(git branch --show-current 2>/dev/null); [ -n \"$branch\" ] && printf \" \\033[32m%s\\033[0m\" \"$branch\"; :"
-  }
+  },
+  "spinnerTipsEnabled": false,
+  "effortLevel": "xhigh",
+  "awaySummaryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
+  "autoCompactEnabled": false,
+  "fileCheckpointingEnabled": false,
+  "skipAutoPermissionPrompt": true
 }
