@@ -24,6 +24,7 @@ list_entries() {
   done < <(
     find "$HOME/code" -maxdepth 1 -mindepth 1 -type d ! -name '*--*' 2>/dev/null
     echo "$HOME/.dotfiles"
+    echo "$HOME/notes"
   )
 }
 
@@ -53,6 +54,14 @@ else
   name=${name//[.:]/_}
   if ! tmux has-session -t="$name" 2>/dev/null; then
     tmux new-session -ds "$name" -c "$key"
+    parent=${key%/*}
+    for wt in "$parent/$base"--*/; do
+      [ -d "$wt" ] || continue
+      wt=${wt%/}
+      wname=${wt##*--}
+      wname=${wname//[.:]/_}
+      tmux new-window -d -t "$name:" -c "$wt" -n "$wname"
+    done
   fi
 fi
 
