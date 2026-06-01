@@ -1,3 +1,4 @@
+vim.g.autoformat = false
 vim.g.root_spec = { "cwd" }
 vim.opt.conceallevel = 0
 vim.opt.cursorline = true
