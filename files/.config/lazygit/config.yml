@@ -1,5 +1,4 @@
 gui:
-  screenMode: full
   nerdFontsVersion: "3"
   showListFooter: false
   showPanelJumps: false
