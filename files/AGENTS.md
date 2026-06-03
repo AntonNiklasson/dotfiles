@@ -10,3 +10,4 @@
 - i prefer smaller, focused, commits
 - always open new pull requests as drafts, unless explicitly told otherwise
 - when updating title and body of a pull request, do it as an edit to what's already there to avoid overwriting important information
+- never create git worktrees automatically. only create a worktree when i explicitly ask you to
