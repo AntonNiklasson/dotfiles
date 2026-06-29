@@ -13,6 +13,7 @@
   "spinnerTipsEnabled": false,
   "effortLevel": "xhigh",
   "awaySummaryEnabled": false,
+  "autoUpdatesChannel": "stable",
   "skipDangerousModePermissionPrompt": true,
   "theme": "auto",
   "autoCompactEnabled": false,
