@@ -5,12 +5,29 @@ description: Read and write notes in Anton's Obsidian vault. It is a deep person
 
 # Obsidian
 
-Vault lives at `~/notes` (vault name `notes`). The `obsidian` command on PATH is the Obsidian.app binary — it doubles as a full CLI that drives the running app. First call launches the app (~2s); subsequent calls return in <300ms and exit cleanly.
+Vault lives at `~/notes` (vault name `notes`). Access is via the **official Obsidian CLI** (shipped in Obsidian 1.12.7+) — a registered client binary that talks to the **already-running** Obsidian app over IPC. Official docs: https://obsidian.md/help/cli
+
+Key facts that drive everything below:
+- The CLI does **not** launch the app. The app must already be open in the background; if it isn't, calls fail or hang.
+- The registered binary lives at `/usr/local/bin/obsidian` on macOS (created by the in-app registration step), **not** inside the `.app` bundle. Calling the bundle's Mach-O directly (`/Applications/Obsidian.app/Contents/MacOS/obsidian`) just cold-launches the GUI and errors with "Argument must be a file path or a NativeImage" — that is the wrong binary.
+- Targets the most-recently-focused vault by default; pass `vault=notes` as the first arg to be explicit.
+
+## Preflight (do this once per session before relying on the CLI)
+
+```sh
+which obsidian                 # must be /usr/local/bin/obsidian (the registered CLI)
+pgrep -f "Obsidian.app/Contents/MacOS/Obsidian" >/dev/null && echo "app running" || echo "app NOT running"
+```
+
+- If `which obsidian` resolves into `…/Obsidian.app/Contents/MacOS/…`, the official CLI is **not** registered (or is shadowed by a stale PATH entry). For read-only work, fall back to reading files directly from `~/notes` (see below) instead of fighting it.
+- If the app isn't running, either start it or fall back to direct file reads.
+
+Setup, if the CLI isn't registered (one-time): the CLI binary ships with the **installer** (1.12.7+), and Obsidian's auto-updater only bumps the app package, not the installer. So check Settings → General: if "Version" is ≥1.12.7 but "Installer version" is older (and it nags "installer is out of date"), **download and reinstall the latest installer first** — otherwise there's no CLI binary to register. Then Settings → General → Command line interface → **Register CLI**, and restart the terminal. Both are manual steps the user must do — you can't do them for them.
 
 ## Invocation
 
 ```
-obsidian <command> key=value key=value
+obsidian [vault=notes] <command> key=value key=value [flags]
 ```
 
 - `file=<name>` resolves by name like wikilinks (`file=Astro`, no `.md`)
@@ -18,15 +35,7 @@ obsidian <command> key=value key=value
 - Quote values with spaces, e.g. `name="My Note"`
 - `\n` and `\t` are accepted in `content=` values
 - Most commands default to the active file when `file`/`path` is omitted
-
-Wrap with `timeout 5 obsidian …` as a safety belt on the first invocation in a session. Every call prints two noise header lines — strip them or just ignore them:
-
-```
-2026-04-24 13:24:22 Loading updated app package …
-Your Obsidian installer is out of date. Please download the latest installer …
-```
-
-To suppress: `| grep -vE '(Loading updated app package|installer is out of date)'`.
+- Many list/read commands take `format=json|tsv|csv|text|tree|md|yaml`, plus `total` (count only) and `--copy` (output to clipboard)
 
 ## Common commands
 
@@ -38,7 +47,7 @@ obsidian search query=astro limit=5        # filenames matching query
 obsidian search:context query=astro        # matches with line context
 obsidian daily:read                        # today's daily note
 obsidian files folder="02 Areas"           # list files (optional filter)
-obsidian outline file=Astro                # heading outline
+obsidian outline file=Astro                # heading outline (format=tree|md|json)
 obsidian recents                           # recently opened files
 ```
 
@@ -49,7 +58,7 @@ obsidian tags counts                       # all tags with counts
 obsidian tags file=Astro                   # tags on one note
 obsidian backlinks file=Astro              # notes linking here
 obsidian links file=Astro                  # outgoing links
-obsidian tasks todo                        # open tasks (add done / status=x / path=…)
+obsidian tasks todo                        # open tasks (add done / status="x" / path=…)
 obsidian properties file=Astro             # frontmatter properties
 obsidian property:read name=status file=Astro
 ```
@@ -74,14 +83,16 @@ obsidian open file=Astro                   # open in app
 obsidian daily                             # open today's daily
 obsidian search:open query=astro           # trigger in-app search view
 obsidian vault info=path                   # vault info (name|path|files|folders|size)
-obsidian command id=editor:toggle-fold     # execute any Obsidian command id
 ```
 
-Full help: `timeout 5 obsidian --help`. Per-command help: `obsidian help <command>`.
+Full help: `obsidian --help`. Per-command help: `obsidian help <command>`.
 
-## When to use CLI vs direct filesystem
+## When to use the CLI vs direct filesystem
 
-Always go via the `obsidian` CLI for both reads and writes. It understands wikilinks, tags, backlinks, daily-note config, templates, and frontmatter, and updates backlinks on rename/move. Direct `Read` / `Write` / `rg ~/notes` is only acceptable for raw multi-file scans the CLI can't express, or if the app is genuinely unavailable. Convenience is not a reason to bypass it.
+- **Writes, and reads that need vault semantics** (wikilink/backlink resolution, daily-note config, templates, frontmatter, rename/move that updates backlinks): use the CLI — but only after the preflight passes. The CLI is the only thing that keeps links consistent on rename/move.
+- **Plain read-only access** (reading a known daily note, grepping across notes): reading files directly from `~/notes` is a perfectly good — often better — path. It's fast, needs no running app, and avoids the cold-launch failure mode. Daily notes are at `~/notes/calendar/days/YYYY-MM-DD.md`. Don't burn time driving the CLI for a read you can do with `Read`/`rg`.
+
+Rule of thumb: **CLI for writes and link-aware operations; direct files for reads** when the app may not be running.
 
 ## Note conventions
 
