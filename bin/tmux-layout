@@ -3,11 +3,19 @@
 set -euo pipefail
 
 LAYOUTS=(
+  "even-horizontal;even horizontal"
   "claude-vim;claude + vim + terminal"
 )
 
 preview_layout() {
   case "$1" in
+    even-horizontal)
+      cat <<'ART'
+┌───────┬───────┬───────┐
+│ pane0 │ pane1 │ pane2 │
+└───────┴───────┴───────┘
+ART
+      ;;
     claude-vim)
       cat <<'ART'
 ┌───────────────┬───────────────┐
@@ -65,6 +73,7 @@ else
 fi
 
 case "$name" in
+  even-horizontal) tmux select-layout even-horizontal ;;
   claude-vim) apply_claude_vim ;;
   *) echo "Unknown layout: $name"; exit 1 ;;
 esac
