@@ -177,6 +177,18 @@ finder() {
 	rm -f -- "$tmp"
 }
 
+# Run SQL against a libpq service (~/.pg_service.conf) and get JSON out via jq.
+# Usage: psql-query <service> <query> [jq-filter]
+#        psql-query sana-local "select id, name from users limit 5"
+#        psql-query sana-local "select * from users" '.[].name'
+function psql-query() {
+  local service="$1"
+  local query="${2%;}"            # strip trailing semicolon
+  local jq_filter="${3:-.}"
+  psql "service=${service}" -tAc \
+    "select coalesce(json_agg(t), '[]') from ($query) t" | jq "$jq_filter"
+}
+
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
