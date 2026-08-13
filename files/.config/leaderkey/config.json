@@ -46,7 +46,7 @@
         }
       ],
       "iconPath" : "gearshape",
-      "key" : ",",
+      "key" : "s",
       "label" : "system",
       "type" : "group"
     },
@@ -74,24 +74,19 @@
       "type" : "group"
     },
     {
-      "key" : "h",
+      "key" : "j",
       "type" : "application",
       "value" : "/Applications/Google Chrome.app"
     },
     {
-      "key" : "j",
+      "key" : "l",
       "type" : "application",
-      "value" : "/Applications/Zen.app"
+      "value" : "/Applications/Google Chrome Canary.app"
     },
     {
       "key" : "k",
       "type" : "application",
       "value" : "/Applications/Ghostty.app"
-    },
-    {
-      "key" : "l",
-      "type" : "application",
-      "value" : "/Applications/Slack.app"
     },
     {
       "key" : "n",
@@ -136,12 +131,6 @@
           "label" : "todoist",
           "type" : "application",
           "value" : "/Applications/Todoist.app"
-        },
-        {
-          "key" : "l",
-          "label" : "linear",
-          "type" : "application",
-          "value" : "/Applications/Linear.app"
         }
       ],
       "iconPath" : "rectangle.portrait.and.arrow.right",
