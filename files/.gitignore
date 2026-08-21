@@ -16,7 +16,7 @@ bower_components
 .vimrc
 configstore
 gatsby
-.worktree-setup
+.worktree-setup.yml
 .config/gh/hosts.yml
 .config/gh-dash/config-work.yml
 .claude/settings.local.json

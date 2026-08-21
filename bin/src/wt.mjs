@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-import { $, fs, glob, path } from 'zx'
+import { $, fs, glob, path, YAML } from 'zx'
 import ora from 'ora'
 import prompts from 'prompts'
 import minimist from 'minimist'
@@ -21,8 +21,8 @@ if (!command || !['new', 'switch', 'rm', 'warmup'].includes(command)) {
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
   console.log('  wt switch               - Switch to existing worktree')
-  console.log('  wt rm                   - Remove a worktree')
-  console.log('  wt warmup [path]        - Apply .worktree-setup to an existing worktree (cwd by default)')
+  console.log('  wt rm [name...]         - Remove worktrees (picker when no names given)')
+  console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
   process.exit(1)
 }
 
@@ -94,34 +94,64 @@ async function pickWorktree(promptText, filterFn = () => true, { multi = false }
   return selection.split('\t')[0]
 }
 
-async function applyWorktreeSetup({ targetPath, runCommands }) {
-  const includesFile = `${repoRoot}/.worktree-setup`
-  if (!fs.existsSync(includesFile)) {
+const SETUP_FILE = '.worktree-setup.yml'
+
+const EXAMPLE_SETUP = `copy:
+  - .env
+  - .env.local
+
+run:
+  - pnpm install
+`
+
+function readWorktreeSetup() {
+  const setupPath = `${repoRoot}/${SETUP_FILE}`
+  if (!fs.existsSync(setupPath)) {
     console.log('')
-    console.log('Error: .worktree-setup not found')
+    console.log(`Error: ${SETUP_FILE} not found`)
     console.log('')
-    console.log('This file lists paths to copy into new worktrees (e.g. .env, node_modules).')
-    console.log(`Create it at: ${includesFile}`)
+    console.log('This file declares what to copy into new worktrees and what to run there.')
+    console.log(`Create it at: ${setupPath}`)
     console.log('')
     console.log('Example contents:')
-    console.log('  .env')
-    console.log('  .env.local')
-    console.log('  $ pnpm install')
-    console.log('')
-    console.log(`To create an empty one: touch ${includesFile}`)
+    console.log(EXAMPLE_SETUP.split('\n').map(l => `  ${l}`).join('\n'))
     process.exit(1)
   }
 
-  const lines = fs.readFileSync(includesFile, 'utf-8')
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line && !line.startsWith('#'))
+  let parsed
+  try {
+    parsed = YAML.parse(fs.readFileSync(setupPath, 'utf-8')) ?? {}
+  } catch (err) {
+    console.log(`Error: ${SETUP_FILE} is not valid YAML`)
+    console.log(`  ${err.message}`)
+    process.exit(1)
+  }
 
-  const filesToCopy = lines.filter(line => !line.startsWith('$'))
-  const cmds = lines.filter(line => line.startsWith('$')).map(line => line.slice(1).trim())
+  if (typeof parsed !== 'object' || Array.isArray(parsed)) {
+    console.log(`Error: ${SETUP_FILE} must be a mapping with 'copy' and/or 'run' keys`)
+    process.exit(1)
+  }
+
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!['copy', 'run'].includes(key)) {
+      console.log(`  Warning: unknown key '${key}' in ${SETUP_FILE}, ignoring`)
+    } else if (value != null && !Array.isArray(value)) {
+      console.log(`Error: '${key}' in ${SETUP_FILE} must be a list`)
+      process.exit(1)
+    }
+  }
+
+  return {
+    copy: (parsed.copy ?? []).map(String),
+    run: (parsed.run ?? []).map(String)
+  }
+}
+
+async function applyWorktreeSetup({ targetPath, runCommands }) {
+  const { copy: filesToCopy, run: cmds } = readWorktreeSetup()
 
   if (filesToCopy.length > 0) {
-    console.log('Copying files from .worktree-setup...')
+    console.log(`Copying files from ${SETUP_FILE}...`)
     for (const pattern of filesToCopy) {
       if (pattern.includes('*')) {
         const matches = await glob(pattern, { cwd: repoRoot, dot: true })
@@ -149,12 +179,22 @@ async function applyWorktreeSetup({ targetPath, runCommands }) {
     }
   }
 
+  // Trust the copied .envrc so setup commands and the pane shell pick it up
+  if (fs.existsSync(`${targetPath}/.envrc`)) {
+    try {
+      await $`direnv allow ${targetPath}`
+    } catch {
+      console.log('  Warning: direnv allow failed')
+    }
+  }
+
   if (runCommands && cmds.length > 0) {
     console.log('Running setup commands...')
     $.quiet = false
     for (const c of cmds) {
       console.log(`  $ ${c}`)
-      await $({ cwd: targetPath, stdio: 'inherit' })`sh -c ${c}`
+      // sh has no direnv hook; direnv exec loads .envrc (no-op if absent)
+      await $({ cwd: targetPath, stdio: 'inherit' })`direnv exec ${targetPath} sh -c ${c}`
     }
     $.quiet = true
   }
@@ -163,11 +203,13 @@ async function applyWorktreeSetup({ targetPath, runCommands }) {
 }
 
 if (command === 'warmup') {
-  const targetPath = argv._[1] ? path.resolve(argv._[1]) : process.cwd()
+  let targetPath = argv._[1] ? path.resolve(argv._[1]) : process.cwd()
   if (!fs.existsSync(targetPath)) {
     console.log(`Error: ${targetPath} does not exist`)
     process.exit(1)
   }
+  // direnv keys its allow-list on the resolved path
+  targetPath = fs.realpathSync(targetPath)
   console.log(`Warming up worktree: ${targetPath}`)
   await applyWorktreeSetup({ targetPath, runCommands: true })
   process.exit(0)
@@ -198,7 +240,25 @@ if (command === 'switch') {
 }
 
 if (command === 'rm') {
-  const selectedPaths = await pickWorktree('Remove worktrees (Tab to select): ', (_, i) => i > 0, { multi: true })
+  let selectedPaths
+  const names = argv._.slice(1)
+  if (names.length > 0) {
+    const wtPaths = (await $`git worktree list`).stdout.trim()
+      .split('\n').slice(1) // skip main worktree
+      .map(line => line.split(/\s+/)[0])
+    selectedPaths = []
+    for (const name of names) {
+      // match exact dir name or the shorthand after the repo prefix (sana-ai--dx → dx)
+      const match = wtPaths.find(p => path.basename(p) === name || path.basename(p) === `${repoName}--${name}`)
+      if (!match) {
+        console.log(`Error: no worktree matching "${name}"`)
+        process.exit(1)
+      }
+      selectedPaths.push(match)
+    }
+  } else {
+    selectedPaths = await pickWorktree('Remove worktrees (Tab to select): ', (_, i) => i > 0, { multi: true })
+  }
   if (selectedPaths.length === 0) {
     console.log('No worktree selected')
     process.exit(0)
@@ -434,10 +494,10 @@ if (cmd.length > 0) {
 await $`tmux split-window -d -h -t ${windowName}.0 -c ${worktreePath} -l 60% nvim`
 await $`tmux split-window -d -v -t ${windowName}.1 -c ${worktreePath} -l 30%`
 
-// Run setup commands in the terminal pane
-if (commands.length > 0) {
-  const setupCmd = commands.join(' && ')
-  await $`tmux send-keys -t ${windowName}.2 -l ${setupCmd}`
+// Run setup commands in the terminal pane, one prompt line each so shell
+// hooks (e.g. direnv) fire between them
+for (const c of commands) {
+  await $`tmux send-keys -t ${windowName}.2 -l ${c}`
   await $`tmux send-keys -t ${windowName}.2 Enter`
 }
 
