@@ -16,13 +16,14 @@ if (!hasPrompt) {
 
 const command = argv._[0]
 
-if (!command || !['new', 'switch', 'rm', 'warmup'].includes(command)) {
+if (!command || !['new', 'switch', 'rm', 'warmup', 'refresh'].includes(command)) {
   console.log('')
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
   console.log('  wt switch               - Switch to existing worktree')
   console.log('  wt rm [name...]         - Remove worktrees (picker when no names given)')
   console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
+  console.log('  wt refresh              - Spawn tmux windows for worktrees that lack one')
   process.exit(1)
 }
 
@@ -212,6 +213,56 @@ if (command === 'warmup') {
   targetPath = fs.realpathSync(targetPath)
   console.log(`Warming up worktree: ${targetPath}`)
   await applyWorktreeSetup({ targetPath, runCommands: true })
+  process.exit(0)
+}
+
+if (command === 'refresh') {
+  if (!insideTmux) {
+    console.log('Error: Must be run inside tmux')
+    process.exit(1)
+  }
+
+  const wtPaths = (await $`git worktree list`).stdout.trim()
+    .split('\n')
+    .map(line => line.split(/\s+/)[0])
+
+  // A window belongs to a worktree when its first pane lives there — stray
+  // panes cd'd into a worktree from another window don't count as coverage
+  const paneLines = (await $`tmux list-panes -a -F ${'#{window_id} #{pane_index} #{pane_current_path}'}`).stdout.trim().split('\n')
+  const windowRoots = new Map()
+  for (const line of paneLines) {
+    const [winId, paneIndex, ...rest] = line.split(' ')
+    const panePath = rest.join(' ')
+    const existing = windowRoots.get(winId)
+    if (!existing || Number(paneIndex) < existing.index) {
+      windowRoots.set(winId, { index: Number(paneIndex), path: panePath })
+    }
+  }
+
+  const windowNames = new Map(
+    (await $`tmux list-windows -a -F ${'#{window_id} #{window_name}'}`).stdout.trim()
+      .split('\n').map(line => [line.split(' ')[0], line.split(' ').slice(1).join(' ')])
+  )
+
+  for (const [i, wtPath] of wtPaths.entries()) {
+    // the main checkout's window is always "main"
+    const name = i === 0 ? 'main' : path.basename(wtPath).replace(`${repoName}--`, '')
+    const match = [...windowRoots.entries()].find(([, w]) => w.path === wtPath || w.path.startsWith(`${wtPath}/`))
+    if (match) {
+      const [winId] = match
+      if (windowNames.get(winId) !== name) {
+        await $`tmux rename-window -t ${winId} ${name}`
+        console.log(`~ ${name} (window renamed)`)
+      } else {
+        console.log(`= ${name} (window exists)`)
+      }
+      continue
+    }
+    const winId = (await $`tmux new-window -d -P -F ${'#{window_id}'} -c ${wtPath} -n ${name}`).stdout.trim()
+    await $`tmux split-window -d -h -t ${winId} -c ${wtPath} -l 60% nvim`
+    await $`tmux split-window -d -v -t ${winId}.1 -c ${wtPath} -l 30%`
+    console.log(`+ ${name} (window created)`)
+  }
   process.exit(0)
 }
 
