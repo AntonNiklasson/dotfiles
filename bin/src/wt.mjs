@@ -21,7 +21,7 @@ if (!command || !['new', 'switch', 'rm', 'warmup', 'refresh'].includes(command))
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
   console.log('  wt switch               - Switch to existing worktree')
-  console.log('  wt rm [name...]         - Remove worktrees (picker when no names given)')
+  console.log('  wt rm [name...] [--yes] - Remove worktrees (picker when no names given, --yes skips confirm)')
   console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
   console.log('  wt refresh              - Spawn tmux windows for worktrees that lack one')
   process.exit(1)
@@ -334,7 +334,7 @@ if (command === 'rm') {
       console.log(status)
       console.log('')
 
-      if (selectedPaths.length === 1) {
+      if (selectedPaths.length === 1 && !argv.yes) {
         const { showDiff } = await prompts({
           type: 'toggle',
           name: 'showDiff',
@@ -349,6 +349,11 @@ if (command === 'rm') {
           console.log('')
         }
       }
+    }
+
+    if (argv.yes) {
+      confirmedPaths.push(wtPath)
+      continue
     }
 
     const { confirmed } = await prompts({
