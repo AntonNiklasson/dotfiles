@@ -2,10 +2,22 @@
 
 set -euo pipefail
 
+# name;label;panes
 LAYOUTS=(
-  "even-horizontal;even horizontal"
-  "claude-vim;claude + vim + terminal"
+  "even-horizontal;even horizontal;3"
+  "claude-vim;claude + vim + terminal;3"
 )
+
+pane_count_for() {
+  local entry
+  for entry in "${LAYOUTS[@]}"; do
+    if [ "${entry%%;*}" = "$1" ]; then
+      printf '%s' "${entry##*;}"
+      return 0
+    fi
+  done
+  return 1
+}
 
 preview_layout() {
   case "$1" in
@@ -32,22 +44,36 @@ ART
   esac
 }
 
-apply_claude_vim() {
-  local pane_count dir
+panes_in_window() {
+  tmux list-panes | wc -l | tr -d ' '
+}
 
-  # kill panes beyond the 3rd
-  pane_count=$(tmux list-panes | wc -l | tr -d ' ')
-  while [ "$pane_count" -gt 3 ]; do
-    tmux kill-pane -t ":.{last}"
-    pane_count=$((pane_count - 1))
-  done
-
-  # add panes until we have 3
+# split until the window holds at least $1 panes
+grow_panes() {
+  local target="$1" count dir
+  count=$(panes_in_window)
   dir=$(tmux display-message -p '#{pane_current_path}')
-  while [ "$pane_count" -lt 3 ]; do
+  while [ "$count" -lt "$target" ]; do
     tmux split-window -h -c "$dir"
-    pane_count=$((pane_count + 1))
+    count=$((count + 1))
   done
+}
+
+# kill panes past the $1:th
+trim_panes() {
+  local target="$1" count
+  count=$(panes_in_window)
+  while [ "$count" -gt "$target" ]; do
+    tmux kill-pane -t ":.{last}"
+    count=$((count - 1))
+  done
+}
+
+apply_claude_vim() {
+  local target
+  target=$(pane_count_for claude-vim)
+  trim_panes "$target"
+  grow_panes "$target"
 
   # normalize: main-vertical puts pane 0 left, panes 1/2 stacked on right
   tmux select-layout main-vertical
@@ -73,7 +99,10 @@ else
 fi
 
 case "$name" in
-  even-horizontal) tmux select-layout even-horizontal ;;
+  even-horizontal)
+    grow_panes "$(pane_count_for even-horizontal)"
+    tmux select-layout even-horizontal
+    ;;
   claude-vim) apply_claude_vim ;;
   *) echo "Unknown layout: $name"; exit 1 ;;
 esac
