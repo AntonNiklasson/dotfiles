@@ -2,6 +2,7 @@ vim.g.autoformat = false
 vim.g.root_spec = { "cwd" }
 vim.opt.conceallevel = 0
 vim.opt.cursorline = true
+vim.opt.scrolloff = 999
 vim.opt.spell = false
 vim.opt.swapfile = false
 vim.opt.tabstop = 4
