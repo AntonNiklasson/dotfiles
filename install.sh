@@ -49,6 +49,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
   defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
   defaults write -g ApplePressAndHoldEnabled -bool false
+
+  SCREENSHOTS_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
+  mkdir -p "$SCREENSHOTS_DIR"
+  defaults write com.apple.screencapture location "$SCREENSHOTS_DIR"
+  killall SystemUIServer
+
   killall Dock
 fi
 
