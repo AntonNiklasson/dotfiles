@@ -1,5 +1,9 @@
 return {
 	"folke/snacks.nvim",
+	keys = {
+		{ "<leader>.", false }, -- LazyVim: toggle scratch buffer, never used
+		{ "<leader>S", false }, -- LazyVim: select scratch buffer, never used
+	},
 	opts = {
 		picker = {
 			formatters = {
