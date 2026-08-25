@@ -16,12 +16,13 @@ if (!hasPrompt) {
 
 const command = argv._[0]
 
-if (!command || !['new', 'switch', 'rm', 'warmup', 'refresh'].includes(command)) {
+if (!command || !['new', 'switch', 'rm', 'mv', 'warmup', 'refresh'].includes(command)) {
   console.log('')
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
   console.log('  wt switch               - Switch to existing worktree')
   console.log('  wt rm [name...] [--yes] - Remove worktrees (picker when no names given, --yes skips confirm)')
+  console.log('  wt mv [name] [new-name] - Rename a worktree and its tmux window')
   console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
   console.log('  wt refresh              - Spawn tmux windows for worktrees that lack one')
   process.exit(1)
@@ -93,6 +94,14 @@ async function pickWorktree(promptText, filterFn = () => true, { multi = false }
     return selection.split('\n').map(line => line.split('\t')[0]).filter(Boolean)
   }
   return selection.split('\t')[0]
+}
+
+async function resolveWorktreePath(name) {
+  const wtPaths = (await $`git worktree list`).stdout.trim()
+    .split('\n').slice(1) // skip main worktree
+    .map(line => line.split(/\s+/)[0])
+  // match exact dir name or the shorthand after the repo prefix (sana-ai--dx → dx)
+  return wtPaths.find(p => path.basename(p) === name || path.basename(p) === `${repoName}--${name}`) ?? null
 }
 
 const SETUP_FILE = '.worktree-setup.yml'
@@ -216,12 +225,7 @@ if (command === 'warmup') {
   process.exit(0)
 }
 
-if (command === 'refresh') {
-  if (!insideTmux) {
-    console.log('Error: Must be run inside tmux')
-    process.exit(1)
-  }
-
+async function refreshTmuxWindows() {
   const wtPaths = (await $`git worktree list`).stdout.trim()
     .split('\n')
     .map(line => line.split(/\s+/)[0])
@@ -263,6 +267,103 @@ if (command === 'refresh') {
     await $`tmux split-window -d -v -t ${winId}.1 -c ${wtPath} -l 30%`
     console.log(`+ ${name} (window created)`)
   }
+}
+
+if (command === 'refresh') {
+  if (!insideTmux) {
+    console.log('Error: Must be run inside tmux')
+    process.exit(1)
+  }
+  await refreshTmuxWindows()
+  process.exit(0)
+}
+
+if (command === 'mv') {
+  const fromArg = argv._[1]
+  let sourcePath
+  if (fromArg) {
+    sourcePath = await resolveWorktreePath(fromArg)
+    if (!sourcePath) {
+      console.log(`Error: no worktree matching "${fromArg}"`)
+      process.exit(1)
+    }
+  } else {
+    sourcePath = await pickWorktree('Rename worktree: ', (_, i) => i > 0)
+    if (!sourcePath) {
+      console.log('No worktree selected')
+      process.exit(0)
+    }
+  }
+
+  const currentName = path.basename(sourcePath).replace(`${repoName}--`, '')
+  let newName = argv._[2]
+  if (!newName) {
+    const response = await prompts({
+      type: 'text',
+      name: 'newName',
+      message: `New name for "${currentName}"`,
+      initial: currentName
+    })
+    newName = response.newName
+  }
+
+  const normalizedName = String(newName ?? '').trim().replace(/[^a-zA-Z0-9_-]/g, '-')
+  if (!normalizedName) {
+    console.log('Name required')
+    process.exit(1)
+  }
+  // compare paths, not names: a worktree outside the <repo>--<name> convention
+  // still moves when the name is kept
+  const targetPath = `${parentDir}/${repoName}--${normalizedName}`
+  if (targetPath === sourcePath) {
+    console.log('Nothing to rename')
+    process.exit(0)
+  }
+  if (fs.existsSync(targetPath)) {
+    console.log(`Error: "${targetPath}" already exists`)
+    process.exit(1)
+  }
+
+  const s = ora(`Renaming ${currentName} → ${normalizedName}...`).start()
+  try {
+    await $`git worktree move ${sourcePath} ${targetPath}`
+  } catch (err) {
+    s.fail(`Rename failed: ${(err.stderr || err.message || '').trim()}`)
+    process.exit(1)
+  }
+  s.succeed(`Renamed ${currentName} → ${normalizedName}`)
+
+  // direnv keys its allow-list on the path, so the moved worktree needs re-allowing
+  if (fs.existsSync(`${targetPath}/.envrc`)) {
+    try {
+      await $`direnv allow ${targetPath}`
+    } catch {
+      console.log('  Warning: direnv allow failed')
+    }
+  }
+
+  if (!insideTmux) {
+    console.log('Not inside tmux, skipping window refresh')
+    process.exit(0)
+  }
+
+  // Shells survive the move but keep a stale $PWD, which also leaves direnv
+  // unloaded — only safe to fix in panes sitting at a prompt
+  const paneLines = (await $`tmux list-panes -a -F ${'#{pane_id} #{pane_current_command} #{pane_current_path}'}`).stdout.trim().split('\n')
+  for (const line of paneLines) {
+    const [paneId, paneCommand, ...rest] = line.split(' ')
+    const panePath = rest.join(' ')
+    const base = [sourcePath, targetPath].find(p => panePath === p || panePath.startsWith(`${p}/`))
+    if (!base) continue
+    if (!['zsh', 'bash', 'fish', 'sh'].includes(paneCommand)) continue
+    const suffix = panePath.slice(base.length)
+    await $`tmux send-keys -t ${paneId} -l ${`cd ${targetPath}${suffix}`}`
+    await $`tmux send-keys -t ${paneId} Enter`
+  }
+
+  // give tmux a beat to pick up the new pane paths before matching on them
+  await new Promise(resolve => setTimeout(resolve, 300))
+  await refreshTmuxWindows()
   process.exit(0)
 }
 
@@ -294,13 +395,9 @@ if (command === 'rm') {
   let selectedPaths
   const names = argv._.slice(1)
   if (names.length > 0) {
-    const wtPaths = (await $`git worktree list`).stdout.trim()
-      .split('\n').slice(1) // skip main worktree
-      .map(line => line.split(/\s+/)[0])
     selectedPaths = []
     for (const name of names) {
-      // match exact dir name or the shorthand after the repo prefix (sana-ai--dx → dx)
-      const match = wtPaths.find(p => path.basename(p) === name || path.basename(p) === `${repoName}--${name}`)
+      const match = await resolveWorktreePath(name)
       if (!match) {
         console.log(`Error: no worktree matching "${name}"`)
         process.exit(1)
