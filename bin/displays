@@ -2,28 +2,48 @@
 
 set -euo pipefail
 
-# Arrange enabled external displays in a row above the built-in screen,
-# horizontally centered on it, bottom edges flush with the laptop's top edge.
-# Externals keep their current left-to-right order. The largest external becomes
-# the main display (menu bar), and the dock is pinned to the right edge.
+# Arrange the built-in screen and the enabled externals into one of a couple of
+# fixed setups. Externals keep their current left-to-right order, the largest
+# external becomes the main display (menu bar), and the dock is pinned right.
+
+# name;description
+MODES=(
+  "home;laptop left of the externals, top edges aligned"
+  "portable;externals above the laptop, horizontally centered"
+)
 
 usage() {
   cat <<EOF
-displays — arrange external screens above the laptop screen
+displays — arrange the laptop screen and external screens
 
 The largest external becomes the main display and the dock moves to the right.
+With no mode, pick one interactively.
 
-usage: displays [-n|--dry-run]
+usage: displays [mode] [-n|--dry-run]
+
+modes:
+$(for m in "${MODES[@]}"; do printf '  %-10s %s\n' "${m%%;*}" "${m#*;}"; done)
 EOF
 }
 
+is_mode() {
+  local m
+  for m in "${MODES[@]}"; do [ "${m%%;*}" = "$1" ] && return 0; done
+  return 1
+}
+
+mode=""
 dry_run=false
-case "${1:-}" in
-  -n|--dry-run) dry_run=true ;;
-  -h|--help) usage; exit 0 ;;
-  "") ;;
-  *) usage >&2; exit 1 ;;
-esac
+preview=false
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -n|--dry-run) dry_run=true ;;
+    --preview) preview=true ;;
+    -h|--help) usage; exit 0 ;;
+    *) is_mode "$1" || { usage >&2; exit 1; }; mode=$1 ;;
+  esac
+  shift
+done
 
 command -v displayplacer >/dev/null 2>&1 || {
   echo "displayplacer not found — brew install displayplacer" >&2
@@ -144,6 +164,21 @@ if [ ${#sortable[@]} -eq 0 ]; then
   exit 0
 fi
 
+if $preview && [ -z "$mode" ]; then
+  echo "--preview needs a mode" >&2
+  exit 1
+fi
+
+if [ -z "$mode" ]; then
+  mode=$(
+    printf '%s\n' "${MODES[@]}" |
+      fzf --reverse --no-info --prompt='displays> ' --delimiter=';' --with-nth=2 \
+        --preview="$0 --preview {1}" --preview-window=right:52 |
+      cut -d';' -f1
+  )
+  [ -n "$mode" ] || exit 0
+fi
+
 laptop_res=$(field res "${configs[$laptop_idx]}")
 laptop_width=${laptop_res%x*}
 
@@ -170,20 +205,36 @@ for i in "${order[@]}"; do
   fi
 done
 
-# lay everything out with the laptop at (0,0), then translate so the main
+# lay the mode out relative to the laptop at (0,0), then translate so the main
 # display lands at (0,0) — macos pins the main display there
 new_x=()
 new_y=()
 new_x[$laptop_idx]=0
 new_y[$laptop_idx]=0
 
-x=$(((laptop_width - total_width) / 2))
-for i in "${order[@]}"; do
-  res=$(field res "${configs[$i]}")
-  new_x[$i]=$x
-  new_y[$i]=$((-${res#*x}))
-  x=$((x + ${res%x*}))
-done
+case "$mode" in
+  portable)
+    # externals in a row above the laptop, centered, bottoms flush with its top
+    x=$(((laptop_width - total_width) / 2))
+    for i in "${order[@]}"; do
+      res=$(field res "${configs[$i]}")
+      new_x[$i]=$x
+      new_y[$i]=$((-${res#*x}))
+      x=$((x + ${res%x*}))
+    done
+    ;;
+  home)
+    # laptop sits left of the row, every top edge aligned
+    new_x[$laptop_idx]=$((-laptop_width))
+    x=0
+    for i in "${order[@]}"; do
+      res=$(field res "${configs[$i]}")
+      new_x[$i]=$x
+      new_y[$i]=0
+      x=$((x + ${res%x*}))
+    done
+    ;;
+esac
 
 shift_x=${new_x[$main_idx]}
 shift_y=${new_y[$main_idx]}
@@ -206,6 +257,8 @@ for i in "${!configs[@]}"; do
 done
 
 printf '%s\n' "${boxes[@]}" | render_layout
+
+$preview && exit 0
 
 if $dry_run; then
   printf '\ndisplayplacer'
