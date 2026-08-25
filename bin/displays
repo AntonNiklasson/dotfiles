@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Arrange enabled external displays in a row above the built-in screen,
+# horizontally centered on it, bottom edges flush with the laptop's top edge.
+# Externals keep their current left-to-right order. The largest external becomes
+# the main display (menu bar), and the dock is pinned to the right edge.
+
+usage() {
+  cat <<EOF
+displays — arrange external screens above the laptop screen
+
+The largest external becomes the main display and the dock moves to the right.
+
+usage: displays [-n|--dry-run]
+EOF
+}
+
+dry_run=false
+case "${1:-}" in
+  -n|--dry-run) dry_run=true ;;
+  -h|--help) usage; exit 0 ;;
+  "") ;;
+  *) usage >&2; exit 1 ;;
+esac
+
+command -v displayplacer >/dev/null 2>&1 || {
+  echo "displayplacer not found — brew install displayplacer" >&2
+  exit 1
+}
+
+# draw the resulting arrangement as boxes, scaled to fit a small canvas.
+# reads "x y w h label|label" lines on stdin; rows are built cell by cell so
+# the box-drawing characters never go through byte-based string slicing.
+render_layout() {
+  awk -v maxcols=46 -v maxrows=13 '
+    function edge(r, c, u, d, l, rt) {
+      if (u) up[r, c] = 1
+      if (d) dn[r, c] = 1
+      if (l) lf[r, c] = 1
+      if (rt) ri[r, c] = 1
+    }
+    { x[NR]=$1; y[NR]=$2; w[NR]=$3; h[NR]=$4; lab[NR]=$5; n=NR
+      if (NR == 1 || $1 < minx) minx = $1
+      if (NR == 1 || $2 < miny) miny = $2
+      if (NR == 1 || $1 + $3 > maxx) maxx = $1 + $3
+      if (NR == 1 || $2 + $4 > maxy) maxy = $2 + $4
+    }
+    END {
+      # a terminal cell is roughly twice as tall as it is wide
+      s = maxcols / (maxx - minx)
+      if (maxrows * 2.1 / (maxy - miny) < s) s = maxrows * 2.1 / (maxy - miny)
+
+      for (i = 1; i <= n; i++) {
+        c0[i] = int((x[i] - minx) * s + 0.5)
+        c1[i] = int((x[i] + w[i] - minx) * s + 0.5)
+        r0[i] = int((y[i] - miny) * s / 2.1 + 0.5)
+        r1[i] = int((y[i] + h[i] - miny) * s / 2.1 + 0.5)
+        if (c1[i] - c0[i] < 4) c1[i] = c0[i] + 4
+        if (r1[i] - r0[i] < 2) r1[i] = r0[i] + 2
+        if (c1[i] > W) W = c1[i]
+        if (r1[i] > H) H = r1[i]
+      }
+
+      # record which directions each cell connects to, so displays sharing an
+      # edge render as junctions instead of overwriting each other
+      for (i = 1; i <= n; i++) {
+        for (c = c0[i]; c <= c1[i]; c++) {
+          edge(r0[i], c, 0, 0, c > c0[i], c < c1[i])
+          edge(r1[i], c, 0, 0, c > c0[i], c < c1[i])
+        }
+        for (r = r0[i]; r <= r1[i]; r++) {
+          edge(r, c0[i], r > r0[i], r < r1[i], 0, 0)
+          edge(r, c1[i], r > r0[i], r < r1[i], 0, 0)
+        }
+
+        # center the label lines that fit inside the box
+        nlines = split(lab[i], line, "|")
+        inner = r1[i] - r0[i] - 1
+        if (nlines > inner) nlines = inner
+        top = r0[i] + 1 + int((inner - nlines) / 2)
+        for (k = 1; k <= nlines; k++) {
+          len = length(line[k])
+          if (len > c1[i] - c0[i] - 1) continue
+          start = c0[i] + 1 + int((c1[i] - c0[i] - 1 - len) / 2)
+          for (j = 1; j <= len; j++) txt[top + k - 1, start + j - 1] = substr(line[k], j, 1)
+        }
+      }
+
+      glyph[3] = "│";  glyph[12] = "─"; glyph[10] = "┌"; glyph[6] = "┐"
+      glyph[9] = "└";  glyph[5] = "┘";  glyph[14] = "┬"; glyph[13] = "┴"
+      glyph[11] = "├"; glyph[7] = "┤";  glyph[15] = "┼"
+      glyph[1] = "│";  glyph[2] = "│";  glyph[4] = "─";  glyph[8] = "─"
+
+      for (r = 0; r <= H; r++) {
+        out = ""
+        for (c = 0; c <= W; c++) {
+          if ((r, c) in txt) { out = out txt[r, c]; continue }
+          m = ((r, c) in up) + 2 * ((r, c) in dn) + 4 * ((r, c) in lf) + 8 * ((r, c) in ri)
+          out = out (m ? glyph[m] : " ")
+        }
+        sub(/ +$/, "", out)
+        print out
+      }
+    }
+  '
+}
+
+info=$(displayplacer list)
+
+# the last line of `list` is a ready-made command describing the current setup
+current=$(printf '%s\n' "$info" | grep '^displayplacer ' | tail -1)
+[ -n "$current" ] || { echo "could not read current display configuration" >&2; exit 1; }
+
+builtin_id=$(awk '/^Persistent screen id: /{id=$NF} /^Type:.*built in/{print id; exit}' <<<"$info")
+[ -n "$builtin_id" ] || { echo "no built-in screen found" >&2; exit 1; }
+
+# one quoted "id:... res:... origin:(x,y) ..." chunk per display
+configs=()
+while IFS= read -r chunk; do
+  configs+=("${chunk//\"/}")
+done < <(grep -o '"[^"]*"' <<<"$current")
+
+field() { [[ $2 =~ $1:([^ ]+) ]] && printf '%s' "${BASH_REMATCH[1]}"; }
+
+laptop_idx=-1
+sortable=()  # "<current x>|<index>", used to keep the existing left-to-right order
+for i in "${!configs[@]}"; do
+  c=${configs[$i]}
+  if [ "$(field id "$c")" = "$builtin_id" ]; then
+    laptop_idx=$i
+    continue
+  fi
+  [ "$(field enabled "$c")" = "true" ] || continue
+  [[ $c =~ origin:\((-?[0-9]+), ]] || continue
+  sortable+=("${BASH_REMATCH[1]}|$i")
+done
+
+[ "$laptop_idx" -ge 0 ] || { echo "built-in screen is not in the current configuration" >&2; exit 1; }
+
+if [ ${#sortable[@]} -eq 0 ]; then
+  echo "no enabled external displays — nothing to arrange"
+  exit 0
+fi
+
+laptop_res=$(field res "${configs[$laptop_idx]}")
+laptop_width=${laptop_res%x*}
+
+order=()
+while IFS= read -r entry; do
+  order+=("${entry#*|}")
+done < <(printf '%s\n' "${sortable[@]}" | sort -t'|' -k1,1n)
+
+total_width=0
+for i in "${order[@]}"; do
+  res=$(field res "${configs[$i]}")
+  total_width=$((total_width + ${res%x*}))
+done
+
+# the biggest external takes the menu bar; ties go to the leftmost one
+main_idx=${order[0]}
+main_area=0
+for i in "${order[@]}"; do
+  res=$(field res "${configs[$i]}")
+  area=$(( ${res%x*} * ${res#*x} ))
+  if [ "$area" -gt "$main_area" ]; then
+    main_area=$area
+    main_idx=$i
+  fi
+done
+
+# lay everything out with the laptop at (0,0), then translate so the main
+# display lands at (0,0) — macos pins the main display there
+new_x=()
+new_y=()
+new_x[$laptop_idx]=0
+new_y[$laptop_idx]=0
+
+x=$(((laptop_width - total_width) / 2))
+for i in "${order[@]}"; do
+  res=$(field res "${configs[$i]}")
+  new_x[$i]=$x
+  new_y[$i]=$((-${res#*x}))
+  x=$((x + ${res%x*}))
+done
+
+shift_x=${new_x[$main_idx]}
+shift_y=${new_y[$main_idx]}
+
+args=()
+boxes=()
+for i in "${!configs[@]}"; do
+  c=${configs[$i]}
+  if [ -n "${new_x[$i]:-}" ]; then
+    ox=$((${new_x[$i]} - shift_x))
+    oy=$((${new_y[$i]} - shift_y))
+    res=$(field res "${configs[$i]}")
+    c=$(sed "s/origin:([^)]*)/origin:($ox,$oy)/" <<<"$c")
+    label=$res
+    [ "$i" = "$laptop_idx" ] && label="$label|laptop"
+    [ "$i" = "$main_idx" ] && label="$label|main"
+    boxes+=("$ox $oy ${res%x*} ${res#*x} $label")
+  fi
+  args+=("$c")
+done
+
+printf '%s\n' "${boxes[@]}" | render_layout
+
+if $dry_run; then
+  printf '\ndisplayplacer'
+  printf ' "%s"' "${args[@]}"
+  printf '\n\ndock: right (dry run — nothing applied)\n'
+  exit 0
+fi
+
+displayplacer "${args[@]}"
+
+if [ "$(defaults read com.apple.dock orientation 2>/dev/null)" != right ]; then
+  defaults write com.apple.dock orientation -string right
+  killall Dock
+  printf '\ndock: moved to right\n'
+else
+  printf '\ndock: right\n'
+fi

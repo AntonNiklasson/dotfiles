@@ -58,6 +58,7 @@ brew "opencode"
 brew "dark-notify"
 brew "prs"
 brew "blueutil"
+brew "displayplacer"
 brew "terminal-notifier"
 
 # infra / db
