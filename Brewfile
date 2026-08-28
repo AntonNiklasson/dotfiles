@@ -27,6 +27,10 @@ brew "the_silver_searcher"
 brew "zoxide"
 brew "tree"
 brew "yazi"
+brew "glow"     # markdown rendering in terminal
+brew "chafa"    # yazi image preview fallback
+brew "ffmpeg"   # yazi video/gif thumbnails
+brew "poppler"  # yazi pdf previews
 brew "tlrc"
 brew "bottom"
 brew "diff-so-fancy"
