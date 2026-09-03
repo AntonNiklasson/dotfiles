@@ -31,6 +31,8 @@ brew "glow"     # markdown rendering in terminal
 brew "chafa"    # yazi image preview fallback
 brew "ffmpeg"   # yazi video/gif thumbnails
 brew "poppler"  # yazi pdf previews
+brew "sevenzip" # yazi archive preview/extract
+brew "exiftool" # yazi image metadata
 brew "tlrc"
 brew "bottom"
 brew "diff-so-fancy"
