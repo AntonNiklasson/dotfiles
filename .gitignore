@@ -23,6 +23,9 @@ files/.config/opencode/*
 !files/.config/herdr/.gitignore
 !files/.config/yazi/
 
+# yazi packages (installed by `ya pkg`, tracked so a fresh clone works offline)
+files/.config/yazi/**/preview.png
+
 # tmux plugins (installed by tpm)
 files/.config/tmux/plugins/
 files/.config/tmux/resurrect/

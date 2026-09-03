@@ -1,6 +1,18 @@
 [mgr]
 ratio = [2, 3, 2]
-sort = "natural"
+sort_by = "natural"
 sort_dir_first = true
 show_hidden = true
 linemode = "size"
+scrolloff = 5
+
+[preview]
+max_width = 1200
+max_height = 1200
+
+[open]
+# Everything else falls through to yazi's defaults (edit/open/reveal/extract).
+prepend_rules = [
+	{ mime = "application/{toml,x-yaml,yaml,x-shellscript,xml,sql}", use = ["edit", "reveal"] },
+	{ url = "*.{lock,tfvars,tfstate,env,envrc}", use = ["edit", "reveal"] },
+]
