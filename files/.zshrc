@@ -173,7 +173,15 @@ function tree() {
   command tree -I 'node_modules|dist' -C --filesfirst -L 2 | less -RFS
 }
 
-finder() {
+ee() {
+  # ee since i have leader+ee in nvim
+	# nvim launched from yazi inherits YAZI_LEVEL, so only refuse when this
+	# shell is a direct child of yazi -- not one inside a nvim terminal.
+	if [ -n "$YAZI_LEVEL" ] && [ -z "$NVIM" ]; then
+		echo "already in yazi; exit it instead" >&2
+		return 1
+	fi
+
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
 
