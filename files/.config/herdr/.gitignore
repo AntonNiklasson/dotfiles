@@ -1,0 +1,4 @@
+# Herdr owns everything here except the checked-in config.
+*
+!.gitignore
+!config.toml

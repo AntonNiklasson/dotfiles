@@ -143,6 +143,13 @@ alias pn='pnpm'
 alias pni='pnpm install'
 alias pnr='pnpm run'
 alias t='tmux'
+# Herdr: native workspace/pane multiplexer. Keep `t` as tmux during migration.
+alias h='herdr'
+if (( $+commands[herdr] )); then
+  autoload -Uz compinit
+  compinit
+  source <(herdr completion zsh)
+fi
 alias rc='vim ~/.zshrc'
 alias rcs='source ~/.zshrc'
 alias vim='nvim'

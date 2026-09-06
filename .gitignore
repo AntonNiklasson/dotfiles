@@ -19,6 +19,8 @@ files/.config/gh/hosts.yml
 files/.config/opencode/*
 !files/.config/opencode/opencode.json
 !files/.config/tmux/
+!files/.config/herdr/
+!files/.config/herdr/.gitignore
 !files/.config/yazi/
 
 # tmux plugins (installed by tpm)

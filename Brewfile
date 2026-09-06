@@ -47,6 +47,7 @@ brew "lazygit"
 brew "neovim"
 brew "vim"
 brew "tmux"
+brew "herdr"
 brew "luarocks"
 
 # node

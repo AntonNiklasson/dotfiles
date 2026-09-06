@@ -1,0 +1,43 @@
+# Herdr configuration.
+# tmux remains installed and configured separately while this migration is evaluated.
+onboarding = false
+
+# Match the Tokyo Night tmux theme and follow macOS appearance changes.
+[theme]
+name = "tokyo-night"
+auto_switch = false
+dark_name = "tokyo-night"
+light_name = "tokyo-night-day"
+
+# Start panes like tmux/zsh and inherit the current project directory.
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+# Keep a compact, tmux-like frame while retaining Herdr's workspace sidebar.
+[ui]
+tab_bar_position = "top"
+pane_borders = true
+pane_outer_borders = true
+pane_gaps = false
+
+# Herdr workspaces replace project-oriented tmux sessions.
+[worktrees]
+directory = "~/.herdr/worktrees"
+
+[session]
+resume_agents_on_restore = true
+
+# Preserve the existing C-a muscle memory. Herdr's native bindings provide:
+# prefix+w  workspace picker       prefix+c  new tab
+# prefix+v  split right            prefix+-  split down
+# prefix+h/j/k/l  focus pane       prefix+z  zoom
+# prefix+[  copy mode             prefix+q  detach
+[keys]
+prefix = "ctrl+a"
+
+[ui.toast]
+delivery = "system"
+
+[experimental]
+pane_history = false
