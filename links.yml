@@ -15,6 +15,7 @@
     ~/.config: files/.config
 
     ~/.claude/settings.json: files/.claude/settings.json
+    ~/.claude/keybindings.json: files/.claude/keybindings.json
     ~/.claude/CLAUDE.md: files/.claude/CLAUDE.md
 
     ~/.claude/skills: skills

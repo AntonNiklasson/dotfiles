@@ -1,0 +1,15 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-keybindings.json",
+  "$docs": "https://code.claude.com/docs/en/keybindings",
+  "bindings": [
+    {
+      "context": "Scroll",
+      "bindings": {
+        "pageup": "scroll:halfPageUp",
+        "pagedown": "scroll:halfPageDown",
+        "ctrl+home": "scroll:top",
+        "ctrl+end": "scroll:bottom"
+      }
+    }
+  ]
+}
