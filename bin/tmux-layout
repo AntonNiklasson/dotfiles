@@ -4,8 +4,9 @@ set -euo pipefail
 
 # name;label;panes
 LAYOUTS=(
-  "even-horizontal;even horizontal;3"
   "claude-vim;claude + vim + terminal;3"
+  "even-horizontal;even horizontal;3"
+  "grid;grid;4"
 )
 
 pane_count_for() {
@@ -38,6 +39,19 @@ ART
 │               ├───────────────┤
 │               │   terminal    │
 │               │     20%       │
+└───────────────┴───────────────┘
+ART
+      ;;
+    grid)
+      cat <<'ART'
+┌───────────────┬───────────────┐
+│               │               │
+│     pane0     │     pane1     │
+│               │               │
+├───────────────┼───────────────┤
+│               │               │
+│     pane2     │     pane3     │
+│               │               │
 └───────────────┴───────────────┘
 ART
       ;;
@@ -104,5 +118,9 @@ case "$name" in
     tmux select-layout even-horizontal
     ;;
   claude-vim) apply_claude_vim ;;
+  grid)
+    grow_panes "$(pane_count_for grid)"
+    tmux select-layout tiled
+    ;;
   *) echo "Unknown layout: $name"; exit 1 ;;
 esac
