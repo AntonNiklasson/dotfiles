@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# agents — pick an agent from herdr's sidebar agents panel and focus it.
+#
+# The panel itself is keyboard-inert: herdr only offers previous_agent /
+# next_agent (blind cycling) and focus_agent (indexed 1..9). This gives it the
+# same fzf treatment `session` gives workspaces, in the sidebar's "spaces"
+# order, with the agent's recent output as a preview.
+
+list_entries() {
+  local icon_idle=$'\033[2m○\033[0m'
+  local icon_working=$'\033[33m◐\033[0m'
+  local icon_blocked=$'\033[31m●\033[0m'
+  local icon_done=$'\033[32m●\033[0m'
+  local icon_unknown=$'\033[2m○\033[0m'
+  local dim=$'\033[2m' reset=$'\033[0m'
+
+  jq -rn \
+    --slurpfile ws <(herdr workspace list) \
+    --slurpfile ag <(herdr agent list) \
+    --slurpfile tb <(herdr tab list) \
+    --arg idle "$icon_idle" --arg working "$icon_working" \
+    --arg blocked "$icon_blocked" --arg done "$icon_done" \
+    --arg unknown "$icon_unknown" --arg dim "$dim" --arg reset "$reset" '
+      ($ws[0].result.workspaces
+        | map({key: .workspace_id, value: {label, number}})
+        | from_entries) as $w
+      | ($tb[0].result.tabs
+        | map({key: .tab_id, value: .label})
+        | from_entries) as $t
+      | {idle: $idle, working: $working, blocked: $blocked, done: $done, unknown: $unknown} as $icons
+      | $ag[0].result.agents
+      | map(. + {space: ($w[.workspace_id] // {label: .workspace_id, number: 999})})
+      | map(. + {tab: (($t[.tab_id] // "") | if test("^[0-9]+$") then "" else "/" + . end)})
+      | sort_by(.space.number)
+      | .[]
+      | [
+          .pane_id,
+          "\($icons[.agent_status] // $unknown)  \(.space.label)\(.tab)\($dim)  \(
+            if (.terminal_title_stripped // "") == "" then .agent else .terminal_title_stripped end
+          )\($reset)"
+        ]
+      | @tsv
+    '
+}
+
+if [ "${1:-}" = "--list" ]; then
+  list_entries
+  exit 0
+fi
+
+entries=$(list_entries)
+if [ -z "$entries" ]; then
+  echo "no agents running"
+  sleep 1
+  exit 0
+fi
+
+selected=$(
+  printf '%s\n' "$entries" |
+    fzf --ansi --reverse --no-info --prompt='agent> ' \
+        --with-nth=2 --delimiter=$'\t' --tiebreak=index \
+        --header='ctrl-r: refresh' \
+        --bind "ctrl-r:reload($0 --list)" \
+        --preview 'herdr pane read {1} --source recent --lines 200 --format text 2>/dev/null | tail -40' \
+        --preview-window='right,60%,wrap'
+)
+[ -z "$selected" ] && exit 0
+
+herdr agent focus "${selected%%$'\t'*}" >/dev/null

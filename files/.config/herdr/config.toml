@@ -1,26 +1,25 @@
-# Herdr configuration.
-# tmux remains installed and configured for `wt` only; herdr is the daily driver.
 onboarding = false
 
-# Match the Tokyo Night tmux theme and follow macOS appearance changes.
 [theme]
 name = "tokyo-night"
 auto_switch = false
 dark_name = "tokyo-night"
 light_name = "tokyo-night-day"
 
-# Start panes like tmux/zsh and inherit the current project directory.
 [terminal]
 shell_mode = "auto"
 new_cwd = "follow"
 
-# Keep a compact, tmux-like frame while retaining Herdr's workspace sidebar.
 [ui]
 tab_bar_position = "top"
 pane_borders = true
 pane_gaps = false
 
 agent_panel_sort = "spaces"
+
+[ui.sidebar.spaces]
+rows = [["state_icon", "workspace"]]
+
 [session]
 resume_agents_on_restore = true
 
@@ -29,17 +28,8 @@ delivery = "system"
 
 [experimental]
 pane_history = false
-# Kitty graphics: yazi image previews. Herdr parses the protocol itself rather
-# than forwarding it, so there is no tmux-style `allow-passthrough` to set.
-# Requires a kitty-graphics-capable outer terminal — Ghostty qualifies.
 kitty_graphics = true
 
-# Keys v2 syntax is explicit: "prefix+x" for prefix mode, "ctrl+alt+x" for a
-# direct chord. Bare printables are rejected. Validate with `herdr config check`.
-#
-# Left at herdr defaults: prefix+w workspace picker, prefix+v vertical split,
-# prefix+h/j/k/l pane focus, prefix+shift+h/j/k/l pane swap (replaces the old
-# prefix+m + display-panes dance), prefix+z zoom, prefix+q detach.
 [keys]
 prefix = "ctrl+a"
 copy_mode = "prefix+["
@@ -47,49 +37,21 @@ new_tab = ["prefix+t", "prefix+c"]
 previous_tab = "prefix+tab"
 rename_tab = "prefix+shift+r"
 reload_config = "prefix+r"
-# Back-and-forth to the last focused pane. It does cross workspaces, but it
-# tracks the last *pane*, so switching panes within a workspace consumes it —
-# this is not an equivalent of tmux's `switch-client -l`. herdr has no
-# last-workspace action; switch_workspace below is the closest thing.
-# NOT on prefix+j: that is herdr's focus_pane_down. prefix+p is free because
-# previous_tab moved to prefix+tab.
 last_pane = "prefix+p"
-# x/X kept their tmux meaning (pane/session). close_tab moves to shift+w
-# because plain prefix+w is herdr's workspace picker.
 close_pane = "prefix+x"
 close_tab = "prefix+shift+w"
 close_workspace = "prefix+shift+x"
-# No tmux equivalent: opens the focused pane's scrollback in $EDITOR.
 edit_scrollback = "prefix+e"
-# prefix+b was the old tmux horizontal split, so the sidebar gives up that key
-# and pairs with copy mode on the bracket keys instead.
 split_horizontal = "prefix+b"
 toggle_sidebar = "prefix+]"
 
-# Modal resize. Homeless because reload_config took its default prefix+r, and
-# not on prefix+minus — that key just lost split_horizontal, so old muscle
-# memory would land here expecting a split.
 resize_mode = "prefix+shift+s"
 
-# Navigate mode (prefix+w) moves panes with hjkl but workspaces with arrows
-# only. Add jk for the workspace list, keeping the arrows as well.
 navigate_workspace_up = ["k", "up"]
 navigate_workspace_down = ["j", "down"]
 
-# switch_tab is prefix+1..9 by default but switch_workspace ships unset, so
-# prefix+shift+1..9 did nothing until now.
 switch_workspace = "prefix+shift+1..9"
 
-# A user binding displaces the built-in default on that key. Deviating from
-# herdr defaults above therefore leaves these unbound, on purpose:
-#   prefix+shift+w  rename_workspace (taken by close_tab)
-#   prefix+tab      cycle_pane_next  (taken by previous_tab, as in tmux)
-
-# Popups are session-modal and leave the tiled tab layout untouched, which is
-# what `display-popup -E` was doing for both. Absolute paths on purpose:
-# these run via `sh -c`, which never sources .zshrc, so a server started by
-# launchd rather than an interactive shell would not have ~/.dotfiles/bin
-# on PATH.
 [[keys.command]]
 key = "prefix+space"
 type = "popup"
@@ -105,3 +67,11 @@ width = "60%"
 height = "40%"
 description = "pick url from pane"
 command = "$HOME/.dotfiles/bin/pick-url"
+
+[[keys.command]]
+key = "prefix+a"
+type = "popup"
+width = "70%"
+height = "50%"
+description = "agent picker"
+command = "$HOME/.dotfiles/bin/agents"
