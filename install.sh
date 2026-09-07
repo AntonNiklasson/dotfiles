@@ -32,12 +32,7 @@ dotbot -d "$DOTFILES" -c "$DOTFILES/links.yml"
 # 3. brew packages (sudo already primed at top of script)
 "$DOTFILES/bin/brew-dotfiles" install
 
-# 4. tmux plugin manager
-if [ ! -d ~/.config/tmux/plugins/tpm ]; then
-  git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
-fi
-
-# 5. macos defaults
+# 4. macos defaults
 read -p "apply macos defaults? (y/n) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then

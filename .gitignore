@@ -18,17 +18,12 @@ files/.config/gh/hosts.yml
 !files/.config/opencode/
 files/.config/opencode/*
 !files/.config/opencode/opencode.json
-!files/.config/tmux/
 !files/.config/herdr/
 !files/.config/herdr/.gitignore
 !files/.config/yazi/
 
 # yazi packages (installed by `ya pkg`, tracked so a fresh clone works offline)
 files/.config/yazi/**/preview.png
-
-# tmux plugins (installed by tpm)
-files/.config/tmux/plugins/
-files/.config/tmux/resurrect/
 
 node_modules
 files/.config/gh/hosts.yml

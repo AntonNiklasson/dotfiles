@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# pick-url — pull URLs out of a pane's scrollback and open one.
+# Replaces the tmux-fzf-url plugin (prefix+u).
+#
+# Run as a herdr `type = "popup"` command binding, which injects
+# HERDR_ACTIVE_PANE_ID for the pane that was focused when the popup opened.
+
+PANE=${1:-${HERDR_ACTIVE_PANE_ID:-}}
+if [ -z "$PANE" ]; then
+  PANE=$(herdr pane current | jq -r '.result.pane.pane_id')
+fi
+
+LINES=${PICK_URL_LINES:-2000}
+
+urls=$(
+  herdr pane read "$PANE" --source recent --lines "$LINES" --format text 2>/dev/null |
+    grep -oE '(https?://|www\.)[A-Za-z0-9._~:/?#@!$&*+,;=%-]+' |
+    sed 's/[).,:;]*$//' |
+    awk '!seen[$0]++' |
+    tail -r
+)
+
+if [ -z "$urls" ]; then
+  echo "no urls in pane $PANE"
+  sleep 1
+  exit 0
+fi
+
+selected=$(printf '%s\n' "$urls" | fzf --reverse --no-info --prompt='url> ' --tiebreak=index)
+[ -z "$selected" ] && exit 0
+
+case "$selected" in
+  www.*) selected="https://$selected" ;;
+esac
+
+open "$selected"

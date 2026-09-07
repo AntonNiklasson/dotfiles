@@ -2,24 +2,30 @@
 
 set -euo pipefail
 
-list_entries() {
-  local s d base name
-  local icon_session=$'\033[32m\xee\x9a\xb6\033[0m'  # nf-cod-terminal_tmux (green)
-  local icon_folder=$'\xef\x81\xbb'                  # nf-fa-folder
+# session — pick a herdr workspace, or open a project directory as a new one.
+#
+# Herdr's own prefix+w picker only lists live workspaces. This adds the other
+# half: project directories that don't have a workspace yet.
+#
+# Note: herdr's workspace list carries no last-attached timestamp, so live
+# workspaces are ordered by workspace number rather than recency.
 
-  declare -A session_set=()
-  while IFS= read -r s; do
-    [ -n "$s" ] || continue
-    session_set[$s]=1
-    printf 's\t%s\t%s  %s\n' "$s" "$icon_session" "$s"
-  done < <(tmux list-sessions -F '#{session_last_attached} #{session_name}' 2>/dev/null \
-            | sort -rn | cut -d' ' -f2- || true)
+list_entries() {
+  local d base
+  local icon_workspace=$'\033[32m\xee\x9a\xb6\033[0m'  # nf-cod-terminal_tmux (green)
+  local icon_folder=$'\xef\x81\xbb'                    # nf-fa-folder
+
+  local labels
+  labels=$(herdr workspace list | jq -r '.result.workspaces[].label')
+
+  herdr workspace list |
+    jq -r --arg icon "$icon_workspace" \
+      '.result.workspaces | sort_by(.number) | .[] | "w\t\(.workspace_id)\t\($icon)  \(.label)"'
 
   while IFS= read -r d; do
     base=${d##*/}
-    name=${base#.}
-    name=${name//[.:]/_}
-    [ -n "${session_set[$name]:-}" ] && continue
+    # a workspace already covers this directory
+    grep -qxF "$base" <<<"$labels" && continue
     printf 'd\t%s\t%s  %s\n' "$d" "$icon_folder" "$base"
   done < <(
     find "$HOME/code" -maxdepth 1 -mindepth 1 -type d ! -name '*--*' 2>/dev/null
@@ -37,8 +43,8 @@ selected=$(
   list_entries |
     fzf --ansi --reverse --no-info --prompt='> ' \
         --with-nth=3 --delimiter=$'\t' --tiebreak=index \
-        --header='ctrl-x: kill session' \
-        --bind "ctrl-x:execute-silent([ {1} = s ] && tmux kill-session -t {2})+reload($0 --list)"
+        --header='ctrl-x: close workspace' \
+        --bind "ctrl-x:execute-silent([ {1} = w ] && herdr workspace close {2})+reload($0 --list)"
 )
 [ -z "$selected" ] && exit 0
 
@@ -46,27 +52,8 @@ type=${selected%%$'\t'*}
 rest=${selected#*$'\t'}
 key=${rest%%$'\t'*}
 
-if [ "$type" = "s" ]; then
-  name=$key
+if [ "$type" = "w" ]; then
+  herdr workspace focus "$key" >/dev/null
 else
-  base=${key##*/}
-  name=${base#.}
-  name=${name//[.:]/_}
-  if ! tmux has-session -t="$name" 2>/dev/null; then
-    tmux new-session -ds "$name" -c "$key"
-    parent=${key%/*}
-    for wt in "$parent/$base"--*/; do
-      [ -d "$wt" ] || continue
-      wt=${wt%/}
-      wname=${wt##*--}
-      wname=${wname//[.:]/_}
-      tmux new-window -d -t "$name:" -c "$wt" -n "$wname"
-    done
-  fi
-fi
-
-if [ -n "${TMUX:-}" ]; then
-  tmux switch-client -t "$name"
-else
-  tmux attach -t "$name"
+  herdr workspace create --cwd "$key" --label "${key##*/}" --focus >/dev/null
 fi
