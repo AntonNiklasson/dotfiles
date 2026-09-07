@@ -14,6 +14,7 @@ new_cwd = "follow"
 tab_bar_position = "top"
 pane_borders = true
 pane_gaps = false
+sidebar_collapsed_mode = "hidden"
 
 agent_panel_sort = "spaces"
 
