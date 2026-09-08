@@ -166,7 +166,7 @@
         },
         {
           "key" : "k",
-          "label" : "center",
+          "label" : "almost max",
           "type" : "url",
           "value" : "raycast://extensions/raycast/window-management/almost-maximize"
         },
@@ -177,16 +177,10 @@
           "value" : "raycast://extensions/raycast/window-management/right-half"
         },
         {
-          "key" : "m",
-          "label" : "next desktop",
+          "key" : "f",
+          "label" : "center",
           "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/next-desktop"
-        },
-        {
-          "key" : "n",
-          "label" : "previous desktop",
-          "type" : "url",
-          "value" : "raycast://extensions/raycast/window-management/previous-desktop"
+          "value" : "raycast://extensions/raycast/window-management/center"
         }
       ],
       "iconPath" : "note",
