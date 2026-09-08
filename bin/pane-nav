@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# pane-nav — vim-aware ctrl+hjkl pane navigation.
+# Replaces the tmux half of vim-tmux-navigator: herdr grabs ctrl+hjkl globally,
+# so when the focused pane runs (n)vim we forward the key and let vim move its
+# own split; otherwise we move herdr's pane focus.
+#
+# Run as a herdr `type = "shell"` command binding, which injects
+# HERDR_ACTIVE_PANE_ID for the pane that was focused when the key fired.
+# Every herdr CLI call costs ~35ms, so this stays at two calls and no jq.
+#
+# usage: pane-nav <left|down|up|right> <key>
+
+dir=$1
+key=$2
+
+if [ -n "${HERDR_ACTIVE_PANE_ID:-}" ]; then
+  info=$(herdr pane process-info --pane "$HERDR_ACTIVE_PANE_ID")
+else
+  info=$(herdr pane process-info --current)
+fi
+
+[[ $info =~ \"pane_id\":\"([^\"]+)\" ]] || exit 0
+pane=${BASH_REMATCH[1]}
+
+if [[ $info == *'"argv0":"vim"'* || $info == *'"argv0":"nvim"'* ]]; then
+  herdr pane send-keys "$pane" "$key" >/dev/null
+else
+  herdr pane focus --pane "$pane" --direction "$dir" >/dev/null
+fi

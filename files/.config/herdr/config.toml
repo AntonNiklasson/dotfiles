@@ -77,3 +77,27 @@ width = "70%"
 height = "50%"
 description = "agent picker"
 command = "$HOME/.dotfiles/bin/agents"
+
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+description = "focus pane left"
+command = "$HOME/.dotfiles/bin/pane-nav left ctrl+h"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+description = "focus pane down"
+command = "$HOME/.dotfiles/bin/pane-nav down ctrl+j"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+description = "focus pane up"
+command = "$HOME/.dotfiles/bin/pane-nav up ctrl+k"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+description = "focus pane right"
+command = "$HOME/.dotfiles/bin/pane-nav right ctrl+l"
