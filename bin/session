@@ -2,21 +2,161 @@
 
 set -euo pipefail
 
-# session — pick a herdr workspace, or open a project directory as a new one.
+# session — pick a herdr workspace, or open a project directory as one.
+#
+#   session                                       interactive picker
+#   session --list                                picker entries (fzf reload hook)
+#   session open [dir] [--no-focus] [--no-nvim]   open a project
 #
 # Herdr's own prefix+w picker only lists live workspaces. This adds the other
-# half: project directories that don't have a workspace yet.
+# half: project directories that don't have a workspace yet, opened with one tab
+# per git worktree — the clone as "main", then every `<repo>--<name>` sibling.
+# Opening is safe to re-run: worktrees that already own a tab are left alone.
+#
+# Each tab gets shell left (40%), nvim top right, two shells below it.
 #
 # Note: herdr's workspace list carries no last-attached timestamp, so live
 # workspaces are ordered by workspace number rather than recency.
 
+usage() {
+  cat >&2 <<'EOF'
+usage: session                                       pick a workspace or project
+       session --list                                print picker entries
+       session open [dir] [--no-focus] [--no-nvim]   open a project
+EOF
+  exit 1
+}
+
+project_dirs() {
+  find "$HOME/code" -maxdepth 1 -mindepth 1 -type d ! -name '*--*' 2>/dev/null
+  echo "$HOME/.dotfiles"
+  echo "$HOME/notes"
+}
+
+# One pane list answers every "is this directory already open?" question. Keyed
+# on pane cwd rather than workspace label: a renamed workspace still covers its
+# project, where a label match would miss it and open a second workspace for the
+# same checkout.
+pane_index() {
+  herdr pane list | jq -r '.result.panes[] | "\(.workspace_id)\t\(.cwd)"'
+}
+
+# First workspace holding a pane at or below $1, or nothing
+workspace_for_path() {
+  local root=$1 index=$2 ws cwd
+  while IFS=$'\t' read -r ws cwd; do
+    if [ "$cwd" = "$root" ] || [ "${cwd#"$root"/}" != "$cwd" ]; then
+      printf '%s\n' "$ws"
+      return 0
+    fi
+  done <<<"$index"
+}
+
+# Ratios apply to the pane being split, so 0.4 leaves the right column 60% wide
+layout_tab() {
+  local pane=$1 cwd=$2 nvim=$3 right bottom
+  right=$(herdr pane split "$pane" --direction right --ratio 0.4 --cwd "$cwd" --no-focus |
+    jq -r '.result.pane.pane_id')
+  bottom=$(herdr pane split "$right" --direction down --ratio 0.75 --cwd "$cwd" --no-focus |
+    jq -r '.result.pane.pane_id')
+  herdr pane split "$bottom" --direction right --ratio 0.5 --cwd "$cwd" --no-focus >/dev/null
+  if [ "$nvim" = 1 ]; then
+    herdr pane run "$right" nvim >/dev/null
+  fi
+}
+
+# Resolve the clone root, so passing a worktree path still opens one workspace
+# for the whole project. Sets root, worktrees, label, main_label.
+resolve_project() {
+  local dir=$1 common_dir
+  if common_dir=$(git -C "$dir" rev-parse --git-common-dir 2>/dev/null); then
+    case $common_dir in
+      /*) ;;
+      *) common_dir=$dir/$common_dir ;;
+    esac
+    root=$(cd "$common_dir/.." && pwd -P)
+    # first line is always the main worktree
+    mapfile -t worktrees < <(git -C "$root" worktree list --porcelain |
+      awk '/^worktree /{print substr($0, 10)}')
+    # adopt git's spelling of the path, so pane cwds compare equal
+    root=${worktrees[0]}
+    main_label=main
+  else
+    root=$dir
+    worktrees=("$dir")
+    main_label=${root##*/}
+  fi
+  label=${root##*/}
+}
+
+cmd_open() {
+  local dir="" focus_flag=--focus nvim=1 arg
+  for arg in "$@"; do
+    case $arg in
+      --no-focus) focus_flag=--no-focus ;;
+      --no-nvim) nvim=0 ;;
+      -h | --help) usage ;;
+      -*) usage ;;
+      *) [ -n "$dir" ] && usage; dir=$arg ;;
+    esac
+  done
+  dir=${dir:-$PWD}
+
+  [ -d "$dir" ] || {
+    echo "session: no such directory: $dir" >&2
+    exit 1
+  }
+  dir=$(cd "$dir" && pwd)
+
+  local root worktrees label main_label
+  resolve_project "$dir"
+
+  local index workspace covered=()
+  index=$(pane_index)
+  workspace=$(workspace_for_path "$root" "$index")
+
+  if [ -z "$workspace" ]; then
+    local created
+    created=$(herdr workspace create --cwd "$root" --label "$label" "$focus_flag")
+    workspace=$(jq -r '.result.workspace.workspace_id' <<<"$created")
+    herdr tab rename "$(jq -r '.result.tab.tab_id' <<<"$created")" "$main_label" >/dev/null
+    layout_tab "$(jq -r '.result.root_pane.pane_id' <<<"$created")" "$root" "$nvim"
+    covered=("$root")
+  else
+    if [ "$focus_flag" = --focus ]; then
+      herdr workspace focus "$workspace" >/dev/null
+    fi
+    mapfile -t covered < <(awk -F'\t' -v w="$workspace" '$1 == w { print $2 }' <<<"$index")
+  fi
+
+  local worktree name cwd skip tab
+  for worktree in "${worktrees[@]}"; do
+    skip=0
+    for cwd in "${covered[@]}"; do
+      if [ "$cwd" = "$worktree" ] || [ "${cwd#"$worktree"/}" != "$cwd" ]; then
+        skip=1
+        break
+      fi
+    done
+    if [ "$skip" = 1 ]; then
+      continue
+    fi
+
+    name=${worktree##*/}
+    name=${name#"$label"--}
+    [ "$worktree" = "$root" ] && name=$main_label
+
+    tab=$(herdr tab create --workspace "$workspace" --cwd "$worktree" --label "$name" --no-focus)
+    layout_tab "$(jq -r '.result.root_pane.pane_id' <<<"$tab")" "$worktree" "$nvim"
+  done
+}
+
 list_entries() {
-  local d base
+  local d base index
   local icon_workspace=$'\033[32m\xee\x9a\xb6\033[0m'  # nf-cod-terminal_tmux (green)
   local icon_folder=$'\xef\x81\xbb'                    # nf-fa-folder
 
-  local labels
-  labels=$(herdr workspace list | jq -r '.result.workspaces[].label')
+  index=$(pane_index)
 
   herdr workspace list |
     jq -r --arg icon "$icon_workspace" \
@@ -24,20 +164,26 @@ list_entries() {
 
   while IFS= read -r d; do
     base=${d##*/}
-    # a workspace already covers this directory
-    grep -qxF "$base" <<<"$labels" && continue
+    # a live workspace already has a pane inside this directory
+    [ -n "$(workspace_for_path "$d" "$index")" ] && continue
     printf 'd\t%s\t%s  %s\n' "$d" "$icon_folder" "$base"
-  done < <(
-    find "$HOME/code" -maxdepth 1 -mindepth 1 -type d ! -name '*--*' 2>/dev/null
-    echo "$HOME/.dotfiles"
-    echo "$HOME/notes"
-  )
+  done < <(project_dirs)
 }
 
-if [ "${1:-}" = "--list" ]; then
-  list_entries
-  exit 0
-fi
+case ${1:-} in
+  --list)
+    list_entries
+    exit 0
+    ;;
+  open)
+    shift
+    cmd_open "$@"
+    exit 0
+    ;;
+  -h | --help) usage ;;
+  '') ;;
+  *) usage ;;
+esac
 
 selected=$(
   list_entries |
@@ -55,5 +201,6 @@ key=${rest%%$'\t'*}
 if [ "$type" = "w" ]; then
   herdr workspace focus "$key" >/dev/null
 else
-  herdr workspace create --cwd "$key" --label "${key##*/}" --focus >/dev/null
+  # one tab for the clone, one per worktree
+  cmd_open "$key"
 fi

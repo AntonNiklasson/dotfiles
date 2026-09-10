@@ -99,7 +99,7 @@ function resolved(p) {
 }
 
 // shell left (40%), nvim top right, shell below it — mirrors
-// bin/herdr-open-project so a tab looks the same however it was created.
+// bin/session so a tab looks the same however it was created.
 // Ratios apply to the pane being split, so 0.4 leaves the right column 60%.
 async function layoutTab(rootPane, cwd) {
   const editorPane = (await hd('pane', 'split', rootPane, '--direction', 'right', '--ratio', '0.4', '--cwd', cwd, '--no-focus')).pane.pane_id
