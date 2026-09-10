@@ -2,7 +2,7 @@ onboarding = false
 
 [theme]
 name = "tokyo-night"
-auto_switch = false
+auto_switch = true
 dark_name = "tokyo-night"
 light_name = "tokyo-night-day"
 
