@@ -4,6 +4,8 @@ import { $, fs, glob, path, YAML } from 'zx'
 import ora from 'ora'
 import prompts from 'prompts'
 import minimist from 'minimist'
+import crypto from 'node:crypto'
+import os from 'node:os'
 
 const argv = minimist(process.argv.slice(3))
 
@@ -16,15 +18,12 @@ if (!hasPrompt) {
 
 const command = argv._[0]
 
-if (!command || !['new', 'switch', 'rm', 'mv', 'warmup', 'refresh'].includes(command)) {
+if (!command || !['new', 'rm', 'warmup'].includes(command)) {
   console.log('')
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
-  console.log('  wt switch               - Switch to existing worktree')
   console.log('  wt rm [name...] [--yes] - Remove worktrees (picker when no names given, --yes skips confirm)')
-  console.log('  wt mv [name] [new-name] - Rename a worktree and its tmux window')
   console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
-  console.log('  wt refresh              - Spawn tmux windows for worktrees that lack one')
   process.exit(1)
 }
 
@@ -49,19 +48,134 @@ try {
   baseBranch = 'main'
 }
 
-const insideTmux = !!process.env.TMUX
+const insideHerdr = !!process.env.HERDR_PANE_ID
+const workspaceId = process.env.HERDR_WORKSPACE_ID
+
+function requireHerdr() {
+  if (!insideHerdr) {
+    console.log('Error: Must be run inside herdr')
+    process.exit(1)
+  }
+}
 
 let worktreePath
-let windowName
+let tabLabel
 let initialPrompt
 let harness = 'shell'
 let commands = []
 
-async function pickWorktree(promptText, filterFn = () => true, { multi = false } = {}) {
+// --- herdr ---------------------------------------------------------------
+
+// Most herdr CLI calls return JSON on stdout; unwrap .result or throw. The
+// mutating ones that have nothing to report (pane run, pane send-text) print
+// nothing at all, so empty output is a success, not a parse failure.
+async function hd(...args) {
+  const label = args.slice(0, 2).join(' ')
+  let out
+  try {
+    out = (await $`herdr ${args}`).stdout.trim()
+  } catch (err) {
+    throw new Error(`herdr ${label}: ${(err.stderr || err.message || '').trim()}`)
+  }
+  if (!out) return {}
+  let parsed
+  try {
+    parsed = JSON.parse(out)
+  } catch {
+    throw new Error(`herdr ${label}: unparseable output: ${out.slice(0, 200)}`)
+  }
+  if (parsed.error) throw new Error(`herdr ${label}: ${parsed.error.message}`)
+  return parsed.result
+}
+
+// herdr reports pane cwds as resolved paths (/private/tmp, not /tmp), so both
+// sides of a comparison have to go through realpath
+function resolved(p) {
+  try {
+    return fs.realpathSync(p)
+  } catch {
+    return p
+  }
+}
+
+// shell left (40%), nvim top right, shell below it — mirrors
+// bin/herdr-open-project so a tab looks the same however it was created.
+// Ratios apply to the pane being split, so 0.4 leaves the right column 60%.
+async function layoutTab(rootPane, cwd) {
+  const editorPane = (await hd('pane', 'split', rootPane, '--direction', 'right', '--ratio', '0.4', '--cwd', cwd, '--no-focus')).pane.pane_id
+  const shellPane = (await hd('pane', 'split', editorPane, '--direction', 'down', '--ratio', '0.75', '--cwd', cwd, '--no-focus')).pane.pane_id
+  await hd('pane', 'split', shellPane, '--direction', 'right', '--ratio', '0.5', '--cwd', cwd, '--no-focus')
+  await hd('pane', 'run', editorPane, 'nvim')
+  return { editorPane, shellPane }
+}
+
+async function createWorktreeTab(cwd, label, { focus }) {
+  const res = await hd('tab', 'create', '--workspace', workspaceId, '--cwd', cwd, '--label', label, focus ? '--focus' : '--no-focus')
+  const rootPane = res.root_pane.pane_id
+  const { editorPane, shellPane } = await layoutTab(rootPane, cwd)
+  return { tabId: res.tab.tab_id, rootPane, editorPane, shellPane }
+}
+
+// A worktree owns the tab that any of its panes sits in
+async function findTabForPath(wtPath) {
+  const target = resolved(wtPath)
+  for (const pane of (await hd('pane', 'list', '--workspace', workspaceId)).panes) {
+    const cwd = resolved(pane.cwd)
+    if (cwd === target || cwd.startsWith(`${target}/`)) return pane.tab_id
+  }
+  return null
+}
+
+const SETUP_TIMEOUT_MS = 1_800_000
+
+// Run the `run:` list in a real pane, so the user's own shell hooks apply and
+// the output is visible where they're about to work. Commands are chained with
+// && for ordering and fail-fast; the trailing echo always runs and carries the
+// chain's exit code.
+//
+// Both live in a temp script rather than an inline command line for two
+// reasons, each of which silently breaks sequencing otherwise:
+//   - wait-output searches existing output first, and `pane run` makes the
+//     shell echo the command at the prompt — an inline sentinel matches
+//     instantly, before the command has run
+//   - the token is random per run, so a sentinel left in the scrollback by an
+//     earlier run can't match either
+// The script's filename must therefore not contain the token.
+async function runCommandsInPane(paneId, cmds) {
+  if (cmds.length === 0) return 0
+  const token = `wt-done-${crypto.randomBytes(4).toString('hex')}`
+  const scriptPath = path.join(os.tmpdir(), `wt-setup-${process.pid}.sh`)
+  fs.writeFileSync(scriptPath, `${cmds.join(' && ')}\necho "${token}:$?"\n`)
+  try {
+    await hd('pane', 'run', paneId, 'sh', scriptPath)
+    const res = await hd('pane', 'wait-output', paneId, '--regex', `${token}:[0-9]+`, '--timeout', String(SETUP_TIMEOUT_MS))
+    return Number(/:(\d+)/.exec(res.matched_line)?.[1] ?? 1)
+  } finally {
+    fs.removeSync(scriptPath)
+  }
+}
+
+// Launch the harness with the prompt as an argument rather than via
+// `agent start` + `agent prompt`. A fresh worktree is a directory the agent
+// has not seen, so it opens on its own trust prompt and `agent start` reports
+// agent_not_ready — the agent owns the pane but never becomes promptable, and
+// anything that then relaunches types into the running agent. herdr detects
+// the agent in the pane either way; the only thing given up is a named agent.
+async function startHarness(paneId) {
+  if (harness === 'shell') return
+  const cmd = harness === 'claude'
+    ? (initialPrompt ? ['claude', initialPrompt] : ['claude'])
+    : (initialPrompt ? ['opencode', '--agent', 'plan', '--prompt', initialPrompt] : ['opencode', '--agent', 'plan'])
+  await hd('pane', 'run', paneId, ...cmd)
+}
+
+// --- worktree picking ----------------------------------------------------
+
+async function pickWorktree(promptText, filterFn = () => true) {
   const wtListOutput = (await $`git worktree list`).stdout.trim()
   const wtLines = wtListOutput.split('\n').filter(filterFn)
 
-  if (wtLines.length === 0) return multi ? [] : null
+  if (wtLines.length === 0) return []
 
   const enriched = []
   for (const line of wtLines) {
@@ -79,21 +193,18 @@ async function pickWorktree(promptText, filterFn = () => true, { multi = false }
     "--delimiter=\t",
     '--with-nth=2..',
     `--preview=${preview}`,
-    '--preview-window=right:50%'
+    '--preview-window=right:50%',
+    '--multi'
   ]
-  if (multi) fzfFlags.push('--multi')
 
   let selection
   try {
     selection = (await $`echo ${input} | fzf ${fzfFlags}`).stdout.trim()
   } catch {
-    return multi ? [] : null
+    return []
   }
 
-  if (multi) {
-    return selection.split('\n').map(line => line.split('\t')[0]).filter(Boolean)
-  }
-  return selection.split('\t')[0]
+  return selection.split('\n').map(line => line.split('\t')[0]).filter(Boolean)
 }
 
 async function resolveWorktreePath(name) {
@@ -103,6 +214,8 @@ async function resolveWorktreePath(name) {
   // match exact dir name or the shorthand after the repo prefix (sana-ai--dx → dx)
   return wtPaths.find(p => path.basename(p) === name || path.basename(p) === `${repoName}--${name}`) ?? null
 }
+
+// --- .worktree-setup.yml -------------------------------------------------
 
 const SETUP_FILE = '.worktree-setup.yml'
 
@@ -157,7 +270,8 @@ function readWorktreeSetup() {
   }
 }
 
-async function applyWorktreeSetup({ targetPath, runCommands }) {
+// Copies the declared files and returns the `run:` list for a pane to execute
+async function applyWorktreeSetup(targetPath) {
   const { copy: filesToCopy, run: cmds } = readWorktreeSetup()
 
   if (filesToCopy.length > 0) {
@@ -189,28 +303,26 @@ async function applyWorktreeSetup({ targetPath, runCommands }) {
     }
   }
 
-  // Trust the copied .envrc so setup commands and the pane shell pick it up
-  if (fs.existsSync(`${targetPath}/.envrc`)) {
-    try {
-      await $`direnv allow ${targetPath}`
-    } catch {
-      console.log('  Warning: direnv allow failed')
-    }
-  }
-
-  if (runCommands && cmds.length > 0) {
-    console.log('Running setup commands...')
-    $.quiet = false
-    for (const c of cmds) {
-      console.log(`  $ ${c}`)
-      // sh has no direnv hook; direnv exec loads .envrc (no-op if absent)
-      await $({ cwd: targetPath, stdio: 'inherit' })`direnv exec ${targetPath} sh -c ${c}`
-    }
-    $.quiet = true
-  }
+  await trustPath(targetPath)
 
   return cmds
 }
+
+// direnv keys its allow-list on the path, so a freshly copied .envrc starts
+// blocked. This can't move into `run:`: the commands there are one && chain and
+// the shell's hooks get a single pass before it, so an allow inside the chain
+// would not load .envrc for the commands that follow it. It has to happen
+// before the tab's shell starts.
+async function trustPath(targetPath) {
+  if (!fs.existsSync(`${targetPath}/.envrc`)) return
+  try {
+    await $`direnv allow ${targetPath}`
+  } catch {
+    console.log('  Warning: direnv allow failed')
+  }
+}
+
+// --- commands ------------------------------------------------------------
 
 if (command === 'warmup') {
   let targetPath = argv._[1] ? path.resolve(argv._[1]) : process.cwd()
@@ -218,177 +330,25 @@ if (command === 'warmup') {
     console.log(`Error: ${targetPath} does not exist`)
     process.exit(1)
   }
-  // direnv keys its allow-list on the resolved path
+  // hooks key their trust databases on the resolved path
   targetPath = fs.realpathSync(targetPath)
+  requireHerdr()
   console.log(`Warming up worktree: ${targetPath}`)
-  await applyWorktreeSetup({ targetPath, runCommands: true })
-  process.exit(0)
-}
-
-async function refreshTmuxWindows() {
-  const wtPaths = (await $`git worktree list`).stdout.trim()
-    .split('\n')
-    .map(line => line.split(/\s+/)[0])
-
-  // A window belongs to a worktree when its first pane lives there — stray
-  // panes cd'd into a worktree from another window don't count as coverage
-  const paneLines = (await $`tmux list-panes -a -F ${'#{window_id} #{pane_index} #{pane_current_path}'}`).stdout.trim().split('\n')
-  const windowRoots = new Map()
-  for (const line of paneLines) {
-    const [winId, paneIndex, ...rest] = line.split(' ')
-    const panePath = rest.join(' ')
-    const existing = windowRoots.get(winId)
-    if (!existing || Number(paneIndex) < existing.index) {
-      windowRoots.set(winId, { index: Number(paneIndex), path: panePath })
-    }
+  const cmds = await applyWorktreeSetup(targetPath)
+  if (cmds.length === 0) {
+    console.log('Nothing to run')
+    process.exit(0)
   }
-
-  const windowNames = new Map(
-    (await $`tmux list-windows -a -F ${'#{window_id} #{window_name}'}`).stdout.trim()
-      .split('\n').map(line => [line.split(' ')[0], line.split(' ').slice(1).join(' ')])
-  )
-
-  for (const [i, wtPath] of wtPaths.entries()) {
-    // the main checkout's window is always "main"
-    const name = i === 0 ? 'main' : path.basename(wtPath).replace(`${repoName}--`, '')
-    const match = [...windowRoots.entries()].find(([, w]) => w.path === wtPath || w.path.startsWith(`${wtPath}/`))
-    if (match) {
-      const [winId] = match
-      if (windowNames.get(winId) !== name) {
-        await $`tmux rename-window -t ${winId} ${name}`
-        console.log(`~ ${name} (window renamed)`)
-      } else {
-        console.log(`= ${name} (window exists)`)
-      }
-      continue
-    }
-    const winId = (await $`tmux new-window -d -P -F ${'#{window_id}'} -c ${wtPath} -n ${name}`).stdout.trim()
-    await $`tmux split-window -d -h -t ${winId} -c ${wtPath} -l 60% nvim`
-    await $`tmux split-window -d -v -t ${winId}.1 -c ${wtPath} -l 30%`
-    console.log(`+ ${name} (window created)`)
-  }
-}
-
-if (command === 'refresh') {
-  if (!insideTmux) {
-    console.log('Error: Must be run inside tmux')
-    process.exit(1)
-  }
-  await refreshTmuxWindows()
-  process.exit(0)
-}
-
-if (command === 'mv') {
-  const fromArg = argv._[1]
-  let sourcePath
-  if (fromArg) {
-    sourcePath = await resolveWorktreePath(fromArg)
-    if (!sourcePath) {
-      console.log(`Error: no worktree matching "${fromArg}"`)
-      process.exit(1)
-    }
+  // borrow a pane so the commands get the user's shell, then tidy up
+  const pane = (await hd('pane', 'split', '--current', '--direction', 'down', '--ratio', '0.5', '--cwd', targetPath, '--no-focus')).pane.pane_id
+  const code = await runCommandsInPane(pane, cmds)
+  if (code === 0) {
+    await hd('pane', 'close', pane)
+    console.log('Setup complete')
   } else {
-    sourcePath = await pickWorktree('Rename worktree: ', (_, i) => i > 0)
-    if (!sourcePath) {
-      console.log('No worktree selected')
-      process.exit(0)
-    }
+    console.log(`Setup failed (exit ${code}) — leaving the pane open so you can read it`)
   }
-
-  const currentName = path.basename(sourcePath).replace(`${repoName}--`, '')
-  let newName = argv._[2]
-  if (!newName) {
-    const response = await prompts({
-      type: 'text',
-      name: 'newName',
-      message: `New name for "${currentName}"`,
-      initial: currentName
-    })
-    newName = response.newName
-  }
-
-  const normalizedName = String(newName ?? '').trim().replace(/[^a-zA-Z0-9_-]/g, '-')
-  if (!normalizedName) {
-    console.log('Name required')
-    process.exit(1)
-  }
-  // compare paths, not names: a worktree outside the <repo>--<name> convention
-  // still moves when the name is kept
-  const targetPath = `${parentDir}/${repoName}--${normalizedName}`
-  if (targetPath === sourcePath) {
-    console.log('Nothing to rename')
-    process.exit(0)
-  }
-  if (fs.existsSync(targetPath)) {
-    console.log(`Error: "${targetPath}" already exists`)
-    process.exit(1)
-  }
-
-  const s = ora(`Renaming ${currentName} → ${normalizedName}...`).start()
-  try {
-    await $`git worktree move ${sourcePath} ${targetPath}`
-  } catch (err) {
-    s.fail(`Rename failed: ${(err.stderr || err.message || '').trim()}`)
-    process.exit(1)
-  }
-  s.succeed(`Renamed ${currentName} → ${normalizedName}`)
-
-  // direnv keys its allow-list on the path, so the moved worktree needs re-allowing
-  if (fs.existsSync(`${targetPath}/.envrc`)) {
-    try {
-      await $`direnv allow ${targetPath}`
-    } catch {
-      console.log('  Warning: direnv allow failed')
-    }
-  }
-
-  if (!insideTmux) {
-    console.log('Not inside tmux, skipping window refresh')
-    process.exit(0)
-  }
-
-  // Shells survive the move but keep a stale $PWD, which also leaves direnv
-  // unloaded — only safe to fix in panes sitting at a prompt
-  const paneLines = (await $`tmux list-panes -a -F ${'#{pane_id} #{pane_current_command} #{pane_current_path}'}`).stdout.trim().split('\n')
-  for (const line of paneLines) {
-    const [paneId, paneCommand, ...rest] = line.split(' ')
-    const panePath = rest.join(' ')
-    const base = [sourcePath, targetPath].find(p => panePath === p || panePath.startsWith(`${p}/`))
-    if (!base) continue
-    if (!['zsh', 'bash', 'fish', 'sh'].includes(paneCommand)) continue
-    const suffix = panePath.slice(base.length)
-    await $`tmux send-keys -t ${paneId} -l ${`cd ${targetPath}${suffix}`}`
-    await $`tmux send-keys -t ${paneId} Enter`
-  }
-
-  // give tmux a beat to pick up the new pane paths before matching on them
-  await new Promise(resolve => setTimeout(resolve, 300))
-  await refreshTmuxWindows()
-  process.exit(0)
-}
-
-if (command === 'switch') {
-  worktreePath = await pickWorktree('Select worktree: ')
-  if (!worktreePath) {
-    console.log('No worktree selected')
-    process.exit(0)
-  }
-  windowName = path.basename(worktreePath)
-
-  // Check if a tmux window already exists for this worktree
-  if (insideTmux) {
-    try {
-      const panes = (await $`tmux list-panes -a -F ${'#{session_name}:#{window_index} #{pane_current_path}'}`).stdout.trim()
-      for (const line of panes.split('\n')) {
-        const [windowTarget, panePath] = [line.split(' ')[0], line.split(' ').slice(1).join(' ')]
-        if (panePath.startsWith(worktreePath)) {
-          await $`tmux select-window -t ${windowTarget}`
-          console.log(`Switched to existing window: ${windowTarget}`)
-          process.exit(0)
-        }
-      }
-    } catch {}
-  }
+  process.exit(code)
 }
 
 if (command === 'rm') {
@@ -405,7 +365,7 @@ if (command === 'rm') {
       selectedPaths.push(match)
     }
   } else {
-    selectedPaths = await pickWorktree('Remove worktrees (Tab to select): ', (_, i) => i > 0, { multi: true })
+    selectedPaths = await pickWorktree('Remove worktrees (Tab to select): ', (_, i) => i > 0)
   }
   if (selectedPaths.length === 0) {
     console.log('No worktree selected')
@@ -473,6 +433,14 @@ if (command === 'rm') {
   for (const wtPath of confirmedPaths) {
     const wtName = path.basename(wtPath)
 
+    // resolve the tab before the directory goes away
+    let tabId = null
+    if (insideHerdr) {
+      try {
+        tabId = await findTabForPath(wtPath)
+      } catch { }
+    }
+
     let s = ora(`Removing ${wtName}...`).start()
     try {
       await $`git worktree remove ${wtPath} --force`
@@ -480,17 +448,9 @@ if (command === 'rm') {
     await fs.remove(wtPath)
     s.succeed(`Removed ${wtName}`)
 
-    // Kill tmux window whose pane cwd matches the worktree path
-    if (insideTmux) {
+    if (tabId) {
       try {
-        const panes = (await $`tmux list-panes -a -F ${'#{session_name}:#{window_index} #{pane_current_path}'}`).stdout.trim()
-        for (const line of panes.split('\n')) {
-          const [windowTarget, panePath] = [line.split(' ')[0], line.split(' ').slice(1).join(' ')]
-          if (panePath.startsWith(wtPath)) {
-            await $`tmux kill-window -t ${windowTarget}`
-            break
-          }
-        }
+        await hd('tab', 'close', tabId)
       } catch { }
     }
   }
@@ -554,7 +514,7 @@ if (command === 'new') {
     }
   }
 
-  windowName = normalizedName
+  tabLabel = normalizedName
   const defaultBranch = `an/${normalizedName}`
 
   let branchName = argv.branch?.trim() || defaultBranch
@@ -620,43 +580,29 @@ if (command === 'new') {
   }
   $.quiet = true
 
-  commands = await applyWorktreeSetup({ targetPath: worktreePath, runCommands: false })
+  commands = await applyWorktreeSetup(worktreePath)
 }
 
-// Tmux integration
-if (!insideTmux) {
-  console.log('Error: Must be run inside tmux')
-  process.exit(1)
-}
+// --- herdr tab -----------------------------------------------------------
 
+requireHerdr()
+
+// keep focus where it is when the agent has a prompt to get on with
 const background = !!initialPrompt
-const newWindowFlags = background ? ['-d'] : []
+const { rootPane, shellPane } = await createWorktreeTab(worktreePath, tabLabel, { focus: !background })
 
-function harnessCmd() {
-  if (harness === 'claude') return initialPrompt ? ['claude', initialPrompt] : ['claude']
-  if (harness === 'opencode') return initialPrompt ? ['opencode', '--agent', 'plan', '--prompt', initialPrompt] : ['opencode', '--agent', 'plan']
-  return []
+// Gate the harness on setup finishing: starting an agent while `pnpm install`
+// is still running hands it a repo with no dependencies
+let setupCode = 0
+if (commands.length > 0) {
+  console.log(`Running setup commands in "${tabLabel}"...`)
+  setupCode = await runCommandsInPane(shellPane, commands)
+  if (setupCode !== 0) {
+    console.log(`  Warning: setup exited ${setupCode} — see the tab's shell pane`)
+  }
 }
 
-const cmd = harnessCmd()
-if (cmd.length > 0) {
-  await $`tmux new-window ${newWindowFlags} -c ${worktreePath} -n ${windowName} ${cmd}`
-} else {
-  await $`tmux new-window ${newWindowFlags} -c ${worktreePath} -n ${windowName}`
-}
-await $`tmux split-window -d -h -t ${windowName}.0 -c ${worktreePath} -l 60% nvim`
-await $`tmux split-window -d -v -t ${windowName}.1 -c ${worktreePath} -l 30%`
+await startHarness(rootPane)
 
-// Run setup commands in the terminal pane, one prompt line each so shell
-// hooks (e.g. direnv) fire between them
-for (const c of commands) {
-  await $`tmux send-keys -t ${windowName}.2 -l ${c}`
-  await $`tmux send-keys -t ${windowName}.2 Enter`
-}
-
-// Open lazygit in nvim when switching to existing worktree
-if (command === 'switch') {
-  await $`sleep 1 && tmux send-keys -t ${windowName}.1 Space g g`
-}
-
-console.log(`${background ? 'Started' : 'Switched to'} worktree: ${windowName}`)
+console.log(`${background ? 'Started' : 'Created'} worktree: ${tabLabel}`)
+process.exit(setupCode)
