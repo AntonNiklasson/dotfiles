@@ -2,11 +2,11 @@
 
 set -euo pipefail
 
-# session — pick a herdr workspace, or open a project directory as one.
+# herdr-session-launcher — pick a herdr workspace, or open a project
+# directory as one.
 #
-#   session                                       interactive picker
-#   session --list                                picker entries (fzf reload hook)
-#   session open [dir] [--no-focus] [--no-nvim]   open a project
+# Bound to prefix+space as a herdr popup; that picker is the only entry point.
+# `--list` exists solely so fzf's ctrl-x binding can reload the list.
 #
 # Herdr's own prefix+w picker only lists live workspaces. This adds the other
 # half: project directories that don't have a workspace yet, opened with one tab
@@ -19,11 +19,7 @@ set -euo pipefail
 # workspaces are ordered by workspace number rather than recency.
 
 usage() {
-  cat >&2 <<'EOF'
-usage: session                                       pick a workspace or project
-       session --list                                print picker entries
-       session open [dir] [--no-focus] [--no-nvim]   open a project
-EOF
+  echo 'usage: herdr-session-launcher [--list]' >&2
   exit 1
 }
 
@@ -54,15 +50,13 @@ workspace_for_path() {
 
 # Ratios apply to the pane being split, so 0.4 leaves the right column 60% wide
 layout_tab() {
-  local pane=$1 cwd=$2 nvim=$3 right bottom
+  local pane=$1 cwd=$2 right bottom
   right=$(herdr pane split "$pane" --direction right --ratio 0.4 --cwd "$cwd" --no-focus |
     jq -r '.result.pane.pane_id')
   bottom=$(herdr pane split "$right" --direction down --ratio 0.75 --cwd "$cwd" --no-focus |
     jq -r '.result.pane.pane_id')
   herdr pane split "$bottom" --direction right --ratio 0.5 --cwd "$cwd" --no-focus >/dev/null
-  if [ "$nvim" = 1 ]; then
-    herdr pane run "$right" nvim >/dev/null
-  fi
+  herdr pane run "$right" nvim >/dev/null
 }
 
 # Resolve the clone root, so passing a worktree path still opens one workspace
@@ -89,21 +83,11 @@ resolve_project() {
   label=${root##*/}
 }
 
-cmd_open() {
-  local dir="" focus_flag=--focus nvim=1 arg
-  for arg in "$@"; do
-    case $arg in
-      --no-focus) focus_flag=--no-focus ;;
-      --no-nvim) nvim=0 ;;
-      -h | --help) usage ;;
-      -*) usage ;;
-      *) [ -n "$dir" ] && usage; dir=$arg ;;
-    esac
-  done
-  dir=${dir:-$PWD}
+open_project() {
+  local dir=$1
 
   [ -d "$dir" ] || {
-    echo "session: no such directory: $dir" >&2
+    echo "herdr-session-launcher: no such directory: $dir" >&2
     exit 1
   }
   dir=$(cd "$dir" && pwd)
@@ -117,15 +101,13 @@ cmd_open() {
 
   if [ -z "$workspace" ]; then
     local created
-    created=$(herdr workspace create --cwd "$root" --label "$label" "$focus_flag")
+    created=$(herdr workspace create --cwd "$root" --label "$label" --focus)
     workspace=$(jq -r '.result.workspace.workspace_id' <<<"$created")
     herdr tab rename "$(jq -r '.result.tab.tab_id' <<<"$created")" "$main_label" >/dev/null
-    layout_tab "$(jq -r '.result.root_pane.pane_id' <<<"$created")" "$root" "$nvim"
+    layout_tab "$(jq -r '.result.root_pane.pane_id' <<<"$created")" "$root"
     covered=("$root")
   else
-    if [ "$focus_flag" = --focus ]; then
-      herdr workspace focus "$workspace" >/dev/null
-    fi
+    herdr workspace focus "$workspace" >/dev/null
     mapfile -t covered < <(awk -F'\t' -v w="$workspace" '$1 == w { print $2 }' <<<"$index")
   fi
 
@@ -147,7 +129,7 @@ cmd_open() {
     [ "$worktree" = "$root" ] && name=$main_label
 
     tab=$(herdr tab create --workspace "$workspace" --cwd "$worktree" --label "$name" --no-focus)
-    layout_tab "$(jq -r '.result.root_pane.pane_id' <<<"$tab")" "$worktree" "$nvim"
+    layout_tab "$(jq -r '.result.root_pane.pane_id' <<<"$tab")" "$worktree"
   done
 }
 
@@ -175,11 +157,6 @@ case ${1:-} in
     list_entries
     exit 0
     ;;
-  open)
-    shift
-    cmd_open "$@"
-    exit 0
-    ;;
   -h | --help) usage ;;
   '') ;;
   *) usage ;;
@@ -202,5 +179,5 @@ if [ "$type" = "w" ]; then
   herdr workspace focus "$key" >/dev/null
 else
   # one tab for the clone, one per worktree
-  cmd_open "$key"
+  open_project "$key"
 fi
