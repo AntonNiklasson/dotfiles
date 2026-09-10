@@ -1,0 +1,4 @@
+# zx writes a transient <script>.mjs beside extensionless scripts while they run.
+# It cleans up on normal exit, but any signal (Ctrl-C included) leaves one behind.
+# Harmless -- zx falls back to a random name if the file is already there.
+/*.mjs

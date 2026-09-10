@@ -1,1 +1,608 @@
-src/wt.mjs
+#!/usr/bin/env zx
+
+import { $, fs, glob, path, YAML } from 'zx'
+import ora from 'ora'
+import prompts from 'prompts'
+import minimist from 'minimist'
+import crypto from 'node:crypto'
+import os from 'node:os'
+
+const argv = minimist(process.argv.slice(3))
+
+// Git Worktree Tool — run `wt` for usage
+
+const hasPrompt = !!argv.prompt
+if (!hasPrompt) {
+  $.quiet = true
+}
+
+const command = argv._[0]
+
+if (!command || !['new', 'rm', 'warmup'].includes(command)) {
+  console.log('')
+  console.log('Usage:')
+  console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
+  console.log('  wt rm [name...] [--yes] - Remove worktrees (picker when no names given, --yes skips confirm)')
+  console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
+  process.exit(1)
+}
+
+// Ensure we're in a git repository
+try {
+  await $`git rev-parse --is-inside-work-tree`
+} catch {
+  console.log('Error: Not inside a git repository')
+  process.exit(1)
+}
+
+// Get repo info
+const gitCommonDir = (await $`cd "$(git rev-parse --git-common-dir)" && pwd`).stdout.trim()
+const repoRoot = path.dirname(gitCommonDir)
+const repoName = path.basename(repoRoot)
+const parentDir = path.dirname(repoRoot)
+
+let baseBranch
+try {
+  baseBranch = (await $`git symbolic-ref refs/remotes/origin/HEAD`).stdout.trim().replace('refs/remotes/origin/', '')
+} catch {
+  baseBranch = 'main'
+}
+
+const insideHerdr = !!process.env.HERDR_PANE_ID
+const workspaceId = process.env.HERDR_WORKSPACE_ID
+
+function requireHerdr() {
+  if (!insideHerdr) {
+    console.log('Error: Must be run inside herdr')
+    process.exit(1)
+  }
+}
+
+let worktreePath
+let tabLabel
+let initialPrompt
+let harness = 'shell'
+let commands = []
+
+// --- herdr ---------------------------------------------------------------
+
+// Most herdr CLI calls return JSON on stdout; unwrap .result or throw. The
+// mutating ones that have nothing to report (pane run, pane send-text) print
+// nothing at all, so empty output is a success, not a parse failure.
+async function hd(...args) {
+  const label = args.slice(0, 2).join(' ')
+  let out
+  try {
+    out = (await $`herdr ${args}`).stdout.trim()
+  } catch (err) {
+    throw new Error(`herdr ${label}: ${(err.stderr || err.message || '').trim()}`)
+  }
+  if (!out) return {}
+  let parsed
+  try {
+    parsed = JSON.parse(out)
+  } catch {
+    throw new Error(`herdr ${label}: unparseable output: ${out.slice(0, 200)}`)
+  }
+  if (parsed.error) throw new Error(`herdr ${label}: ${parsed.error.message}`)
+  return parsed.result
+}
+
+// herdr reports pane cwds as resolved paths (/private/tmp, not /tmp), so both
+// sides of a comparison have to go through realpath
+function resolved(p) {
+  try {
+    return fs.realpathSync(p)
+  } catch {
+    return p
+  }
+}
+
+// shell left (40%), nvim top right, shell below it — mirrors
+// bin/herdr-session-launcher so a tab looks the same however it was created.
+// Ratios apply to the pane being split, so 0.4 leaves the right column 60%.
+async function layoutTab(rootPane, cwd) {
+  const editorPane = (await hd('pane', 'split', rootPane, '--direction', 'right', '--ratio', '0.4', '--cwd', cwd, '--no-focus')).pane.pane_id
+  const shellPane = (await hd('pane', 'split', editorPane, '--direction', 'down', '--ratio', '0.75', '--cwd', cwd, '--no-focus')).pane.pane_id
+  await hd('pane', 'split', shellPane, '--direction', 'right', '--ratio', '0.5', '--cwd', cwd, '--no-focus')
+  await hd('pane', 'run', editorPane, 'nvim')
+  return { editorPane, shellPane }
+}
+
+async function createWorktreeTab(cwd, label, { focus }) {
+  const res = await hd('tab', 'create', '--workspace', workspaceId, '--cwd', cwd, '--label', label, focus ? '--focus' : '--no-focus')
+  const rootPane = res.root_pane.pane_id
+  const { editorPane, shellPane } = await layoutTab(rootPane, cwd)
+  return { tabId: res.tab.tab_id, rootPane, editorPane, shellPane }
+}
+
+// A worktree owns the tab that any of its panes sits in
+async function findTabForPath(wtPath) {
+  const target = resolved(wtPath)
+  for (const pane of (await hd('pane', 'list', '--workspace', workspaceId)).panes) {
+    const cwd = resolved(pane.cwd)
+    if (cwd === target || cwd.startsWith(`${target}/`)) return pane.tab_id
+  }
+  return null
+}
+
+const SETUP_TIMEOUT_MS = 1_800_000
+
+// Run the `run:` list in a real pane, so the user's own shell hooks apply and
+// the output is visible where they're about to work. Commands are chained with
+// && for ordering and fail-fast; the trailing echo always runs and carries the
+// chain's exit code.
+//
+// Both live in a temp script rather than an inline command line for two
+// reasons, each of which silently breaks sequencing otherwise:
+//   - wait-output searches existing output first, and `pane run` makes the
+//     shell echo the command at the prompt — an inline sentinel matches
+//     instantly, before the command has run
+//   - the token is random per run, so a sentinel left in the scrollback by an
+//     earlier run can't match either
+// The script's filename must therefore not contain the token.
+async function runCommandsInPane(paneId, cmds) {
+  if (cmds.length === 0) return 0
+  const token = `wt-done-${crypto.randomBytes(4).toString('hex')}`
+  const scriptPath = path.join(os.tmpdir(), `wt-setup-${process.pid}.sh`)
+  fs.writeFileSync(scriptPath, `${cmds.join(' && ')}\necho "${token}:$?"\n`)
+  try {
+    await hd('pane', 'run', paneId, 'sh', scriptPath)
+    const res = await hd('pane', 'wait-output', paneId, '--regex', `${token}:[0-9]+`, '--timeout', String(SETUP_TIMEOUT_MS))
+    return Number(/:(\d+)/.exec(res.matched_line)?.[1] ?? 1)
+  } finally {
+    fs.removeSync(scriptPath)
+  }
+}
+
+// Launch the harness with the prompt as an argument rather than via
+// `agent start` + `agent prompt`. A fresh worktree is a directory the agent
+// has not seen, so it opens on its own trust prompt and `agent start` reports
+// agent_not_ready — the agent owns the pane but never becomes promptable, and
+// anything that then relaunches types into the running agent. herdr detects
+// the agent in the pane either way; the only thing given up is a named agent.
+async function startHarness(paneId) {
+  if (harness === 'shell') return
+  const cmd = harness === 'claude'
+    ? (initialPrompt ? ['claude', initialPrompt] : ['claude'])
+    : (initialPrompt ? ['opencode', '--agent', 'plan', '--prompt', initialPrompt] : ['opencode', '--agent', 'plan'])
+  await hd('pane', 'run', paneId, ...cmd)
+}
+
+// --- worktree picking ----------------------------------------------------
+
+async function pickWorktree(promptText, filterFn = () => true) {
+  const wtListOutput = (await $`git worktree list`).stdout.trim()
+  const wtLines = wtListOutput.split('\n').filter(filterFn)
+
+  if (wtLines.length === 0) return []
+
+  const enriched = []
+  for (const line of wtLines) {
+    const wtPath = line.split(/\s+/)[0]
+    const dirName = path.basename(wtPath)
+    enriched.push(`${wtPath}\t${dirName}`)
+  }
+
+  const input = enriched.join('\n')
+  const preview = "git -C {1} status --short"
+
+  const fzfFlags = [
+    `--prompt=${promptText}`,
+    '--height=15',
+    "--delimiter=\t",
+    '--with-nth=2..',
+    `--preview=${preview}`,
+    '--preview-window=right:50%',
+    '--multi'
+  ]
+
+  let selection
+  try {
+    selection = (await $`echo ${input} | fzf ${fzfFlags}`).stdout.trim()
+  } catch {
+    return []
+  }
+
+  return selection.split('\n').map(line => line.split('\t')[0]).filter(Boolean)
+}
+
+async function resolveWorktreePath(name) {
+  const wtPaths = (await $`git worktree list`).stdout.trim()
+    .split('\n').slice(1) // skip main worktree
+    .map(line => line.split(/\s+/)[0])
+  // match exact dir name or the shorthand after the repo prefix (sana-ai--dx → dx)
+  return wtPaths.find(p => path.basename(p) === name || path.basename(p) === `${repoName}--${name}`) ?? null
+}
+
+// --- .worktree-setup.yml -------------------------------------------------
+
+const SETUP_FILE = '.worktree-setup.yml'
+
+const EXAMPLE_SETUP = `copy:
+  - .env
+  - .env.local
+
+run:
+  - pnpm install
+`
+
+function readWorktreeSetup() {
+  const setupPath = `${repoRoot}/${SETUP_FILE}`
+  if (!fs.existsSync(setupPath)) {
+    console.log('')
+    console.log(`Error: ${SETUP_FILE} not found`)
+    console.log('')
+    console.log('This file declares what to copy into new worktrees and what to run there.')
+    console.log(`Create it at: ${setupPath}`)
+    console.log('')
+    console.log('Example contents:')
+    console.log(EXAMPLE_SETUP.split('\n').map(l => `  ${l}`).join('\n'))
+    process.exit(1)
+  }
+
+  let parsed
+  try {
+    parsed = YAML.parse(fs.readFileSync(setupPath, 'utf-8')) ?? {}
+  } catch (err) {
+    console.log(`Error: ${SETUP_FILE} is not valid YAML`)
+    console.log(`  ${err.message}`)
+    process.exit(1)
+  }
+
+  if (typeof parsed !== 'object' || Array.isArray(parsed)) {
+    console.log(`Error: ${SETUP_FILE} must be a mapping with 'copy' and/or 'run' keys`)
+    process.exit(1)
+  }
+
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!['copy', 'run'].includes(key)) {
+      console.log(`  Warning: unknown key '${key}' in ${SETUP_FILE}, ignoring`)
+    } else if (value != null && !Array.isArray(value)) {
+      console.log(`Error: '${key}' in ${SETUP_FILE} must be a list`)
+      process.exit(1)
+    }
+  }
+
+  return {
+    copy: (parsed.copy ?? []).map(String),
+    run: (parsed.run ?? []).map(String)
+  }
+}
+
+// Copies the declared files and returns the `run:` list for a pane to execute
+async function applyWorktreeSetup(targetPath) {
+  const { copy: filesToCopy, run: cmds } = readWorktreeSetup()
+
+  if (filesToCopy.length > 0) {
+    console.log(`Copying files from ${SETUP_FILE}...`)
+    for (const pattern of filesToCopy) {
+      if (pattern.includes('*')) {
+        const matches = await glob(pattern, { cwd: repoRoot, dot: true })
+        for (const match of matches) {
+          const srcPath = `${repoRoot}/${match}`
+          const destPath = `${targetPath}/${match}`
+          console.log(`  Copying ${match}...`)
+          await fs.ensureDir(path.dirname(destPath))
+          await fs.copy(srcPath, destPath)
+        }
+        if (matches.length === 0) {
+          console.log(`  Warning: no matches for ${pattern}`)
+        }
+      } else {
+        const srcPath = `${repoRoot}/${pattern}`
+        if (fs.existsSync(srcPath)) {
+          console.log(`  Copying ${pattern}...`)
+          const destPath = `${targetPath}/${pattern}`
+          await fs.ensureDir(path.dirname(destPath))
+          await fs.copy(srcPath, destPath)
+        } else {
+          console.log(`  Warning: ${pattern} not found, skipping`)
+        }
+      }
+    }
+  }
+
+  await trustPath(targetPath)
+
+  return cmds
+}
+
+// direnv keys its allow-list on the path, so a freshly copied .envrc starts
+// blocked. This can't move into `run:`: the commands there are one && chain and
+// the shell's hooks get a single pass before it, so an allow inside the chain
+// would not load .envrc for the commands that follow it. It has to happen
+// before the tab's shell starts.
+async function trustPath(targetPath) {
+  if (!fs.existsSync(`${targetPath}/.envrc`)) return
+  try {
+    await $`direnv allow ${targetPath}`
+  } catch {
+    console.log('  Warning: direnv allow failed')
+  }
+}
+
+// --- commands ------------------------------------------------------------
+
+if (command === 'warmup') {
+  let targetPath = argv._[1] ? path.resolve(argv._[1]) : process.cwd()
+  if (!fs.existsSync(targetPath)) {
+    console.log(`Error: ${targetPath} does not exist`)
+    process.exit(1)
+  }
+  // hooks key their trust databases on the resolved path
+  targetPath = fs.realpathSync(targetPath)
+  requireHerdr()
+  console.log(`Warming up worktree: ${targetPath}`)
+  const cmds = await applyWorktreeSetup(targetPath)
+  if (cmds.length === 0) {
+    console.log('Nothing to run')
+    process.exit(0)
+  }
+  // borrow a pane so the commands get the user's shell, then tidy up
+  const pane = (await hd('pane', 'split', '--current', '--direction', 'down', '--ratio', '0.5', '--cwd', targetPath, '--no-focus')).pane.pane_id
+  const code = await runCommandsInPane(pane, cmds)
+  if (code === 0) {
+    await hd('pane', 'close', pane)
+    console.log('Setup complete')
+  } else {
+    console.log(`Setup failed (exit ${code}) — leaving the pane open so you can read it`)
+  }
+  process.exit(code)
+}
+
+if (command === 'rm') {
+  let selectedPaths
+  const names = argv._.slice(1)
+  if (names.length > 0) {
+    selectedPaths = []
+    for (const name of names) {
+      const match = await resolveWorktreePath(name)
+      if (!match) {
+        console.log(`Error: no worktree matching "${name}"`)
+        process.exit(1)
+      }
+      selectedPaths.push(match)
+    }
+  } else {
+    selectedPaths = await pickWorktree('Remove worktrees (Tab to select): ', (_, i) => i > 0)
+  }
+  if (selectedPaths.length === 0) {
+    console.log('No worktree selected')
+    process.exit(0)
+  }
+
+  // First pass: confirm each worktree
+  const confirmedPaths = []
+  for (const wtPath of selectedPaths) {
+    const wtName = path.basename(wtPath)
+
+    // Check if worktree directory still exists
+    if (!fs.existsSync(wtPath)) {
+      console.log(`\n"${wtName}" directory is missing, will clean up git reference`)
+      confirmedPaths.push(wtPath)
+      continue
+    }
+
+    // Check for uncommitted changes
+    const status = (await $`git -C ${wtPath} status --porcelain`).stdout.trim()
+    if (status) {
+      console.log(`\n"${wtName}" has uncommitted changes:\n`)
+      console.log(status)
+      console.log('')
+
+      if (selectedPaths.length === 1 && !argv.yes) {
+        const { showDiff } = await prompts({
+          type: 'toggle',
+          name: 'showDiff',
+          message: 'Show full diff?',
+          initial: true,
+          active: 'yes',
+          inactive: 'skip'
+        })
+
+        if (showDiff) {
+          await $({ stdio: 'inherit' })`git -C ${wtPath} diff`.catch(() => { })
+          console.log('')
+        }
+      }
+    }
+
+    if (argv.yes) {
+      confirmedPaths.push(wtPath)
+      continue
+    }
+
+    const { confirmed } = await prompts({
+      type: 'toggle',
+      name: 'confirmed',
+      message: `Remove worktree "${wtName}"?`,
+      initial: false,
+      active: 'yes',
+      inactive: 'no'
+    })
+
+    if (confirmed) confirmedPaths.push(wtPath)
+  }
+
+  if (confirmedPaths.length === 0) {
+    process.exit(0)
+  }
+
+  // Second pass: remove confirmed worktrees
+  for (const wtPath of confirmedPaths) {
+    const wtName = path.basename(wtPath)
+
+    // resolve the tab before the directory goes away
+    let tabId = null
+    if (insideHerdr) {
+      try {
+        tabId = await findTabForPath(wtPath)
+      } catch { }
+    }
+
+    let s = ora(`Removing ${wtName}...`).start()
+    try {
+      await $`git worktree remove ${wtPath} --force`
+    } catch { }
+    await fs.remove(wtPath)
+    s.succeed(`Removed ${wtName}`)
+
+    if (tabId) {
+      try {
+        await hd('tab', 'close', tabId)
+      } catch { }
+    }
+  }
+
+  process.exit(0)
+}
+
+if (command === 'new') {
+  const hasFlags = argv.prompt || argv.branch
+  let name = argv._[1]
+  if (!name && !hasFlags) {
+    const response = await prompts({
+      type: 'text',
+      name: 'name',
+      message: 'Worktree name'
+    })
+    name = response.name
+  }
+  if (!name?.trim()) {
+    if (hasFlags) {
+      console.log('Error: name is required when using --prompt or --branch')
+      console.log('Example: wt new my-feature --prompt "fix the thing"')
+    } else {
+      console.log('Name required')
+    }
+    process.exit(1)
+  }
+
+  let normalizedName = name.trim().replace(/[^a-zA-Z0-9_-]/g, '-')
+  worktreePath = `${parentDir}/${repoName}--${normalizedName}`
+
+  // Check if worktree path already exists
+  if (fs.existsSync(worktreePath)) {
+    const { action } = await prompts({
+      type: 'select',
+      name: 'action',
+      message: `Path "${worktreePath}" exists`,
+      choices: [
+        { title: 'Remove existing', value: 'remove' },
+        { title: 'Enter new name', value: 'rename' },
+        { title: 'Abort', value: 'abort' }
+      ]
+    })
+    if (action === 'remove') {
+      await $`git worktree remove ${worktreePath} --force`.catch(() => { })
+      await fs.remove(worktreePath)
+    } else if (action === 'rename') {
+      const { newName } = await prompts({
+        type: 'text',
+        name: 'newName',
+        message: 'New worktree name'
+      })
+      if (!newName?.trim()) {
+        console.log('Name required')
+        process.exit(1)
+      }
+      normalizedName = newName.trim().replace(/[^a-zA-Z0-9_-]/g, '-')
+      worktreePath = `${parentDir}/${repoName}--${normalizedName}`
+    } else {
+      process.exit(0)
+    }
+  }
+
+  tabLabel = normalizedName
+  const defaultBranch = `an/${normalizedName}`
+
+  let branchName = argv.branch?.trim() || defaultBranch
+  initialPrompt = argv.prompt?.trim() || undefined
+
+  if (!argv.branch && !argv.prompt) {
+    const { branch: branchInput, harness: harnessInput, initialPrompt: promptInput } = await prompts([
+      {
+        type: 'text',
+        name: 'branch',
+        message: 'Branch name (esc for default)',
+        initial: defaultBranch
+      },
+      {
+        type: 'select',
+        name: 'harness',
+        message: 'Harness',
+        choices: [
+          { title: 'Claude Code', value: 'claude' },
+          { title: 'OpenCode', value: 'opencode' },
+          { title: 'Shell', value: 'shell' }
+        ],
+        initial: 0
+      },
+      {
+        type: 'text',
+        name: 'initialPrompt',
+        message: 'Initial prompt (esc to skip)'
+      }
+    ])
+
+    branchName = branchInput?.trim() || defaultBranch
+    harness = harnessInput ?? 'claude'
+    initialPrompt = promptInput?.trim() || undefined
+  } else if (!argv.prompt) {
+    const { initialPrompt: promptInput } = await prompts({
+      type: 'text',
+      name: 'initialPrompt',
+      message: 'Initial prompt (esc to skip)'
+    })
+    initialPrompt = promptInput?.trim() || undefined
+    harness = argv.harness || 'claude'
+  } else {
+    harness = argv.harness || 'claude'
+  }
+
+  // Check if branch already exists
+  let branchExists = false
+  try {
+    await $`git rev-parse --verify ${branchName}`
+    branchExists = true
+  } catch { }
+
+  console.log(`Creating worktree: ${worktreePath}`)
+  console.log(`Branch: ${branchName}`)
+
+  await fs.ensureDir(parentDir)
+  $.quiet = false
+  if (branchExists) {
+    await $`git worktree add ${worktreePath} ${branchName}`
+  } else {
+    await $`git worktree add -b ${branchName} ${worktreePath} ${baseBranch}`
+  }
+  $.quiet = true
+
+  commands = await applyWorktreeSetup(worktreePath)
+}
+
+// --- herdr tab -----------------------------------------------------------
+
+requireHerdr()
+
+// keep focus where it is when the agent has a prompt to get on with
+const background = !!initialPrompt
+const { rootPane, shellPane } = await createWorktreeTab(worktreePath, tabLabel, { focus: !background })
+
+// Gate the harness on setup finishing: starting an agent while `pnpm install`
+// is still running hands it a repo with no dependencies
+let setupCode = 0
+if (commands.length > 0) {
+  console.log(`Running setup commands in "${tabLabel}"...`)
+  setupCode = await runCommandsInPane(shellPane, commands)
+  if (setupCode !== 0) {
+    console.log(`  Warning: setup exited ${setupCode} — see the tab's shell pane`)
+  }
+}
+
+await startHarness(rootPane)
+
+console.log(`${background ? 'Started' : 'Created'} worktree: ${tabLabel}`)
+process.exit(setupCode)
