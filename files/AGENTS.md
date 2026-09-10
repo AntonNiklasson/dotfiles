@@ -17,6 +17,16 @@
 - I prefer smaller, focused, commits
 - Do not create new git worktrees without my approval
 
+## Pull requests
+
+When a PR is part of a stack, say so in the PR body with a numbered list. Here's an example:
+```
+This PR is part of a stack:
+1. **[#123: do something](<url here>)**
+2. **#456: do something else** ↞ This PR
+3. **[#823: do a third thing](<url here>)**
+```
+
 ## Workflow
 
 - I prefer running dev servers and similar long-running processes in a separate tmux pane instead of you running it as a hidden background process. If you're in tmux, suggest either a new or existing pane to run the process in
