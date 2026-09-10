@@ -30,3 +30,7 @@ This PR is part of a stack:
 ## Workflow
 
 - I prefer running dev servers and similar long-running processes in a separate tmux pane instead of you running it as a hidden background process. If you're in tmux, suggest either a new or existing pane to run the process in
+
+## Date and time
+
+Always present any timestamps in the UTC timezone, and dates on this format: YYYY-MM-DD.
