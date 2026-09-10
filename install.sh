@@ -32,6 +32,9 @@ dotbot -d "$DOTFILES" -c "$DOTFILES/links.yml"
 # 3. brew packages (sudo already primed at top of script)
 "$DOTFILES/bin/brew-dotfiles" install
 
+# 3.5. node deps for the zx scripts in bin/ (wt, rr, copylast, list-tmux-windows)
+(cd "$DOTFILES/bin" && pnpm install --frozen-lockfile)
+
 # 4. macos defaults
 read -p "apply macos defaults? (y/n) " -n 1 -r
 echo
