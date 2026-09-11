@@ -15,12 +15,39 @@ set -euo pipefail
 #
 # Each tab gets shell left (40%), nvim top right, two shells below it.
 #
-# Note: herdr's workspace list carries no last-attached timestamp, so live
-# workspaces are ordered by workspace number rather than recency.
+# Note: herdr's API carries no last-attached timestamp, so recency is sampled
+# here — each time the picker opens, the workspace being left is stamped. A
+# switch made some other way (prefix+shift+N, the sidebar) is picked up the next
+# time the picker opens, which keeps the order honest without a daemon.
 
 usage() {
   echo 'usage: herdr-session-launcher [--list]' >&2
   exit 1
+}
+
+mru_file="${XDG_STATE_HOME:-$HOME/.local/state}/herdr-session-launcher/mru"
+
+# Move the focused workspace to the front of the MRU list. Called once per
+# picker invocation, before the list is built.
+stamp_focused() {
+  local workspaces ws now tmp
+  workspaces=$(herdr workspace list | jq -r '.result.workspaces[] |
+    "\(if .focused then "*" else "-" end)\t\(.workspace_id)"')
+  ws=$(awk -F'\t' '$1 == "*" { print $2 }' <<<"$workspaces")
+  [ -n "$ws" ] || return 0
+  now=$(date +%s)
+  mkdir -p "${mru_file%/*}"
+  tmp=$(mktemp)
+  printf '%s\t%s\n' "$ws" "$now" >"$tmp"
+  if [ -f "$mru_file" ]; then
+    # keep the rest in order, minus this workspace and any that have since been
+    # closed — herdr reuses workspace ids, so a stale entry would rank a fresh
+    # workspace as if it were the old one
+    awk -F'\t' -v w="$ws" '
+      NR == FNR { live[$2] = 1; next }
+      $1 != w && live[$1]' - "$mru_file" <<<"$workspaces" >>"$tmp"
+  fi
+  mv "$tmp" "$mru_file"
 }
 
 project_dirs() {
@@ -140,9 +167,23 @@ list_entries() {
 
   index=$(pane_index)
 
+  local mru=''
+  [ -f "$mru_file" ] && mru=$(cat "$mru_file")
+
+  # Most recent first; never-visited workspaces fall back to workspace number.
+  # The focused workspace sorts last — you can't switch to where you already
+  # are, it's only in the list so ctrl-x can close it.
   herdr workspace list |
-    jq -r --arg icon "$icon_workspace" \
-      '.result.workspaces | sort_by(.number) | .[] | "w\t\(.workspace_id)\t\($icon)  \(.label)"'
+    jq -r --arg icon "$icon_workspace" --arg mru "$mru" '
+      ($mru | split("\n") | map(select(length > 0) | split("\t"))
+        | map({key: .[0], value: (.[1] | tonumber)}) | from_entries) as $seen
+      | .result.workspaces
+      | sort_by([
+          (if .focused then 1 else 0 end),
+          (if $seen[.workspace_id] then 0 else 1 end),
+          (if $seen[.workspace_id] then -$seen[.workspace_id] else .number end)
+        ])
+      | .[] | "w\t\(.workspace_id)\t\($icon)  \(.label)"'
 
   while IFS= read -r d; do
     base=${d##*/}
@@ -161,6 +202,8 @@ case ${1:-} in
   '') ;;
   *) usage ;;
 esac
+
+stamp_focused
 
 selected=$(
   list_entries |
