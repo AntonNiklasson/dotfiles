@@ -15,6 +15,10 @@ set -euo pipefail
 #
 # Each tab gets shell left (40%), nvim top right, two shells below it.
 #
+# Note: every herdr subcommand is a process spawn, and those are what the
+# picker's latency is made of. `herdr api snapshot` carries the workspace list
+# and the pane list in one call, so it is the only one made before fzf paints.
+#
 # Note: herdr's API carries no last-attached timestamp, so recency is sampled
 # here — each time the picker opens, the workspace being left is stamped. A
 # switch made some other way (prefix+shift+N, the sidebar) is picked up the next
@@ -27,33 +31,57 @@ usage() {
 
 mru_file="${XDG_STATE_HOME:-$HOME/.local/state}/herdr-session-launcher/mru"
 
+# Live session state, shared by everything below. Set by load_snapshot.
+snapshot=''
+
+load_snapshot() {
+  snapshot=$(herdr api snapshot)
+}
+
 # Move the focused workspace to the front of the MRU list. Called once per
-# picker invocation, before the list is built.
+# picker invocation, before the list is built. Kept to a single jq and a single
+# mv: on this path a fork costs about as much as the work itself.
 stamp_focused() {
-  local workspaces ws now tmp
-  workspaces=$(herdr workspace list | jq -r '.result.workspaces[] |
-    "\(if .focused then "*" else "-" end)\t\(.workspace_id)"')
-  ws=$(awk -F'\t' '$1 == "*" { print $2 }' <<<"$workspaces")
-  [ -n "$ws" ] || return 0
-  now=$(date +%s)
-  mkdir -p "${mru_file%/*}"
-  tmp=$(mktemp)
-  printf '%s\t%s\n' "$ws" "$now" >"$tmp"
+  local ids ws tmp dir id stamp
+  # focused workspace first, then every live one
+  mapfile -t ids < <(jq -r '.result.snapshot |
+    .focused_workspace_id, (.workspaces[].workspace_id)' <<<"$snapshot")
+  ws=${ids[0]-}
+  [ -n "$ws" ] && [ "$ws" != null ] || return 0
+
+  local -A live=()
+  local i
+  for ((i = 1; i < ${#ids[@]}; i++)); do live[${ids[i]}]=1; done
+
+  dir=${mru_file%/*}
+  [ -d "$dir" ] || mkdir -p "$dir"
+  tmp=$mru_file.$$
+  printf '%s\t%s\n' "$ws" "$EPOCHSECONDS" >"$tmp"
   if [ -f "$mru_file" ]; then
     # keep the rest in order, minus this workspace and any that have since been
     # closed — herdr reuses workspace ids, so a stale entry would rank a fresh
     # workspace as if it were the old one
-    awk -F'\t' -v w="$ws" '
-      NR == FNR { live[$2] = 1; next }
-      $1 != w && live[$1]' - "$mru_file" <<<"$workspaces" >>"$tmp"
+    while IFS=$'\t' read -r id stamp; do
+      if [ "$id" != "$ws" ] && [ -n "${live[$id]-}" ]; then
+        printf '%s\t%s\n' "$id" "$stamp"
+      fi
+    done <"$mru_file" >>"$tmp"
   fi
   mv "$tmp" "$mru_file"
 }
 
+# Globbed rather than shelled out to find, which is a fork this path can't
+# spare. Worktree siblings are skipped; they belong to their clone's workspace.
 project_dirs() {
-  find "$HOME/code" -maxdepth 1 -mindepth 1 -type d ! -name '*--*' 2>/dev/null
-  echo "$HOME/.dotfiles"
-  echo "$HOME/notes"
+  local d
+  for d in "$HOME"/code/*/; do
+    d=${d%/}
+    # skips the literal pattern too, if ~/code is missing
+    [ -d "$d" ] || continue
+    case ${d##*/} in *--*) continue ;; esac
+    printf '%s\n' "$d"
+  done
+  printf '%s\n%s\n' "$HOME/.dotfiles" "$HOME/notes"
 }
 
 # One pane list answers every "is this directory already open?" question. Keyed
@@ -61,15 +89,20 @@ project_dirs() {
 # project, where a label match would miss it and open a second workspace for the
 # same checkout.
 pane_index() {
-  herdr pane list | jq -r '.result.panes[] | "\(.workspace_id)\t\(.cwd)"'
+  jq -r '.result.snapshot.panes[] | "\(.workspace_id)\t\(.cwd)"' <<<"$snapshot"
 }
 
-# First workspace holding a pane at or below $1, or nothing
+# Sets ws_for_path to the first workspace holding a pane at or below $1, or to
+# nothing. Assigns rather than prints because the picker calls it once per
+# project directory, and a command substitution each time costs more than the
+# snapshot fetch does.
+ws_for_path=''
 workspace_for_path() {
   local root=$1 index=$2 ws cwd
+  ws_for_path=''
   while IFS=$'\t' read -r ws cwd; do
     if [ "$cwd" = "$root" ] || [ "${cwd#"$root"/}" != "$cwd" ]; then
-      printf '%s\n' "$ws"
+      ws_for_path=$ws
       return 0
     fi
   done <<<"$index"
@@ -124,7 +157,8 @@ open_project() {
 
   local index workspace covered=()
   index=$(pane_index)
-  workspace=$(workspace_for_path "$root" "$index")
+  workspace_for_path "$root" "$index"
+  workspace=$ws_for_path
 
   if [ -z "$workspace" ]; then
     local created
@@ -168,33 +202,34 @@ list_entries() {
   index=$(pane_index)
 
   local mru=''
-  [ -f "$mru_file" ] && mru=$(cat "$mru_file")
+  [ -f "$mru_file" ] && mru=$(<"$mru_file")
 
   # Most recent first; never-visited workspaces fall back to workspace number.
   # The focused workspace sorts last — you can't switch to where you already
   # are, it's only in the list so ctrl-x can close it.
-  herdr workspace list |
-    jq -r --arg icon "$icon_workspace" --arg mru "$mru" '
+  jq -r --arg icon "$icon_workspace" --arg mru "$mru" '
       ($mru | split("\n") | map(select(length > 0) | split("\t"))
         | map({key: .[0], value: (.[1] | tonumber)}) | from_entries) as $seen
-      | .result.workspaces
+      | .result.snapshot.workspaces
       | sort_by([
           (if .focused then 1 else 0 end),
           (if $seen[.workspace_id] then 0 else 1 end),
           (if $seen[.workspace_id] then -$seen[.workspace_id] else .number end)
         ])
-      | .[] | "w\t\(.workspace_id)\t\($icon)  \(.label)"'
+      | .[] | "w\t\(.workspace_id)\t\($icon)  \(.label)"' <<<"$snapshot"
 
   while IFS= read -r d; do
     base=${d##*/}
     # a live workspace already has a pane inside this directory
-    [ -n "$(workspace_for_path "$d" "$index")" ] && continue
+    workspace_for_path "$d" "$index"
+    [ -n "$ws_for_path" ] && continue
     printf 'd\t%s\t%s  %s\n' "$d" "$icon_folder" "$base"
   done < <(project_dirs)
 }
 
 case ${1:-} in
   --list)
+    load_snapshot
     list_entries
     exit 0
     ;;
@@ -203,10 +238,10 @@ case ${1:-} in
   *) usage ;;
 esac
 
-stamp_focused
-
+# fzf sits on the far end of a pipe, so it paints its prompt while the list is
+# still being built instead of after
 selected=$(
-  list_entries |
+  { load_snapshot && stamp_focused && list_entries; } |
     fzf --ansi --reverse --no-info --prompt='> ' \
         --with-nth=3 --delimiter=$'\t' --tiebreak=index \
         --header='ctrl-x: close workspace' \
@@ -221,6 +256,8 @@ key=${rest%%$'\t'*}
 if [ "$type" = "w" ]; then
   herdr workspace focus "$key" >/dev/null
 else
-  # one tab for the clone, one per worktree
+  # one tab for the clone, one per worktree; the snapshot behind the list is
+  # from before fzf opened, so take a fresh one
+  load_snapshot
   open_project "$key"
 fi
