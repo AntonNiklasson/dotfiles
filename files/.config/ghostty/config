@@ -27,6 +27,5 @@ copy-on-select = clipboard
 
 desktop-notifications = true
 
-keybind = shift+enter=text:\x1b\r
 
 mouse-hide-while-typing = true
