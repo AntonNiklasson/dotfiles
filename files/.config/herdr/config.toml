@@ -18,6 +18,9 @@ sidebar_collapsed_mode = "hidden"
 
 agent_panel_sort = "spaces"
 
+[ui.sidebar.agents]
+rows = [["state_icon", "workspace", "tab"], ["agent"]]
+
 [ui.sidebar.spaces]
 rows = [["state_icon", "workspace"]]
 
@@ -33,6 +36,10 @@ kitty_graphics = true
 
 [keys]
 prefix = "ctrl+a"
+goto = ""
+workspace_picker = "prefix+j"
+focus_pane_down = ""
+focus_pane_up = ""
 copy_mode = "prefix+["
 new_tab = ["prefix+t", "prefix+c"]
 previous_tab = "prefix+tab"
@@ -69,14 +76,6 @@ width = "60%"
 height = "40%"
 description = "pick url from pane"
 command = "$HOME/.dotfiles/bin/pick-url"
-
-[[keys.command]]
-key = "prefix+a"
-type = "popup"
-width = "70%"
-height = "50%"
-description = "agent picker"
-command = "$HOME/.dotfiles/bin/agents"
 
 [[keys.command]]
 key = "ctrl+h"
