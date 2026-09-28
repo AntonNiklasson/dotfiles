@@ -48,6 +48,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   SCREENSHOTS_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
   mkdir -p "$SCREENSHOTS_DIR"
   defaults write com.apple.screencapture location "$SCREENSHOTS_DIR"
+  defaults write com.apple.screencapture show-thumbnail -bool false
   killall SystemUIServer
 
   killall Dock
