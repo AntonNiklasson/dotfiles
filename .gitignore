@@ -12,6 +12,9 @@ files/.config/gh/hosts.yml
 !files/.config/gh-dash/
 !files/.config/ghostty/
 !files/.config/k9s/
+files/.config/k9s/*
+!files/.config/k9s/config.yaml
+!files/.config/k9s/skins/
 !files/.config/lazygit/
 !files/.config/leaderkey/
 !files/.config/nvim/
@@ -21,6 +24,12 @@ files/.config/opencode/*
 !files/.config/opencode/opencode.json
 !files/.config/herdr/
 !files/.config/herdr/.gitignore
+!files/.config/pi/
+files/.config/pi/*
+!files/.config/pi/agent/
+files/.config/pi/agent/*
+!files/.config/pi/agent/extensions/
+!files/.config/pi/agent/settings.json
 !files/.config/yazi/
 
 # yazi packages (installed by `ya pkg`, tracked so a fresh clone works offline)

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# pick-url — pull URLs out of a pane's scrollback and open one.
+# pick-url — pull URLs out of a pane's visible viewport and open one.
 # Replaces the tmux-fzf-url plugin (prefix+u).
 #
 # Run as a herdr `type = "popup"` command binding, which injects
@@ -13,10 +13,14 @@ if [ -z "$PANE" ]; then
   PANE=$(herdr pane current | jq -r '.result.pane.pane_id')
 fi
 
-LINES=${PICK_URL_LINES:-2000}
+# `visible` is the rendered viewport only. Reading is side-effect free either
+# way (it never scrolls the pane), but scoping to the viewport keeps the list
+# short and current; scroll the pane back first to reach older URLs. Override
+# with PICK_URL_SOURCE=recent-unwrapped for the full buffer.
+SOURCE=${PICK_URL_SOURCE:-visible}
 
 urls=$(
-  herdr pane read "$PANE" --source recent --lines "$LINES" --format text 2>/dev/null |
+  herdr pane read "$PANE" --source "$SOURCE" --format text 2>/dev/null |
     grep -oE '(https?://|www\.)[A-Za-z0-9._~:/?#@!$&*+,;=%-]+' |
     sed 's/[).,:;]*$//' |
     awk '!seen[$0]++' |
@@ -29,11 +33,21 @@ if [ -z "$urls" ]; then
   exit 0
 fi
 
-selected=$(printf '%s\n' "$urls" | fzf --reverse --no-info --prompt='url> ' --tiebreak=index)
+# enter opens the url, ctrl-y copies it to the clipboard.
+out=$(printf '%s\n' "$urls" | fzf --reverse --no-info --prompt='url> ' --tiebreak=index \
+  --expect=ctrl-y --header='enter: open  ctrl-y: copy')
+key=$(printf '%s\n' "$out" | sed -n 1p)
+selected=$(printf '%s\n' "$out" | sed -n 2p)
 [ -z "$selected" ] && exit 0
 
 case "$selected" in
   www.*) selected="https://$selected" ;;
 esac
 
-open "$selected"
+if [ "$key" = "ctrl-y" ]; then
+  printf '%s' "$selected" | pbcopy
+  echo "copied $selected"
+  sleep 1
+else
+  open "$selected"
+fi

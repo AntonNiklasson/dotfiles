@@ -7,8 +7,17 @@
       "bindings": {
         "pageup": "scroll:halfPageUp",
         "pagedown": "scroll:halfPageDown",
+        "shift+pageup": "scroll:fullPageUp",
+        "shift+pagedown": "scroll:fullPageDown",
         "ctrl+home": "scroll:top",
-        "ctrl+end": "scroll:bottom"
+        "ctrl+end": "scroll:bottom",
+        "ctrl+pageup": "scroll:top",
+        "ctrl+pagedown": "scroll:bottom",
+
+        "ctrl+p": "scroll:halfPageUp",
+        "ctrl+n": "scroll:halfPageDown",
+        "ctrl+x g": "scroll:top",
+        "ctrl+x shift+g": "scroll:bottom"
       }
     }
   ]

@@ -21,7 +21,7 @@ const command = argv._[0]
 if (!command || !['new', 'rm', 'warmup'].includes(command)) {
   console.log('')
   console.log('Usage:')
-  console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--harness claude|opencode|shell]  - Create a new worktree')
+  console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--no-agent] [--wait] - Create a new worktree')
   console.log('  wt rm [name...] [--yes] - Remove worktrees (picker when no names given, --yes skips confirm)')
   console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
   process.exit(1)
@@ -61,8 +61,15 @@ function requireHerdr() {
 let worktreePath
 let tabLabel
 let initialPrompt
-let harness = 'shell'
+let copyCommands = []
 let commands = []
+
+// Claude Code is the only harness; --no-agent leaves the tab on a plain shell
+// for when the change is applied by whoever ran wt.
+const startAgent = argv.agent !== false
+// Setup is fire-and-forget by default. --wait is for scripted callers that
+// need node_modules before they can do anything useful.
+const blocking = !!argv.wait
 
 // --- herdr ---------------------------------------------------------------
 
@@ -86,6 +93,14 @@ async function hd(...args) {
   }
   if (parsed.error) throw new Error(`herdr ${label}: ${parsed.error.message}`)
   return parsed.result
+}
+
+// `pane run` joins its arguments with spaces and types the result at the pane's
+// shell — it does no quoting of its own, so anything with a space or a glob
+// character has to arrive pre-quoted. An unquoted initial prompt is word-split
+// by the shell and reaches the agent mangled or not at all.
+function shq(s) {
+  return `'${String(s).replaceAll("'", "'\\''")}'`
 }
 
 // herdr reports pane cwds as resolved paths (/private/tmp, not /tmp), so both
@@ -128,45 +143,62 @@ async function findTabForPath(wtPath) {
 
 const SETUP_TIMEOUT_MS = 1_800_000
 
-// Run the `run:` list in a real pane, so the user's own shell hooks apply and
-// the output is visible where they're about to work. Commands are chained with
-// && for ordering and fail-fast; the trailing echo always runs and carries the
-// chain's exit code.
+// Hand the `run:` list to a real pane and return. The pane's shell owns the
+// work from there, so wt is free the moment the keys are sent — and the user's
+// own shell hooks apply, with the output visible where they're about to work.
+// Whatever has to happen *after* the commands — closing a borrowed pane, say —
+// goes in `tail` and is gated inside the script, not here; `$code` holds the
+// chain's exit status. Commands are chained with && for ordering and fail-fast.
 //
-// Both live in a temp script rather than an inline command line for two
-// reasons, each of which silently breaks sequencing otherwise:
+// The script is a temp file rather than an inline command line for two
+// reasons, each of which silently breaks --wait otherwise:
 //   - wait-output searches existing output first, and `pane run` makes the
 //     shell echo the command at the prompt — an inline sentinel matches
 //     instantly, before the command has run
 //   - the token is random per run, so a sentinel left in the scrollback by an
 //     earlier run can't match either
-// The script's filename must therefore not contain the token.
-async function runCommandsInPane(paneId, cmds) {
-  if (cmds.length === 0) return 0
+// The script's filename must therefore not contain the token. The script
+// deletes itself; nothing here outlives the call to clean up after it.
+async function dispatchSetup(paneId, cmds, { prelude = [], tail = [] } = {}) {
   const token = `wt-done-${crypto.randomBytes(4).toString('hex')}`
   const scriptPath = path.join(os.tmpdir(), `wt-setup-${process.pid}.sh`)
-  fs.writeFileSync(scriptPath, `${cmds.join(' && ')}\necho "${token}:$?"\n`)
-  try {
-    await hd('pane', 'run', paneId, 'sh', scriptPath)
-    const res = await hd('pane', 'wait-output', paneId, '--regex', `${token}:[0-9]+`, '--timeout', String(SETUP_TIMEOUT_MS))
-    return Number(/:(\d+)/.exec(res.matched_line)?.[1] ?? 1)
-  } finally {
-    fs.removeSync(scriptPath)
-  }
+  const body = [
+    ...prelude,
+    cmds.join(' && '),
+    'code=$?',
+    `rm -f ${shq(scriptPath)}`,
+    `echo "wt: setup finished ${token}:$code"`,
+    ...tail
+  ].join('\n')
+  fs.writeFileSync(scriptPath, `${body}\n`)
+  await hd('pane', 'run', paneId, 'sh', shq(scriptPath))
+  return token
 }
 
-// Launch the harness with the prompt as an argument rather than via
-// `agent start` + `agent prompt`. A fresh worktree is a directory the agent
-// has not seen, so it opens on its own trust prompt and `agent start` reports
-// agent_not_ready — the agent owns the pane but never becomes promptable, and
-// anything that then relaunches types into the running agent. herdr detects
-// the agent in the pane either way; the only thing given up is a named agent.
-async function startHarness(paneId) {
-  if (harness === 'shell') return
-  const cmd = harness === 'claude'
-    ? (initialPrompt ? ['claude', initialPrompt] : ['claude'])
-    : (initialPrompt ? ['opencode', '--agent', 'plan', '--prompt', initialPrompt] : ['opencode', '--agent', 'plan'])
-  await hd('pane', 'run', paneId, ...cmd)
+async function awaitSetup(paneId, token) {
+  const res = await hd('pane', 'wait-output', paneId, '--regex', `${token}:[0-9]+`, '--timeout', String(SETUP_TIMEOUT_MS))
+  return Number(/:(\d+)/.exec(res.matched_line)?.[1] ?? 1)
+}
+
+// Launch Claude with the prompt as an argument rather than via `agent start` +
+// `agent prompt`. A fresh worktree is a directory Claude has not seen, so it
+// opens on its own trust prompt and `agent start` reports agent_not_ready —
+// the agent owns the pane but never becomes promptable, and anything that then
+// relaunches types into the running agent. herdr detects the agent in the pane
+// either way; the only thing given up is a named agent.
+function claudeArgv() {
+  return initialPrompt ? ['claude', shq(initialPrompt)] : ['claude']
+}
+
+async function startClaude(paneId) {
+  await hd('pane', 'run', paneId, ...claudeArgv())
+}
+
+// The same launch, written into the setup script so it lands after the copies.
+// Quoted a second time: the script's own shell strips one layer before herdr
+// types what's left at the target pane.
+function startClaudeLine(paneId) {
+  return ['herdr', 'pane', 'run', paneId, ...claudeArgv()].map(shq).join(' ')
 }
 
 // --- worktree picking ----------------------------------------------------
@@ -219,7 +251,10 @@ async function resolveWorktreePath(name) {
 
 const SETUP_FILE = '.worktree-setup.yml'
 
-const EXAMPLE_SETUP = `copy:
+const EXAMPLE_SETUP = `link:
+  - .turbo/cache
+
+copy:
   - .env
   - .env.local
 
@@ -251,12 +286,12 @@ function readWorktreeSetup() {
   }
 
   if (typeof parsed !== 'object' || Array.isArray(parsed)) {
-    console.log(`Error: ${SETUP_FILE} must be a mapping with 'copy' and/or 'run' keys`)
+    console.log(`Error: ${SETUP_FILE} must be a mapping with 'link', 'copy' and/or 'run' keys`)
     process.exit(1)
   }
 
   for (const [key, value] of Object.entries(parsed)) {
-    if (!['copy', 'run'].includes(key)) {
+    if (!['link', 'copy', 'run'].includes(key)) {
       console.log(`  Warning: unknown key '${key}' in ${SETUP_FILE}, ignoring`)
     } else if (value != null && !Array.isArray(value)) {
       console.log(`Error: '${key}' in ${SETUP_FILE} must be a list`)
@@ -265,47 +300,74 @@ function readWorktreeSetup() {
   }
 
   return {
+    link: (parsed.link ?? []).map(String),
     copy: (parsed.copy ?? []).map(String),
     run: (parsed.run ?? []).map(String)
   }
 }
 
-// Copies the declared files and returns the `run:` list for a pane to execute
-async function applyWorktreeSetup(targetPath) {
-  const { copy: filesToCopy, run: cmds } = readWorktreeSetup()
+// APFS clones instead of copying: a monorepo's `.turbo` is ~1GB across ~20k
+// files, and cloning it is metadata work rather than a byte copy. -c is BSD-only
+// and refuses to cross filesystems, hence the plain-copy fallback. Directories
+// go through `src/.` so copying onto an existing worktree merges, the way the
+// fs.copy this replaced did.
+const WTCP = 'wtcp() { if [ -d "$1" ]; then mkdir -p "$2" && { cp -Rc "$1/." "$2/" 2>/dev/null || cp -R "$1/." "$2/"; }; else mkdir -p "$(dirname "$2")" && { cp -c "$1" "$2" 2>/dev/null || cp "$1" "$2"; }; fi; }'
 
-  if (filesToCopy.length > 0) {
-    console.log(`Copying files from ${SETUP_FILE}...`)
-    for (const pattern of filesToCopy) {
-      if (pattern.includes('*')) {
-        const matches = await glob(pattern, { cwd: repoRoot, dot: true })
-        for (const match of matches) {
-          const srcPath = `${repoRoot}/${match}`
-          const destPath = `${targetPath}/${match}`
-          console.log(`  Copying ${match}...`)
-          await fs.ensureDir(path.dirname(destPath))
-          await fs.copy(srcPath, destPath)
-        }
-        if (matches.length === 0) {
-          console.log(`  Warning: no matches for ${pattern}`)
-        }
+// Turns `copy:` into shell commands for the worktree's own pane to run, and
+// returns them alongside the `run:` list. .envrc is the one thing copied here,
+// before the tab exists: every shell in that tab loads direnv once at startup
+// and the agent inherits whatever that gave it.
+async function planWorktreeSetup(targetPath) {
+  const { link: links, copy: patterns, run } = readWorktreeSetup()
+
+  await linkShared(targetPath, links)
+
+  const copyCmds = []
+  for (const pattern of patterns) {
+    let matches = [pattern]
+    if (pattern.includes('*')) {
+      matches = await glob(pattern, { cwd: repoRoot, dot: true })
+      if (matches.length === 0) console.log(`  Warning: no matches for ${pattern}`)
+    }
+    for (const match of matches) {
+      const srcPath = `${repoRoot}/${match}`
+      if (!fs.existsSync(srcPath)) {
+        console.log(`  Warning: ${match} not found, skipping`)
+        continue
+      }
+      const destPath = `${targetPath}/${match}`
+      if (match === '.envrc') {
+        await fs.ensureDir(path.dirname(destPath))
+        await fs.copy(srcPath, destPath)
       } else {
-        const srcPath = `${repoRoot}/${pattern}`
-        if (fs.existsSync(srcPath)) {
-          console.log(`  Copying ${pattern}...`)
-          const destPath = `${targetPath}/${pattern}`
-          await fs.ensureDir(path.dirname(destPath))
-          await fs.copy(srcPath, destPath)
-        } else {
-          console.log(`  Warning: ${pattern} not found, skipping`)
-        }
+        copyCmds.push(`wtcp ${shq(srcPath)} ${shq(destPath)}`)
       }
     }
   }
 
   await trustPath(targetPath)
 
-  return cmds
+  return { copyCmds, run }
+}
+
+// `link:` is for the things that should be shared rather than duplicated — a
+// turbo cache above all: one warm cache that every worktree both reads and
+// fills beats N copies that go stale the moment they're made, and it's a
+// symlink instead of ~1GB. Entries are directories (caches), so a missing
+// source is created rather than skipped; the worktree side is replaced
+// outright, which is the point when warming up an existing worktree.
+async function linkShared(targetPath, entries) {
+  for (const entry of entries) {
+    const srcPath = `${repoRoot}/${entry}`
+    const destPath = `${targetPath}/${entry}`
+    if (!fs.existsSync(srcPath)) {
+      console.log(`  Creating ${entry} in ${repoName} to link against`)
+      await fs.ensureDir(srcPath)
+    }
+    await fs.ensureDir(path.dirname(destPath))
+    await fs.remove(destPath)
+    await fs.symlink(srcPath, destPath)
+  }
 }
 
 // direnv keys its allow-list on the path, so a freshly copied .envrc starts
@@ -334,21 +396,22 @@ if (command === 'warmup') {
   targetPath = fs.realpathSync(targetPath)
   requireHerdr()
   console.log(`Warming up worktree: ${targetPath}`)
-  const cmds = await applyWorktreeSetup(targetPath)
-  if (cmds.length === 0) {
-    console.log('Nothing to run')
+  const { copyCmds, run } = await planWorktreeSetup(targetPath)
+  const chain = [...copyCmds, ...run]
+  if (chain.length === 0) {
+    console.log('Nothing to do')
     process.exit(0)
   }
-  // borrow a pane so the commands get the user's shell, then tidy up
+  // borrow a pane so the commands get the user's shell. It closes itself once
+  // they pass and stays open with the output when they don't, which is the
+  // whole reason wt doesn't have to sit here watching.
   const pane = (await hd('pane', 'split', '--current', '--direction', 'down', '--ratio', '0.5', '--cwd', targetPath, '--no-focus')).pane.pane_id
-  const code = await runCommandsInPane(pane, cmds)
-  if (code === 0) {
-    await hd('pane', 'close', pane)
-    console.log('Setup complete')
-  } else {
-    console.log(`Setup failed (exit ${code}) — leaving the pane open so you can read it`)
-  }
-  process.exit(code)
+  await dispatchSetup(pane, chain, {
+    prelude: copyCmds.length > 0 ? [WTCP] : [],
+    tail: [`if [ $code -eq 0 ]; then herdr pane close ${shq(pane)}; else echo "wt: setup failed (exit $code) — this pane stays open"; fi`]
+  })
+  console.log('Setup running in a split pane')
+  process.exit(0)
 }
 
 if (command === 'rm') {
@@ -441,6 +504,11 @@ if (command === 'rm') {
       } catch { }
     }
 
+    // zx spawns with an explicit cwd, so once the worktree is gone every later
+    // subprocess dies with ENOENT. Step out before removing, not after.
+    process.chdir(repoRoot)
+    $.cwd = repoRoot
+
     let s = ora(`Removing ${wtName}...`).start()
     try {
       await $`git worktree remove ${wtPath} --force`
@@ -451,7 +519,9 @@ if (command === 'rm') {
     if (tabId) {
       try {
         await hd('tab', 'close', tabId)
-      } catch { }
+      } catch (err) {
+        console.log(`Warning: could not close tab for ${wtName}: ${err.message}`)
+      }
     }
   }
 
@@ -520,45 +590,26 @@ if (command === 'new') {
   let branchName = argv.branch?.trim() || defaultBranch
   initialPrompt = argv.prompt?.trim() || undefined
 
+  const questions = []
   if (!argv.branch && !argv.prompt) {
-    const { branch: branchInput, harness: harnessInput, initialPrompt: promptInput } = await prompts([
-      {
-        type: 'text',
-        name: 'branch',
-        message: 'Branch name (esc for default)',
-        initial: defaultBranch
-      },
-      {
-        type: 'select',
-        name: 'harness',
-        message: 'Harness',
-        choices: [
-          { title: 'Claude Code', value: 'claude' },
-          { title: 'OpenCode', value: 'opencode' },
-          { title: 'Shell', value: 'shell' }
-        ],
-        initial: 0
-      },
-      {
-        type: 'text',
-        name: 'initialPrompt',
-        message: 'Initial prompt (esc to skip)'
-      }
-    ])
-
-    branchName = branchInput?.trim() || defaultBranch
-    harness = harnessInput ?? 'claude'
-    initialPrompt = promptInput?.trim() || undefined
-  } else if (!argv.prompt) {
-    const { initialPrompt: promptInput } = await prompts({
+    questions.push({
+      type: 'text',
+      name: 'branch',
+      message: 'Branch name (esc for default)',
+      initial: defaultBranch
+    })
+  }
+  if (!argv.prompt && startAgent) {
+    questions.push({
       type: 'text',
       name: 'initialPrompt',
       message: 'Initial prompt (esc to skip)'
     })
-    initialPrompt = promptInput?.trim() || undefined
-    harness = argv.harness || 'claude'
-  } else {
-    harness = argv.harness || 'claude'
+  }
+  if (questions.length > 0) {
+    const answers = await prompts(questions)
+    branchName = answers.branch?.trim() || branchName
+    initialPrompt = answers.initialPrompt?.trim() || undefined
   }
 
   // Check if branch already exists
@@ -580,29 +631,45 @@ if (command === 'new') {
   }
   $.quiet = true
 
-  commands = await applyWorktreeSetup(worktreePath)
+  const plan = await planWorktreeSetup(worktreePath)
+  copyCommands = plan.copyCmds
+  commands = plan.run
 }
 
 // --- herdr tab -----------------------------------------------------------
 
 requireHerdr()
 
-// keep focus where it is when the agent has a prompt to get on with
-const background = !!initialPrompt
+// keep focus where it is when Claude has a prompt to get on with, or when
+// nobody asked for an agent at all — that's a scripted caller, not someone
+// waiting to type in the new tab
+const background = !!initialPrompt || !startAgent
 const { rootPane, shellPane } = await createWorktreeTab(worktreePath, tabLabel, { focus: !background })
 
-// Gate the harness on setup finishing: starting an agent while `pnpm install`
-// is still running hands it a repo with no dependencies
-let setupCode = 0
-if (commands.length > 0) {
-  console.log(`Running setup commands in "${tabLabel}"...`)
-  setupCode = await runCommandsInPane(shellPane, commands)
-  if (setupCode !== 0) {
-    console.log(`  Warning: setup exited ${setupCode} — see the tab's shell pane`)
-  }
+// Claude sits in the setup chain between the copies and the `run:` commands.
+// It has to follow the copies — a repo's own `.claude` is usually part of
+// `copy:`, and an agent that started before it landed never sees it — but
+// making it wait for `pnpm build` too meant a minute of empty pane, which
+// reads as broken. With nothing to copy there's nothing to wait for, so it
+// starts from here instead.
+let chain = commands
+if (copyCommands.length === 0) {
+  if (startAgent) await startClaude(rootPane)
+} else {
+  chain = [...copyCommands, ...(startAgent ? [startClaudeLine(rootPane)] : []), ...commands]
 }
 
-await startHarness(rootPane)
+let setupCode = 0
+if (chain.length > 0) {
+  const token = await dispatchSetup(shellPane, chain, { prelude: copyCommands.length > 0 ? [WTCP] : [] })
+  console.log(`Setup running in "${tabLabel}"`)
+  if (blocking) {
+    setupCode = await awaitSetup(shellPane, token)
+    if (setupCode !== 0) {
+      console.log(`  Warning: setup exited ${setupCode} — see the tab's shell pane`)
+    }
+  }
+}
 
 console.log(`${background ? 'Started' : 'Created'} worktree: ${tabLabel}`)
 process.exit(setupCode)

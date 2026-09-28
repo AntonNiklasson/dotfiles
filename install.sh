@@ -35,6 +35,15 @@ dotbot -d "$DOTFILES" -c "$DOTFILES/links.yml"
 # 3.5. node deps for the zx scripts in bin/ (wt, rr, copylast, list-tmux-windows)
 (cd "$DOTFILES/bin" && pnpm install --frozen-lockfile)
 
+# 3.6. herdr — deliberately not in the Brewfile: the formula lags the installer,
+# and a stale brew copy in /opt/homebrew/bin shadows ~/.local/bin, which breaks
+# every CLI call with a protocol_mismatch. herdr updates itself.
+if command -v herdr >/dev/null; then
+  herdr update
+else
+  curl -fsSL https://herdr.dev/install.sh | sh
+fi
+
 # 4. macos defaults
 read -p "apply macos defaults? (y/n) " -n 1 -r
 echo

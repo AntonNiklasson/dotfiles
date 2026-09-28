@@ -5,7 +5,9 @@ if [ ! -d "$ZINIT_HOME" ]; then
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "${ZINIT_HOME}/zinit.zsh"
-unalias zi
+if (( $+aliases[zi] )); then
+  unalias zi
+fi
 
 # plugins
 zinit ice depth=1
@@ -18,6 +20,9 @@ zinit light sindresorhus/pure
 
 # environment
 export XDG_CONFIG_HOME="$HOME/.config"
+export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
+export NODE_USE_SYSTEM_CA=1  # trust macOS keychain CAs (Zscaler TLS interception)
+export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
 export PATH=$PATH:/opt/homebrew/opt/ruby/bin
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:~/.dotfiles/bin
@@ -88,7 +93,7 @@ bindkey -M vicmd '/' fzf-history-clean
 
 # Use `bat` instead of `cat`
 alias cat='bat'
-export BAT_THEME='tokyonight'
+export BAT_THEME='tokyonight_night'
 
 
 # zoxide jumper
@@ -111,6 +116,7 @@ eval "$(direnv hook zsh)"
 
 # aliases
 alias ..='cd ..'
+alias ccr='claude --resume'
 alias g='git'
 alias ga='git add'
 alias gb='git branch'
@@ -137,12 +143,12 @@ export EZA_CONFIG_DIR="$HOME/.config/eza"
 alias ls='eza --long --group-directories-first --icons=always --all --no-user --no-permissions --no-time'
 alias lg='lazygit'
 alias ld='lazydocker'
-alias lk='k9s'
 alias top='btop'
 alias piu='pi update && pi update --extensions'
 alias pn='pnpm'
 alias pni='pnpm install'
 alias pnr='pnpm run'
+alias pu='pi update && pi update --extensions'
 alias t='tmux'
 # Herdr: native workspace/pane multiplexer. Keep `t` as tmux during migration.
 alias h='herdr'
@@ -155,9 +161,9 @@ alias rc='vim ~/.zshrc'
 alias rcs='source ~/.zshrc'
 alias vim='nvim'
 alias k='HTTPS_PROXY=socks5://localhost:8888 kubectl'
-function k9s() { HTTPS_PROXY=socks5://localhost:8888 command k9s "$@"; }
 alias oc='opencode --agent plan'
 alias prv='gh pr view --web'
+alias pic='pi --continue'
 
 function r() {
   local runner=npm
@@ -221,3 +227,4 @@ export PATH=$PATH:$HOME/.maestro/bin
 
 [[ -f ~/.workday-setup ]] && source ~/.workday-setup
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+

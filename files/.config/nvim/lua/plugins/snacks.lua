@@ -5,6 +5,17 @@ return {
 		{ "<leader>S", false }, -- LazyVim: select scratch buffer, never used
 	},
 	opts = {
+		gitbrowse = {
+			url_patterns = {
+				-- GitHub Enterprise uses the same paths as github.com
+				["ghe%.megaleo%.com"] = {
+					branch = "/tree/{branch}",
+					file = "/blob/{branch}/{file}#L{line_start}-L{line_end}",
+					permalink = "/blob/{commit}/{file}#L{line_start}-L{line_end}",
+					commit = "/commit/{commit}",
+				},
+			},
+		},
 		picker = {
 			formatters = {
 				file = {

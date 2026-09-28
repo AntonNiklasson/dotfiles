@@ -1,0 +1,15 @@
+{
+  "lastChangelogVersion": "0.87.1",
+  "theme": "tokyonight-storm",
+  "tuiMode": "fullscreen",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-6-astra",
+  "defaultThinkingLevel": "high",
+  "hideThinkingBlock": true,
+  "packages": [],
+  "enabledModels": [
+    "openai-codex/gpt-6-astra",
+    "opencode-go/glm-5.3-flash",
+    "openai-codex/gpt-6-sol"
+  ]
+}

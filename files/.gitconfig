@@ -34,6 +34,24 @@
 [delta]
   dark = true
   side-by-side = false
+  syntax-theme = tokyonight_night
+# Used by lazygit's pagers; the hyperlinks only mean something inside lazygit.
+[delta "lazygit"]
+  line-numbers = true
+  # One narrow gutter with the new-side number instead of delta's default
+  # old⋮new pair, which costs 10 columns in a side-by-side panel.
+  line-numbers-left-format = ""
+  line-numbers-right-format = "{np:>3}│"
+  hyperlinks = true
+  hyperlinks-file-link-format = "lazygit-edit://{path}:{line}"
+  hunk-header-decoration-style = none
+  plus-style = syntax "#20303b"
+  plus-emph-style = syntax "#2c5a66"
+  minus-style = syntax "#37222c"
+  minus-emph-style = syntax "#713137"
+[delta "lazygit-side-by-side"]
+  features = lazygit
+  side-by-side = true
 [filter "lfs"]
 	required = true
 	clean = git-lfs clean -- %f

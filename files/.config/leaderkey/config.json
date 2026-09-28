@@ -51,12 +51,6 @@
       "type" : "group"
     },
     {
-      "key" : "a",
-      "label" : "ai",
-      "type" : "url",
-      "value" : "raycast://extensions/raycast/raycast-ai/ai-chat"
-    },
-    {
       "actions" : [
         {
           "key" : "d",

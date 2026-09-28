@@ -11,8 +11,9 @@ gui:
       - reverse
 git:
   diffRenderers:
-    - colorArg: always
-      command: delta --dark --paging=never
+    # delta options live in ~/.gitconfig under [delta "lazygit"]; cycle with `|`
+    - command: delta --dark --paging=never --features=lazygit
+    - command: delta --dark --paging=never --features=lazygit-side-by-side
 os:
   editPreset: nvim
   openDirInEditorTemplate: cursor -- {{dir}}
