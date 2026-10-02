@@ -84,6 +84,22 @@ description = "pick url from pane"
 command = "$HOME/.dotfiles/bin/pick-url"
 
 [[keys.command]]
+key = "prefix+g"
+type = "popup"
+width = "90%"
+height = "90%"
+description = "github dashboard"
+command = "$HOME/.local/bin/ghd"
+
+[[keys.command]]
+key = "prefix+f"
+type = "popup"
+width = "90%"
+height = "90%"
+description = "lazygit"
+command = "lazygit"
+
+[[keys.command]]
 key = "ctrl+h"
 type = "shell"
 description = "focus pane left"
