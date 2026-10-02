@@ -2,6 +2,7 @@ theme = TokyoNight Night
 
 macos-window-buttons = hidden
 macos-titlebar-style = tabs
+macos-non-native-fullscreen = true
 
 font-family = GeistMono Nerd Font Mono
 font-thicken = true
