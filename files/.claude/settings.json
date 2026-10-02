@@ -11,7 +11,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "disableClaudeAiConnectors": true,
   "skillOverrides": {
     "dataviz": "user-invocable-only",
@@ -24,6 +24,20 @@
     "fewer-permission-prompts": "user-invocable-only",
     "artifact-design": "off",
     "artifact-capabilities": "off"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/anton.niklasson/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   },
   "disableRemoteControl": true,
   "disableWorkflows": true,
