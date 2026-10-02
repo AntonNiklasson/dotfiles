@@ -1,0 +1,95 @@
+# Tokyo Night palette: https://github.com/folke/tokyonight.nvim
+k9s:
+  body:
+    fgColor: '#c0caf5'
+    bgColor: '#1a1b26'
+    logoColor: '#7aa2f7'
+  prompt:
+    fgColor: '#c0caf5'
+    bgColor: '#1a1b26'
+    suggestColor: '#565f89'
+  help:
+    fgColor: '#c0caf5'
+    bgColor: '#1a1b26'
+    sectionColor: '#9ece6a'
+    keyColor: '#7aa2f7'
+    numKeyColor: '#bb9af7'
+  frame:
+    border:
+      fgColor: '#414868'
+      focusColor: '#7aa2f7'
+    menu:
+      fgColor: '#c0caf5'
+      keyColor: '#7aa2f7'
+      numKeyColor: '#bb9af7'
+    crumbs:
+      fgColor: '#1a1b26'
+      bgColor: '#7aa2f7'
+      activeColor: '#e0af68'
+    status:
+      newColor: '#7dcfff'
+      modifyColor: '#e0af68'
+      addColor: '#9ece6a'
+      pendingColor: '#ff9e64'
+      errorColor: '#f7768e'
+      highlightColor: '#bb9af7'
+      killColor: '#f7768e'
+      completedColor: '#565f89'
+    title:
+      fgColor: '#7aa2f7'
+      bgColor: '#1a1b26'
+      highlightColor: '#bb9af7'
+      counterColor: '#e0af68'
+      filterColor: '#9ece6a'
+  info:
+    fgColor: '#c0caf5'
+    sectionColor: '#7aa2f7'
+  views:
+    table:
+      fgColor: '#c0caf5'
+      bgColor: '#1a1b26'
+      cursorFgColor: '#c0caf5'
+      cursorBgColor: '#283457'
+      markColor: '#9ece6a'
+      header:
+        fgColor: '#7aa2f7'
+        bgColor: '#1a1b26'
+        sorterColor: '#e0af68'
+    xray:
+      fgColor: '#c0caf5'
+      bgColor: '#1a1b26'
+      cursorColor: '#283457'
+      graphicColor: '#7aa2f7'
+    charts:
+      bgColor: '#1a1b26'
+      defaultDialColors:
+        - '#7aa2f7'
+        - '#f7768e'
+      defaultChartColors:
+        - '#7aa2f7'
+        - '#f7768e'
+    yaml:
+      keyColor: '#7aa2f7'
+      colonColor: '#565f89'
+      valueColor: '#9ece6a'
+    logs:
+      fgColor: '#c0caf5'
+      bgColor: '#1a1b26'
+      indicator:
+        fgColor: '#7aa2f7'
+        bgColor: '#1a1b26'
+        toggleOnColor: '#9ece6a'
+        toggleOffColor: '#565f89'
+    picker:
+      mainColor: '#c0caf5'
+      focusColor: '#7dcfff'
+      shortcutColor: '#7aa2f7'
+  dialog:
+    fgColor: '#c0caf5'
+    bgColor: '#1a1b26'
+    buttonFgColor: '#c0caf5'
+    buttonBgColor: '#414868'
+    buttonFocusFgColor: '#1a1b26'
+    buttonFocusBgColor: '#7aa2f7'
+    labelFgColor: '#e0af68'
+    fieldFgColor: '#c0caf5'

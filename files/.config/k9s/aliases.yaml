@@ -1,0 +1,13 @@
+aliases:
+  dp: deployments
+  sec: v1/secrets
+  jo: jobs
+  cr: clusterroles
+  crb: clusterrolebindings
+  ro: roles
+  rb: rolebindings
+  np: networkpolicies
+  cj: cronjobs
+  ev: events
+  ing: ingresses
+  hpa: horizontalpodautoscalers
