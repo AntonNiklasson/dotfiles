@@ -1,0 +1,21 @@
+hotKeys:
+  shift-0:
+    shortCut: Shift-0
+    description: Pods
+    command: pods
+  shift-1:
+    shortCut: Shift-1
+    description: Deployments
+    command: deployments
+  shift-2:
+    shortCut: Shift-2
+    description: CronJobs
+    command: cronjobs
+  shift-3:
+    shortCut: Shift-3
+    description: Jobs
+    command: jobs
+  shift-4:
+    shortCut: Shift-4
+    description: Events
+    command: events

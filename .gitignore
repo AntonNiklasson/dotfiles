@@ -11,6 +11,7 @@ files/.config/btop/themes/
 files/.config/gh/hosts.yml
 !files/.config/gh-dash/
 !files/.config/ghostty/
+!files/.config/k9s/
 !files/.config/lazygit/
 !files/.config/leaderkey/
 !files/.config/nvim/

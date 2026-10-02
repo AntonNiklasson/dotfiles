@@ -1,0 +1,19 @@
+k9s:
+  liveViewAutoRefresh: true
+  refreshRate: 2
+  maxConnRetry: 5
+  readOnly: true
+  noExitOnCtrlC: true
+  skipLatestRevCheck: true
+  ui:
+    skin: tokyo-night
+    enableMouse: false
+    logoless: true
+    crumbsless: false
+    reactive: true
+  logger:
+    tail: 500
+    buffer: 10000
+    sinceSeconds: 300
+    textWrap: false
+    showTime: true
