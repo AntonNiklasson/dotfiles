@@ -84,5 +84,6 @@
       "**Org-specific CLIs**: None configured — repo-local tools observed (ya, chk, dotbot) are project scripts, not org CLIs",
       "routine under ~/.dotfiles/ prefix: local dotfile edits, brew/nvim/tmux config changes, install.sh runs"
     ]
-  }
+  },
+  "viewMode": "focus"
 }
