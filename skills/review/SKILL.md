@@ -14,9 +14,14 @@ Help Anton understand *where this is going* and *what can break when it ships*. 
 
 Accept a PR number in the current repo or a PR URL. Ask if no target is given; don't assume the current branch.
 
-Before reviewing, help Anton get the PR branch checked out locally. Identify the source branch and offer to check it out in the existing review worktree; wait for his answer. If already checked out, confirm and continue. If he declines (including in the initial request), skip checkout and proceed with the review remotely.
+Before reviewing, check out the PR branch in the existing review worktree without asking, if it's safe. If already checked out, say so and continue. If Anton said not to check out, skip it and review remotely.
 
-Preserve local work: no stashing, discarding changes, or forced checkouts. If checkout isn't safe, explain and agree on an alternative before reviewing. Creating a worktree requires approval.
+Safe means all of:
+
+- The worktree has no uncommitted or untracked changes and no rebase, merge, or cherry-pick in progress.
+- A plain `gh pr checkout <n>` works: no `--force`, and no reset of an existing local branch that has diverged from the PR.
+
+Otherwise, don't check out. Say why, then ask how to proceed before reviewing. Never stash, discard changes, or force. Creating a worktree requires approval.
 
 ## Boundaries
 
