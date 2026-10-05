@@ -12,7 +12,9 @@
     ~/.hushlogin: files/.hushlogin
     ~/AGENTS.md: files/AGENTS.md
 
-    ~/.config: files/.config
+    ~/.config/:
+      glob: true
+      path: files/.config/*
 
     ~/.claude/settings.json: files/.claude/settings.json
     ~/.claude/keybindings.json: files/.claude/keybindings.json
