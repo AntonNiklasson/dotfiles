@@ -223,8 +223,5 @@ esac
 export PATH="$PATH:$HOME/.turso"
 export PATH=$PATH:$HOME/.maestro/bin
 
-
-
 [[ -f ~/.workday-setup ]] && source ~/.workday-setup
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
