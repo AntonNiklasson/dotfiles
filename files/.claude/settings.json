@@ -10,7 +10,7 @@
       "EnterPlanMode",
       "ExitPlanMode"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "auto"
   },
   "model": "opus",
   "disableClaudeAiConnectors": true,
