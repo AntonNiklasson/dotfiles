@@ -18,6 +18,7 @@ end, { desc = "Copy relative file path" })
 -- replaced. `P` does the same replace but leaves the register alone.
 vim.keymap.set("x", "p", "P", { desc = "Paste without clobbering the register" })
 
+ 
 -- ctrl+hjkl moves between splits, falling through to herdr panes at the edge.
 -- herdr grabs ctrl+hjkl globally and forwards it here via bin/pane-nav when the
 -- pane runs nvim, so this is the other half of that handshake.
@@ -32,9 +33,9 @@ for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) d
 	end, { desc = "Go to " .. direction .. " window or herdr pane" })
 end
 
--- splits on the same keys as herdr: leader+V side by side, leader+B stacked.
--- Replaces LazyVim's <leader>| and <leader>-.
+
+-- Split with <Leader>+s{v,b}
 vim.keymap.del("n", "<Leader>|")
 vim.keymap.del("n", "<Leader>-")
-vim.keymap.set("n", "<Leader>V", "<C-w>v", { desc = "Split window right" })
+vim.keymap.set("n", "<Leader>v", "<C-w>v", { desc = "Split window right" })
 vim.keymap.set("n", "<Leader>B", "<C-w>s", { desc = "Split window below" })
