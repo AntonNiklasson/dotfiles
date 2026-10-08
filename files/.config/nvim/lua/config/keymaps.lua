@@ -31,3 +31,10 @@ for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) d
 		end
 	end, { desc = "Go to " .. direction .. " window or herdr pane" })
 end
+
+-- splits on the same keys as herdr: leader+V side by side, leader+B stacked.
+-- Replaces LazyVim's <leader>| and <leader>-.
+vim.keymap.del("n", "<Leader>|")
+vim.keymap.del("n", "<Leader>-")
+vim.keymap.set("n", "<Leader>V", "<C-w>v", { desc = "Split window right" })
+vim.keymap.set("n", "<Leader>B", "<C-w>s", { desc = "Split window below" })
