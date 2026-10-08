@@ -37,5 +37,5 @@ end
 -- Split with <Leader>+s{v,b}
 vim.keymap.del("n", "<Leader>|")
 vim.keymap.del("n", "<Leader>-")
-vim.keymap.set("n", "<Leader>v", "<C-w>v", { desc = "Split window right" })
-vim.keymap.set("n", "<Leader>B", "<C-w>s", { desc = "Split window below" })
+vim.keymap.set("n", "<Leader>sv", "<C-w>v", { desc = "Split window right" })
+vim.keymap.set("n", "<Leader>sb", "<C-w>s", { desc = "Split window below" })
