@@ -17,10 +17,21 @@ return {
 		},
 		{
 			"<leader>er",
-			"<cmd>Yazi toggle<cr>",
-			desc = "Resume last yazi session",
+			function()
+				-- tab-session.yazi restores the saved tabs only when this is set;
+				-- jobstart inherits it synchronously, so unset right after.
+				vim.env.YAZI_SESSION = "1"
+				require("yazi").toggle()
+				vim.env.YAZI_SESSION = nil
+			end,
+			desc = "Resume saved yazi tabs",
 		},
 	},
+	init = function()
+		-- Inherited when nvim is opened from a session yazi; keep other
+		-- launches from overwriting the saved tabs.
+		vim.env.YAZI_SESSION = nil
+	end,
 	opts = {
 		open_for_directories = true,
 		keymaps = {
