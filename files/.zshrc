@@ -189,8 +189,13 @@ ee() {
 		return 1
 	fi
 
+	# Bare `ee` restores and keeps saving the last tabs (tab-session.yazi);
+	# `ee <path>` is a one-off that leaves the saved tabs alone.
+	local session=""
+	[ $# -eq 0 ] && session=1
+
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
+	YAZI_SESSION="$session" yazi "$@" --cwd-file="$tmp"
 
 	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
 		builtin cd -- "$cwd"
