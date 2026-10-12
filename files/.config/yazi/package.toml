@@ -8,6 +8,11 @@ use = "yazi-rs/plugins:toggle-pane"
 rev = "4ffa48f"
 hash = "9c7987da2d2a2120dac33abb64132004"
 
+[[plugin.deps]]
+use = "pakhromov/autosave"
+rev = "9177dd2"
+hash = "20d493355a106d3ed083dcde5cdf03fc"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "8e6296f"
