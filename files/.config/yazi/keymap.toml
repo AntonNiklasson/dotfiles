@@ -7,6 +7,11 @@ run = "plugin smart-enter"
 desc = "Enter directory, or open file"
 
 [[mgr.prepend_keymap]]
+on = "F"
+run = "plugin smart-filter"
+desc = "Smart filter"
+
+[[mgr.prepend_keymap]]
 on = "<C-n>"
 run = 'shell -- open -R "$0"'
 desc = "Reveal in Finder"
