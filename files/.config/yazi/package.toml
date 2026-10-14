@@ -23,6 +23,11 @@ use = "h-hg/yamb"
 rev = "971b858"
 hash = "da4534745930e827a44d4585bbd965eb"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:no-status"
+rev = "6cf1f43"
+hash = "3e023d31f29201efdac2a6ae35fedb78"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "8e6296f"
