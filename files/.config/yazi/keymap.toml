@@ -17,6 +17,26 @@ run = "plugin autosession -- save-and-quit"
 desc = "Save session and quit"
 
 [[mgr.prepend_keymap]]
+on = ["u", "a"]
+run = "plugin yamb -- save"
+desc = "Bookmark hovered file or directory"
+
+[[mgr.prepend_keymap]]
+on = ["u", "g"]
+run = "plugin yamb -- jump_by_key"
+desc = "Jump to bookmark by key"
+
+[[mgr.prepend_keymap]]
+on = ["u", "G"]
+run = "plugin yamb -- jump_by_fzf"
+desc = "Search bookmarks"
+
+[[mgr.prepend_keymap]]
+on = ["u", "d"]
+run = "plugin yamb -- delete_by_key"
+desc = "Delete bookmark"
+
+[[mgr.prepend_keymap]]
 on = "<C-n>"
 run = 'shell -- open -R "$0"'
 desc = "Reveal in Finder"

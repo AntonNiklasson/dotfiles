@@ -34,6 +34,8 @@ files/.config/pi/agent/*
 
 # yazi packages (installed by `ya pkg`, tracked so a fresh clone works offline)
 files/.config/yazi/**/preview.png
+# yamb bookmarks are machine-local, not shared config
+files/.config/yazi/bookmark
 
 node_modules
 files/.config/gh/hosts.yml
