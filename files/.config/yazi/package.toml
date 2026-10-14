@@ -13,6 +13,11 @@ use = "yazi-rs/plugins:smart-filter"
 rev = "6cf1f43"
 hash = "d6f7351ea25a43c9b5f4315fa1e23935"
 
+[[plugin.deps]]
+use = "barbanevosa/autosession"
+rev = "7a12b20"
+hash = "f9b76184511c983db7c6f719eea1e14d"
+
 [[flavor.deps]]
 use = "BennyOe/tokyo-night"
 rev = "8e6296f"

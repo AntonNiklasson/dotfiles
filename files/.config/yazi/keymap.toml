@@ -12,6 +12,11 @@ run = "plugin smart-filter"
 desc = "Smart filter"
 
 [[mgr.prepend_keymap]]
+on = "q"
+run = "plugin autosession -- save-and-quit"
+desc = "Save session and quit"
+
+[[mgr.prepend_keymap]]
 on = "<C-n>"
 run = 'shell -- open -R "$0"'
 desc = "Reveal in Finder"
