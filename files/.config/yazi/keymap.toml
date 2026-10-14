@@ -8,8 +8,8 @@ desc = "Enter directory, or open file"
 
 [[mgr.prepend_keymap]]
 on = "F"
-run = "plugin smart-filter"
-desc = "Smart filter"
+run = "filter --smart"
+desc = "Filter files (smart case)"
 
 [[mgr.prepend_keymap]]
 on = "q"
