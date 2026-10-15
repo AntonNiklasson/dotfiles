@@ -39,7 +39,7 @@ Drill down with `gh` only for PRs that need detail (always with `GH_HOST=<host>`
 
 Ignore comments authored by Anton and by noise bots (deploy previews, coverage, changesets, linear linkbacks). Keep review bots (e.g. CodeRabbit, Copilot) — their comments can be real.
 
-If a gap keeps forcing drill-downs (e.g. check names, requested reviewers), mention that adding it to ghd's sync query would help — don't change ghd unprompted.
+ghd stays a lean overview by design — the skill owns the detail. Decide per PR what's worth drilling into; don't suggest extending ghd.
 
 ## 3. Classify each PR
 
@@ -89,25 +89,42 @@ It overwrites the clipboard each call, so after collecting all lines, `pbcopy` t
 
 ## 4. Output
 
-Tight, scannable, one line per PR where possible:
+One block per PR, ordered by bucket (table order), then by age. Each block: status line, then the suggested actions for that PR. Number actions globally (1, 2, 3 … across all PRs) so Anton can reply "do 1, 4, 7".
 
 ```
 ## <host> — N open (M drafts)
 
-🔴 CI failing
-- repo#123 Title — `lint`, `test-unit` fail; looks like snapshot drift → fix
-💬 Comments
-- repo#124 Title — 2 unresolved
-  - @alice api.ts:42 "null check missing" → Act: real bug
-  - @bob ui.tsx:10 "rename var?" → Skip: nit
-✅ Ready to merge
-- repo#125 Title — approved by @carol, CI green
-👀 Needs review
-- repo#126 Title — 3d old, no reviewers requested
-⏳ Waiting / 🔀 Conflicts / Drafts …
+🔴 repo#123 Title — CI failing (`lint`, `test-unit`); 1 comment
+  1. Fix snapshot drift in `test-unit` — looks related to the diff
+  2. Re-run `lint` — timeout, looks flaky
+  3. Act on @alice api.ts:42 "null check missing" — real bug
 
-Slack (copied):
+🔀 repo#124 Title — conflicts with main (trivial: pnpm-lock.yaml)
+  4. Rebase + resolve, show result before force-push
+
+✅ repo#125 Title — approved by @carol, CI green
+  5. Merge (bottom of stack, merge before #126)
+
+👀 repo#126 Title — no approval, 3d old, no reviewers requested
+  6. Ping for review — `[Title](url) \`+120/-30\``
+
+💬 repo#127 Title — 2 unresolved
+  7. Reply to @bob "why not X?" — suggest: <one-line answer>
+  –  Skip @bob ui.tsx:10 "rename var?" — nit
+
+⏳ repo#128 Title — CI pending — no action
+
+Drafts: repo#129 (CI green), repo#130 (CI red → 8. check `build`)
+
+Slack review requests (copied):
 <rr lines>
 ```
 
-Omit empty sections. End with a numbered list of proposed actions (merge X, rebase Y, re-run Z) for Anton to pick from; execute only the ones he approves.
+Rules:
+
+- Actions are concrete and executable by the agent or by Anton (fix, re-run, rebase, merge, reply, ping, close if stale). Skipped comments get `–` instead of a number, with a reason.
+- Mark actions needing Anton's judgment (complex conflicts, debatable review comments) with "→ you".
+- PRs with nothing to do get one line, no actions.
+- Omit nothing silently: every open PR appears once.
+
+Execute only the actions Anton picks.
