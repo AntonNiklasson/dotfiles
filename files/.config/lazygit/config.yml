@@ -17,9 +17,3 @@ git:
 os:
   editPreset: nvim
   openDirInEditorTemplate: cursor -- {{dir}}
-customCommands:
-  - key: "<c-p>"
-    context: "localBranches"
-    description: "Create a pull request"
-    loadingText: "Preparing PR ⏳"
-    command: "gh pr create --fill --web"
