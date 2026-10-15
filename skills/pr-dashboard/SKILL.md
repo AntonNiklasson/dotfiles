@@ -127,4 +127,8 @@ Rules:
 - PRs with nothing to do get one line, no actions.
 - Omit nothing silently: every open PR appears once.
 
-Execute only the actions Anton picks.
+## 5. Go/no-go
+
+End by asking Anton for go/no-go per action. Accept any shorthand: "go 1 3 5", "all but 2", "no 4", "go all". Anything not given a go is a no-go — never assume.
+
+Then execute the go'd actions one at a time, in listed order (respect stack order for merges). Report each result in one line. Stop and ask if an action turns out bigger than described (e.g. a "trivial" conflict isn't, a fix needs design choices). Anything outward-facing — merge, force-push, comment, review request — still shows exactly what will happen in the action line, so the go *is* the approval; don't re-confirm.
