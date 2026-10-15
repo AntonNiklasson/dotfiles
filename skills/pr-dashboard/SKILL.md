@@ -15,19 +15,31 @@ Resolve in order:
 
 1. Host passed as argument → use it.
 2. cwd is a git repo → host from `git remote get-url origin` (e.g. `ghe.megaleo.com` for GitHub Enterprise, `github.com` otherwise).
-3. Otherwise → list hosts from `gh auth status` and ask which one. Don't guess.
+3. Otherwise → list instances (`ghd list --json | jq -r '.instances[].id'`) and ask which one. Don't guess.
 
-Scope is all of Anton's open PRs on that host, grouped by repo. If an argument names a repo, filter to it.
+Map host → ghd instance id by swapping `.` for `-` (`ghe.megaleo.com` → `ghe-megaleo-com`). Scope is all of Anton's open PRs on that instance, grouped by repo. If an argument names a repo, filter to it.
 
 ## 2. Fetch
 
-One GraphQL call gets everything (PR meta, review decision, merge state, CI rollup, review threads, recent comments):
+Primary source is Anton's github-dashboard (`ghd`, repo `~/code/github-dashboard`) — same data he sees in the TUI. Sync once and read JSON, dropping heavy fields:
 
 ```sh
-gh api graphql --hostname <host> -F query=@~/.claude/skills/pr-dashboard/open-prs.graphql
+ghd once --json --kind prs --instance <id> | jq '.instances[].prs[] | del(.body, .authorAvatar)'
 ```
 
-Pipe through `jq` to keep context small. Ignore comments authored by Anton and by noise bots (deploy previews, coverage, changesets, linear linkbacks). Keep review bots (e.g. CodeRabbit, Copilot) — their comments can be real.
+Exit code 2 = a fetch failed; fall back to `ghd list --json` (cache only) and say the data may be stale.
+
+Per PR this gives `draft`, `ciStatus`, `reviewDecision`, `reviews.{approved,changesRequested}`, `unresolvedThreadCount`, `commentCount`, `mergeable`, `mergeStateStatus`, `autoMerge`, `inMergeQueue`, branches, `+/-`. Classify from that alone. ghd groups stacks by base/head branch — use the same logic to order stacked PRs.
+
+Drill down with `gh` only for PRs that need detail (always with `GH_HOST=<host>` or the full PR URL):
+
+- Failing checks: `gh pr checks <url> --json name,state,link | jq '.[] | select(.state=="FAILURE")'` — ghd only has the rollup.
+- Requested reviewers: `gh pr view <url> --json reviewRequests`.
+- Unresolved threads: `gh api graphql` on `pullRequest.reviewThreads` (filter `isResolved: false`, `isOutdated: false`) for PRs with `unresolvedThreadCount > 0`; `gh pr view <url> --comments` for top-level comments.
+
+Ignore comments authored by Anton and by noise bots (deploy previews, coverage, changesets, linear linkbacks). Keep review bots (e.g. CodeRabbit, Copilot) — their comments can be real.
+
+If a gap keeps forcing drill-downs (e.g. check names, requested reviewers), mention that adding it to ghd's sync query would help — don't change ghd unprompted.
 
 ## 3. Classify each PR
 
@@ -37,14 +49,16 @@ For non-drafts, bucket by first match:
 
 | Bucket | Signal | Suggested action |
 |---|---|---|
-| 🔴 CI failing | rollup `FAILURE`/`ERROR` | name failing checks; one-line likely cause |
-| 💬 Comments | unresolved, non-outdated threads or unanswered top-level comments from others | per-comment act/skip (below) |
+| 🔴 CI failing | `ciStatus: failure` | name failing checks; one-line likely cause |
+| 💬 Comments | `unresolvedThreadCount > 0`, or unanswered top-level comments from others | per-comment act/skip (below) |
 | 🔀 Conflicts | `mergeStateStatus: DIRTY` | trivial → offer to resolve; complex → loop Anton in (below) |
-| ✅ Ready | `reviewDecision: APPROVED`, CI green, `CLEAN`/`UNSTABLE` mergeable | suggest merge (stacked: merge bottom first) |
-| 👀 Needs review | `REVIEW_REQUIRED` / no approval, CI green | Slack message (below) |
-| ⏳ Waiting | CI pending, or `CHANGES_REQUESTED` already addressed | note who/what it waits on |
+| ✅ Ready | `reviewDecision: APPROVED`, `ciStatus: success`, `mergeStateStatus` `CLEAN`/`UNSTABLE` | suggest merge (stacked: merge bottom first); if `autoMergeAllowed`, enabling auto-merge is an option |
+| 👀 Needs review | `reviewDecision: REVIEW_REQUIRED` / empty `reviews.approved`, CI green | Slack message (below) |
+| ⏳ Waiting | `ciStatus: pending`, `autoMerge`/`inMergeQueue` set, or `CHANGES_REQUESTED` already addressed | note who/what it waits on |
 
-A PR can show secondary flags (e.g. comments + conflicts) but lives in one bucket.
+A PR can show secondary flags (e.g. comments + conflicts) but lives in one bucket. `BEHIND` (not conflicting) → just note "update branch".
+
+When an action exists in the ghd TUI (approve, toggle draft, toggle auto-merge — `.` action menu), mention it as an alternative so Anton can do it from there.
 
 ### CI failures
 
