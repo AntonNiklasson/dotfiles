@@ -27,6 +27,8 @@ This PR is part of a stack:
 3. **[#823: do a third thing](<url here>)**
 ```
 
+When denoting a PR's position in a stack (e.g. in titles), use round brackets, never square: `(2/3)`, not `[2/3]`.
+
 ## Workflow
 
 - I prefer running dev servers and similar long-running processes in a separate tmux pane instead of you running it as a hidden background process. If you're in tmux, suggest either a new or existing pane to run the process in
