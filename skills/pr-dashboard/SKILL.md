@@ -89,50 +89,56 @@ It overwrites the clipboard each call, so after collecting all lines, `pbcopy` t
 
 ## 4. Output
 
-Two parts: a short status overview, then **one numbered action list at the very end**. Anton replies to the list like open questions ("1 go, 2 no, 3 go" or "go 1 3"), so the list is the point — everything above it is context.
+Two numbered lists that share numbering: the **PR list** (every open PR, numbered 1…N) and the **action list** at the very end, where each action carries its PR's number. Reading action `2b`, Anton glances up to PR `2`. He replies like to open questions ("1 go, 2a no, 2b go" or "go 1 3a"), so the action list is the point — everything above it is context.
 
-### Overview
+### PR list
 
-One line per PR, ordered by bucket (table order). Emoji + `repo#N` + short title + status in a few words. No numbers here, no explanations longer than a clause. Group drafts into a single compact line or two at the bottom of the overview. Stacks: `#7294→#7297`.
+- Number every open PR, drafts included, in bucket order (table order); drafts last.
+- Each entry: `N. <emoji> repo#123 Short title — status in a few words`. At most 2 short sub-bullets for context that matters to the decision (cause of CI failure, what conflicts). No paragraphs.
+- Drafts: one line each, no sub-bullets. Stacks: one entry per PR, note `stacked on #N`.
 
 ### Actions
 
-A single numbered list, last thing in the response. Each item:
+- Numbered by PR: `N` if the PR has one action, `Na`, `Nb` … if several. Gaps are fine — PRs with nothing to do have no action. Keep PR order.
+- Each item is one line and says exactly what will happen, e.g. `2. rebase onto next, force-push (no conflicts)`. Prefix with `#123` for readability.
+- One decision per item. Dependencies inline (`after 2a`).
+- Fold questions in as decisions: `9. close as superseded by #6628?` — no separate questions section.
+- Items needing input beyond go/no-go get "→ you: <question>".
+- Cross-PR actions (e.g. sending Slack pings for several PRs) go last, numbered `S` (or `X1`, `X2` …) so they don't collide with PR numbers.
 
-- Stands alone: starts with `#N` and says exactly what will happen, e.g. `#5975: rebase onto next, force-push (no conflicts)`.
-- Is one line. Put the why in a short trailing clause only if it changes the decision.
-- Is one decision. Dependencies stated inline (`after 1`), not as separate steps.
-- Folds questions in as decisions: `#6259: close as superseded by #6628?` rather than a separate questions section.
-- Marks items needing Anton's input beyond go/no-go with "→ you: <question>".
-
-Skipped review comments don't get numbers; mention them in the overview line ("1 nit skipped"). Slack `rr` lines go in a code block right before the action list (copied to clipboard); a "ping for review" action means "send these", it isn't something the agent does.
+Skipped review comments get no action; mention them in the PR's line ("1 nit skipped"). Slack `rr` lines go in a code block right before the action list (copied to clipboard); "send pings" means Anton sends them — the agent doesn't.
 
 ```
-**ghe.megaleo.com** — 18 open, 12 drafts
+**ghe.megaleo.com** — 17 open, 12 drafts
 
-🔴 sana-ai#5975 Delete CLAUDE.md stubs — CI red (stale base after retarget), approved, auto-merge on
-🔀 sana-ai#7262 test:integration for React — trivial conflict w/ next, no approval
-💬 sana-ai#5711 upgrade pnpm 12.7.0 — 1 thread, conflict w/ next, no approval
-✅ sana-ai#7258 Fail CI on CLAUDE.md — approved, green, stacked on #5975
-⏳ sana-ai#7282, #7229 — in merge queue
-Drafts: #7294→#7297 conflicts · #6259, #6628 conflicts · #7171 conflicts · #6907 1 thread · #6065, manifests#978→980 clean
+1. ✅ sana-ai#7229 [8/8] Ban per-test logger mocks — approved, green, clean
+2. 🔴 sana-ai#5975 Delete CLAUDE.md stubs — CI red, approved, auto-merge on, trivial conflict w/ next
+   - CI: "Check Migration Order" ran against main before retarget; stale
+   - Conflict: 1 line in review-help/SKILL.md, keep both
+3. 🔀 sana-ai#7262 test:integration for React — no approval, trivial conflict w/ next
+4. 💬 sana-ai#5711 upgrade pnpm 12.7.0 — 1 thread, no approval, base main
+5. ⏳ sana-ai#7258 Fail CI on CLAUDE.md — approved, green, stacked on #5975
+6. 📝 sana-ai#7294 vi.mock 1/4 — draft, conflicts w/ #7229's branch
+7. 📝 sana-ai#6259 hot-reload — draft, conflicts, 1 thread
+8. 📝 sana-ai#6628 hot-reload v2 — draft, conflicts, 1 thread
+…
 
 Slack (copied):
 <rr lines>
 
-1. #5975: rebase onto next, force-push — fresh CI, auto-merge lands it
-2. #7258: rebase onto #5975 after 1, force-push
-3. #7262: rebase onto next keeping your deletion, run test, show before force-push
-4. #5711: reply to @viktor "covered in docs/pnpm-12-upgrade.md", resolve thread
-5. #5711: retarget to next, resolve package.json conflict → you: is main still valid?
-6. Send Slack pings for #7262, #5711 (after 3, 5)
-7. #6259: close as superseded by #6628?
+1.  #7229: merge
+2.  #5975: rebase onto next, keep both SKILL.md edits, force-push — fresh CI, auto-merge lands it
+3.  #7262: rebase onto next keeping the deletion, run test:integration, show before force-push
+4a. #5711: reply to @viktor "covered in docs/pnpm-12-upgrade.md", resolve thread
+4b. #5711: retarget to next, resolve package.json conflict → you: was main intentional?
+5.  #7258: enable auto-merge after 2
+6.  #7294: rebase after 1, cascade up through #7297
+7.  #6259: close as superseded by #6628? → you: #6259 has an approval
+S.  Send Slack pings for #7262, #5711 (after 3, 4b)
 ```
-
-Every open PR appears in the overview exactly once. PRs with nothing to do get no action.
 
 ## 5. Go/no-go
 
-Anything not given a go is a no-go — never assume. Accept any shorthand ("go all", "all but 2", "1 go 2 no").
+Anything not given a go is a no-go — never assume. Accept any shorthand ("go all", "all but 2", "1 go 4a no", "go 4" = all of 4a, 4b …).
 
 Execute go'd actions one at a time in list order (respecting dependencies), one-line result each. Stop and ask if an action turns out bigger than described. The action line spells out what happens, so the go *is* the approval for outward-facing steps (merge, force-push, comment) — don't re-confirm.
