@@ -85,7 +85,7 @@ For each PR needing review, run Anton's `rr` script with the PR URL — it print
 rr <pr-url> | tail -1
 ```
 
-It overwrites the clipboard each call, so after collecting all lines, `pbcopy` the combined block. Present the lines in a code block. If `rr` fails, fall back to its format: `` [<title without ticket ids>](<url>) `+<add>/-<del>` `` plus ` → <base>` when base isn't `main`.
+It overwrites the clipboard each call, so after collecting all lines, `pbcopy` the combined block. Present the lines in a code block. If `rr` fails, fall back to its format: `` [<title without ticket ids>](<url>) `+<add>/-<del>` ``.
 
 ## 4. Output
 
