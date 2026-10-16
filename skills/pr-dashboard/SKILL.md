@@ -71,7 +71,7 @@ For each `DIRTY` PR, say which base it conflicts with and size it up: dry-run th
 - **Trivial** — lockfiles, generated files, imports, small non-overlapping hunks → offer to resolve it (rebase onto base, resolve, run relevant checks, show the result before force-pushing).
 - **Complex** — overlapping logic changes, many files, or anything where intent is ambiguous → don't offer to auto-resolve; summarise what clashes (which files, which incoming change) and loop Anton in.
 
-Never force-push without approval. Don't touch the cwd's working tree if it's dirty; use a temporary worktree only with Anton's approval.
+Never force-push without approval. Resolution happens in a temporary worktree (see §5), never in Anton's working tree. Dry-runs (`merge-tree`) need no worktree.
 
 ### Comment triage
 
@@ -141,4 +141,27 @@ S.  Send Slack pings for #7262, #5711 (after 3, 4b)
 
 Anything not given a go is a no-go — never assume. Accept any shorthand ("go all", "all but 2", "1 go 4a no", "go 4" = all of 4a, 4b …).
 
-Execute go'd actions one at a time in list order (respecting dependencies), one-line result each. Stop and ask if an action turns out bigger than described. The action line spells out what happens, so the go *is* the approval for outward-facing steps (merge, force-push, comment) — don't re-confirm.
+### Executing
+
+Split go'd actions in two:
+
+- **API-only** (merge, enable auto-merge, reply/resolve thread, close, re-run CI): run directly with `gh` from the main agent, in list order.
+- **Needs a checkout** (rebase, resolve conflicts, fix CI, address review comments): one sub-agent per PR, each in its own temporary worktree. A go on such an action counts as approval for its temporary worktree — no separate ask.
+
+Worktrees:
+
+- Base on Anton's existing clone of the repo (find via `git remote -v` under `~/code`); `git fetch`, then `git worktree add /tmp/pr-dashboard/<repo>-<N> <head-branch>`. No local clone → `gh repo clone` into `/tmp/pr-dashboard/` instead.
+- Never touch Anton's own working trees or checked-out branches. If the head branch is checked out somewhere, use `--detach` and push with `git push origin HEAD:<branch>`.
+- Remove the worktree when the sub-agent is done (`git worktree remove`), unless work is left for Anton — then report its path.
+
+Sub-agents:
+
+- Brief each with the action line, PR URL, host, worktree path, and what "done" means (tests to run, push or not).
+- Independent PRs run in parallel. Stacks and `after Na` dependencies run in order — start a dependent one only after its parent succeeded.
+- Each returns one line: done / blocked + why. Keep their logs out of main context.
+- They push only what the action line said they'd push. If the line says "show before force-push", they stop after verifying and return a diff summary; the main agent shows it and pushes on Anton's ok.
+- If the work turns out bigger than described, stop and report rather than improvise.
+
+Report results as a numbered list matching the action numbers: `2. ✓ rebased, force-pushed, CI running`, `4b. ✗ blocked: package.json conflict touches engines field → you`.
+
+The action line spells out what happens, so the go *is* the approval for outward-facing steps (merge, force-push, comment) — don't re-confirm.
