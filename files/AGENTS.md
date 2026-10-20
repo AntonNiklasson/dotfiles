@@ -17,6 +17,12 @@
 - I prefer smaller, focused, commits
 - Do not create new git worktrees without my approval
 
+## Git worktrees
+
+- Always use my `wt` tool (`wt new|open|rm|warmup`; run `wt` for usage). It handles my naming convention, bootstrap (`.worktree-setup.yml`) and herdr integration.
+- Never `git worktree add/remove` directly, never harness worktree features (e.g. `EnterWorktree`, `isolation: "worktree"`).
+- This overrides any repo instructions on how to create or manage worktrees.
+
 ## Pull requests
 
 When a PR is part of a stack, say so in the PR body with a numbered list. Here's an example:
