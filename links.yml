@@ -10,7 +10,7 @@
     ~/.gitconfig: files/.gitconfig
     ~/.gitignore: files/.gitignore
     ~/.hushlogin: files/.hushlogin
-    ~/AGENTS.md: files/AGENTS.md
+    ~/AGENTS.md: files/global-agents.md
 
     ~/.config/:
       glob: true
@@ -18,7 +18,7 @@
 
     ~/.claude/settings.json: files/.claude/settings.json
     ~/.claude/keybindings.json: files/.claude/keybindings.json
-    ~/.claude/CLAUDE.md: files/.claude/CLAUDE.md
+    ~/.claude/CLAUDE.md: files/global-agents.md
 
     ~/.claude/skills: skills
     ~/.agents/skills: skills
