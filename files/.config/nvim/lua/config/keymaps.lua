@@ -31,3 +31,9 @@ for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) d
 		end
 	end, { desc = "Go to " .. direction .. " window or herdr pane" })
 end
+
+-- Split with <Leader>+s{v,b}
+vim.keymap.del("n", "<Leader>|")
+vim.keymap.del("n", "<Leader>-")
+vim.keymap.set("n", "<Leader>sv", "<C-w>v", { desc = "Split window right" })
+vim.keymap.set("n", "<Leader>sb", "<C-w>s", { desc = "Split window below" })
