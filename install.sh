@@ -45,6 +45,13 @@ esac
 
 [[ -d "$DOTFILES" ]] || git clone https://github.com/AntonNiklasson/dotfiles.git "$DOTFILES"
 
+# per-machine role, gitignored; "private" loads conf.d/*.private.toml
+MISERC_LOCAL="$DOTFILES/files/.config/mise/miserc.local.toml"
+if [[ ! -f "$MISERC_LOCAL" ]]; then
+  read -r -p "private machine? (y/n) " reply
+  if [[ "$reply" == y ]]; then echo 'env = ["private"]' > "$MISERC_LOCAL"; else : > "$MISERC_LOCAL"; fi
+fi
+
 gh auth status &>/dev/null || gh auth login
 GITHUB_TOKEN="$(gh auth token)"
 export GITHUB_TOKEN
