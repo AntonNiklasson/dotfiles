@@ -25,13 +25,7 @@
 
 ## Pull requests
 
-When a PR is part of a stack, say so in the PR body with a numbered list. Here's an example:
-```
-This PR is part of a stack:
-1. **[#123: do something](<url here>)**
-2. **#456: do something else** ↞ This PR
-3. **[#823: do a third thing](<url here>)**
-```
+Opening, updating, or stacking PRs: use the `pull-request` skill.
 
 ## Workflow
 
