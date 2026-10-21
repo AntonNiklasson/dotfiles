@@ -10,7 +10,8 @@ fd = "latest"
 fzf = "latest"
 ripgrep = "latest"
 zoxide = "latest"
-yazi = "latest"
+yazi = { version = "latest", os = ["macos"] }
+"github:sxyazi/yazi" = { version = "latest", matching = "musl", os = ["linux"] }
 glow = "latest"
 tlrc = { version = "latest", os = ["macos", "linux/x64"] }
 bottom = "latest"
