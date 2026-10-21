@@ -187,6 +187,31 @@
       "label" : "todo",
       "type" : "application",
       "value" : "/Applications/Todoist.app"
+    },
+    {
+      "key" : "1",
+      "type" : "application",
+      "value" : "/Applications/Arc.app"
+    },
+    {
+      "key" : "2",
+      "type" : "application",
+      "value" : "/Applications/Ghostty.app"
+    },
+    {
+      "key" : "3",
+      "type" : "application",
+      "value" : "/Applications/Obsidian.app"
+    },
+    {
+      "key" : "4",
+      "type" : "application",
+      "value" : "/Applications/Slack.app"
+    },
+    {
+      "key" : "5",
+      "type" : "application",
+      "value" : "/Applications/Todoist.app"
     }
   ],
   "type" : "group"
