@@ -1,5 +1,6 @@
-# global tools. brew (Brewfile) keeps casks, mas, shell plumbing, and
-# formulae with no prebuilt binary in the mise registry.
+# global mise config, also what `mise bootstrap` runs from (see README).
+# [tools]: CLI tools + runtimes. brew formulae only for what has no prebuilt
+# binary in the mise registry (see [bootstrap.packages]).
 
 [tools]
 # runtimes

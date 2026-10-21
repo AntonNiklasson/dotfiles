@@ -8,13 +8,24 @@ cd ~/.dotfiles
 ./install.sh
 ```
 
-## update brewfile
+## how it works
+
+`mise bootstrap` does everything, from `files/.config/mise/config.toml`:
+
+- `[bootstrap.packages]`: brew formulae, casks, mac app store apps
+- `[dotfiles]`: symlinks into `$HOME`
+- `[bootstrap.macos.defaults]`: macos settings
+- `[tools]`: CLI tools + runtimes
+- `[bootstrap.hooks]`: everything else
+
+## day to day
 
 ```bash
-brew bundle dump --file=~/.dotfiles/Brewfile --force
+mise bootstrap --dry-run          # preview
+mise bootstrap                    # apply
+mise bootstrap status --missing   # what's out of sync
+mise use -g <tool>                # add a CLI tool
+mise bootstrap packages use -g brew-cask:<app>   # add a package
+mise up                           # upgrade tools
+mise bootstrap packages upgrade   # upgrade packages
 ```
-
-## tools
-
-- CLI tools + runtimes: mise, `files/.config/mise/config.toml`. add with `mise use -g <tool>`, upgrade with `mise up`
-- casks, mas apps, rest: Brewfile

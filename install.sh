@@ -1,72 +1,45 @@
 #!/bin/bash
+# fresh-mac setup: just enough to run `mise bootstrap`. packages, links, macos
+# defaults, tools and hooks all live in files/.config/mise/config.toml.
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
-BREWFILE="$DOTFILES/Brewfile"
 
-# 0. prompt for sudo once, then keep it alive for the rest of the script.
-# mas (Mac App Store installs), defaults to /Library, etc. may want sudo later.
-echo "Note: password prompt is for Mac App Store apps via mas and any sudo-gated steps."
+# 0. prompt for sudo once, then keep it alive (homebrew, mas installs).
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done &
 SUDO_KEEPALIVE_PID=$!
 trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
 
-# 1. homebrew
-if ! command -v brew &>/dev/null; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+# 1. xcode command line tools (git, compilers for source-only formulae)
+if ! xcode-select -p &>/dev/null; then
+  xcode-select --install
+  read -r -p "press enter once the command line tools have installed "
 fi
 
-# 1.5. prerequisites needed before brew bundle + dotfile linking
-for pkg in mas dotbot mise; do
+# 2. repo
+[[ -d "$DOTFILES" ]] || git clone https://github.com/AntonNiklasson/dotfiles.git "$DOTFILES"
+
+# 3. homebrew. mise installs formulae/casks into its prefix itself, but the
+# brew CLI is still handy and .zshrc runs `brew shellenv`.
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# 4. mise, plus mas: bootstrap's package step needs mas on PATH already
+for pkg in mise mas; do
   command -v "$pkg" &>/dev/null || brew install "$pkg"
 done
 
-# 1.6. show anything installed but not declared in Brewfile
-"$DOTFILES/bin/brew-dotfiles" extras
-
-# 2. link dotfiles to $HOME
-dotbot -d "$DOTFILES" -c "$DOTFILES/links.yml"
-
-# 3. brew packages (sudo already primed at top of script)
-"$DOTFILES/bin/brew-dotfiles" install
-
-# 3.2. mise tools (config linked to ~/.config/mise/config.toml in step 2)
-mise install
-
-# 3.5. node deps for the zx scripts in bin/ (wt, rr, copylast, list-tmux-windows)
-(cd "$DOTFILES/bin" && mise exec -- pnpm install --frozen-lockfile)
-
-# 3.6. herdr — deliberately not in the Brewfile: the formula lags the installer,
-# and a stale brew copy in /opt/homebrew/bin shadows ~/.local/bin, which breaks
-# every CLI call with a protocol_mismatch. herdr updates itself.
-if command -v herdr >/dev/null; then
-  herdr update
-else
-  curl -fsSL https://herdr.dev/install.sh | sh
+# 5. link the mise config so bootstrap reads it (bootstrap relinks it too)
+if [[ -e ~/.config/mise && ! -L ~/.config/mise ]]; then
+  mv ~/.config/mise ~/.config/mise.bak."$(date +%Y%m%d%H%M%S)"
 fi
+mkdir -p ~/.config
+ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-# 4. macos defaults
-read -p "apply macos defaults? (y/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  defaults write com.apple.dock autohide-time-modifier -int 0
-  defaults write com.apple.dock mru-spaces -int 0
-  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-  defaults write com.apple.LaunchServices LSQuarantine -bool false
-  defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
-  defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
-  defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-  defaults write -g ApplePressAndHoldEnabled -bool false
+# 6. everything else. --force-dotfiles replaces real files at link targets.
+mise bootstrap --force-dotfiles
 
-  SCREENSHOTS_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
-  mkdir -p "$SCREENSHOTS_DIR"
-  defaults write com.apple.screencapture location "$SCREENSHOTS_DIR"
-  defaults write com.apple.screencapture show-thumbnail -bool false
-  killall SystemUIServer
-
-  killall Dock
-fi
-
-echo "done! restart terminal"
+echo "done! restart terminal (and killall Dock Finder SystemUIServer for defaults)"
