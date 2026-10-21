@@ -19,7 +19,7 @@ gh = "latest"
 delta = "latest"
 lazygit = "latest"
 
-neovim = "latest"
+"aqua:neovim/neovim" = "latest"
 
 jq = "latest"
 direnv = "latest"
