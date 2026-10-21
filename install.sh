@@ -4,8 +4,8 @@
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
-BOOTSTRAP_ARGS=(--force-dotfiles)
-[[ "${1:-}" == --dry-run ]] && BOOTSTRAP_ARGS=(--dry-run)
+DRY_RUN=false
+[[ "${1:-}" == --dry-run ]] && DRY_RUN=true
 
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done &
@@ -56,9 +56,15 @@ gh auth status &>/dev/null || gh auth login
 GITHUB_TOKEN="$(gh auth token)"
 export GITHUB_TOKEN
 
-# linux gh keeps its token in hosts.yml (no keyring); keep it once ~/.config/gh becomes a link (gitignored)
+if [[ "$DRY_RUN" == true ]]; then
+  # preview against the repo config without touching the live ~/.config
+  MISE_CONFIG_DIR="$DOTFILES/files/.config/mise" mise bootstrap --dry-run
+  exit 0
+fi
+
+# linux gh keeps its token in hosts.yml (no keyring); keep a copy for when ~/.config/gh becomes a link (gitignored)
 if [[ -f ~/.config/gh/hosts.yml && ! -L ~/.config/gh ]]; then
-  mv -n ~/.config/gh/hosts.yml "$DOTFILES/files/.config/gh/hosts.yml"
+  cp -n ~/.config/gh/hosts.yml "$DOTFILES/files/.config/gh/hosts.yml"
 fi
 
 if [[ -e ~/.config/mise && ! -L ~/.config/mise ]]; then
@@ -67,10 +73,10 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-mise bootstrap "${BOOTSTRAP_ARGS[@]}"
+mise bootstrap --force-dotfiles
 
 # mise's gh takes over once bootstrap has installed tools
-if [[ "$TEMP_GH" == true && "${BOOTSTRAP_ARGS[0]}" != --dry-run ]]; then
+if [[ "$TEMP_GH" == true ]]; then
   brew uninstall gh
 fi
 
