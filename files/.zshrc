@@ -67,8 +67,8 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true
 
 
-# fast node manager
-eval "$(fnm env --use-on-cd --shell zsh)"
+# mise (tools in ~/.config/mise/config.toml). after brew so its PATH wins.
+eval "$(mise activate zsh)"
 
 
 # history
