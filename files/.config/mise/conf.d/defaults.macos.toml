@@ -1,6 +1,14 @@
 [bootstrap.macos.dock]
 autohide = true
 orientation = "right"
+apps = [
+  "/Applications/Ghostty.app",
+  "/Applications/Arc.app",
+  "/Applications/Obsidian.app",
+  "/Applications/Todoist.app",
+  "/Applications/Slack.app",
+  "/System/Applications/System Settings.app",
+]
 
 [bootstrap.macos.trackpad]
 three_finger_drag = true
