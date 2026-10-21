@@ -31,7 +31,6 @@ neovim = "latest"
 
 # dev misc
 jq = "latest"
-mas = "latest" # CLI behind the mas: bootstrap packages
 direnv = "latest"
 "aqua:anomalyco/opencode" = "latest"
 
@@ -48,7 +47,7 @@ idiomatic_version_file_enable_tools = ["node"]
 # macos defaults, then installs [tools]. preview with `mise bootstrap --dry-run`.
 # ---------------------------------------------------------------------------
 
-# homebrew formulae/casks + mac app store. mise installs these itself into
+# homebrew formulae + casks. mise installs these itself into
 # /opt/homebrew; brew CLI still works on them.
 [bootstrap.packages]
 # shell
@@ -120,10 +119,6 @@ idiomatic_version_file_enable_tools = ["node"]
 # fonts
 "brew-cask:font-geist-mono-nerd-font" = "latest"
 
-# mac app store
-"mas:6472865291" = "latest" # keymapp
-"mas:6738274497" = "latest" # Raycast Companion
-
 # symlinks into $HOME. existing real files block the run; pass --force-dotfiles
 # (needed for ~/.claude/settings.json, which claude code sometimes rewrites).
 [dotfiles]
@@ -132,15 +127,11 @@ idiomatic_version_file_enable_tools = ["node"]
 "~/.gitignore" = "~/.dotfiles/files/.gitignore"
 "~/.hushlogin" = "~/.dotfiles/files/.hushlogin"
 "~/AGENTS.md" = "~/.dotfiles/files/_AGENTS.md"
-
-# each child of files/.config as its own link
 "~/.config/*" = "~/.dotfiles/files/.config/*"
 "~/.config/.DS_Store" = { mode = "absent" } # glob matches dotfiles too
-
 "~/.claude/settings.json" = "~/.dotfiles/files/.claude/settings.json"
 "~/.claude/keybindings.json" = "~/.dotfiles/files/.claude/keybindings.json"
 "~/.claude/CLAUDE.md" = "~/.dotfiles/files/_AGENTS.md"
-
 "~/.claude/skills" = "~/.dotfiles/skills"
 "~/.agents/skills" = "~/.dotfiles/skills"
 

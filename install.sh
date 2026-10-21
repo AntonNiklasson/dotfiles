@@ -5,7 +5,7 @@ set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
 
-# 0. prompt for sudo once, then keep it alive (homebrew, mas installs).
+# 0. prompt for sudo once, then keep it alive (homebrew, cask installers).
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done &
 SUDO_KEEPALIVE_PID=$!
@@ -37,11 +37,7 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-# 6. mas CLI first: bootstrap's package step (mas: entries) runs before its
-# tools step, and skips app store apps if mas isn't installed yet.
-mise install mas
-
-# 7. everything else. --force-dotfiles replaces real files at link targets.
+# 6. everything else. --force-dotfiles replaces real files at link targets.
 mise bootstrap --force-dotfiles
 
 echo "done! restart terminal (and killall Dock Finder SystemUIServer for defaults)"

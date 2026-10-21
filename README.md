@@ -12,7 +12,7 @@ cd ~/.dotfiles
 
 `mise bootstrap` does everything, from `files/.config/mise/config.toml`:
 
-- `[bootstrap.packages]`: brew formulae, casks, mac app store apps
+- `[bootstrap.packages]`: brew formulae + casks
 - `[dotfiles]`: symlinks into `$HOME`
 - `[bootstrap.macos.defaults]`: macos settings
 - `[tools]`: CLI tools + runtimes
