@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.0.3",
+  "lastChangelogVersion": "1.2.0",
   "theme": "tokyonight-storm",
   "tuiMode": "fullscreen",
   "defaultProvider": "openai-codex",
@@ -9,7 +9,6 @@
   "packages": [],
   "enabledModels": [
     "openai-codex/gpt-6-astra",
-    "opencode-go/glm-5.3-flash",
-    "openai-codex/gpt-6-sol"
+    "openai-codex/gpt-6.1-sol"
   ]
 }
