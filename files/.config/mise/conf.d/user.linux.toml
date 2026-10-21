@@ -1,2 +1,6 @@
 [bootstrap.user]
 login_shell = "/usr/bin/zsh"
+
+# chsh wants the user's password (fails without a tty / on key-only accounts); sudo is primed by install.sh
+[bootstrap.hooks]
+pre-user = '[ "$(getent passwd "$(id -un)" | cut -d: -f7)" = /usr/bin/zsh ] || sudo usermod -s /usr/bin/zsh "$(id -un)"'
