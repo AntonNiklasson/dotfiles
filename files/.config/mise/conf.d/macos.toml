@@ -1,5 +1,3 @@
-# macos defaults. type follows the TOML value (int/bool/string). mise doesn't
-# restart apps: `killall Dock Finder SystemUIServer` or log out to see changes.
 [bootstrap.macos.defaults."com.apple.dock"]
 autohide-time-modifier = 0
 mru-spaces = 0
@@ -22,7 +20,6 @@ FXEnableExtensionChangeWarning = false
 show-thumbnail = false
 
 [bootstrap.hooks]
-# screenshot dir needs $HOME, which defaults values don't expand
 post-defaults = '''
 dir="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
 mkdir -p "$dir"

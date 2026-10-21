@@ -1,5 +1,3 @@
-# symlinks into $HOME. existing real files block the run; pass --force-dotfiles
-# (needed for ~/.claude/settings.json, which claude code sometimes rewrites).
 [dotfiles]
 "~/.zshrc" = "~/.dotfiles/files/.zshrc"
 "~/.gitconfig" = "~/.dotfiles/files/.gitconfig"
@@ -7,7 +5,7 @@
 "~/.hushlogin" = "~/.dotfiles/files/.hushlogin"
 "~/AGENTS.md" = "~/.dotfiles/files/_AGENTS.md"
 "~/.config/*" = "~/.dotfiles/files/.config/*"
-"~/.config/.DS_Store" = { mode = "absent" } # glob matches dotfiles too
+"~/.config/.DS_Store" = { mode = "absent" }
 "~/.claude/settings.json" = "~/.dotfiles/files/.claude/settings.json"
 "~/.claude/keybindings.json" = "~/.dotfiles/files/.claude/keybindings.json"
 "~/.claude/CLAUDE.md" = "~/.dotfiles/files/_AGENTS.md"
@@ -15,5 +13,4 @@
 "~/.agents/skills" = "~/.dotfiles/skills"
 
 [bootstrap.hooks]
-# drop dead links into the repo (what dotbot's `clean` did)
 post-dotfiles = 'find ~ ~/.config -maxdepth 1 -type l -lname "$HOME/.dotfiles/*" ! -exec test -e {} ";" -print -delete'

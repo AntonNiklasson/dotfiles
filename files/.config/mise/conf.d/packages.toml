@@ -1,7 +1,4 @@
-# homebrew formulae + casks. mise installs these itself into
-# /opt/homebrew; brew CLI still works on them.
 [bootstrap.packages]
-# shell
 "brew:bash" = "latest"
 "brew:zsh" = "latest"
 "brew:zsh-autosuggestions" = "latest"
@@ -12,27 +9,23 @@
 "brew:curl" = "latest"
 "brew:mise" = "latest"
 
-# nav / view (yazi itself is in [tools]; these are its preview deps)
 "brew:eza" = "latest"
 "brew:the_silver_searcher" = "latest"
 "brew:tree" = "latest"
-"brew:chafa" = "latest"    # yazi image preview fallback
-"brew:ffmpeg" = "latest"   # yazi video/gif thumbnails
-"brew:poppler" = "latest"  # yazi pdf previews
-"brew:sevenzip" = "latest" # yazi archive preview/extract
-"brew:exiftool" = "latest" # yazi image metadata
+"brew:chafa" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:poppler" = "latest"
+"brew:sevenzip" = "latest"
+"brew:exiftool" = "latest"
 
-# git
 "brew:git" = "latest"
 "brew:git-extras" = "latest"
 "brew:git-trim" = "latest"
 
-# editor / terminal
 "brew:vim" = "latest"
 "brew:tmux" = "latest"
 "brew:luarocks" = "latest"
 
-# dev misc
 "brew:httpie" = "latest"
 "brew:cormacrelf/tap/dark-notify" = "latest"
 "brew:dhth/tap/prs" = "latest"
@@ -40,11 +33,9 @@
 "brew:displayplacer" = "latest"
 "brew:terminal-notifier" = "latest"
 
-# infra / db (docker CLI comes from docker-desktop)
 "brew:docker-compose" = "latest"
 "brew:flyway" = "latest"
 
-# apps
 "brew-cask:1password" = "latest"
 "brew-cask:bitwarden" = "latest"
 "brew-cask:caffeine" = "latest"
@@ -71,5 +62,4 @@
 "brew-cask:wispr-flow" = "latest"
 "brew-cask:zen" = "latest"
 
-# fonts
 "brew-cask:font-geist-mono-nerd-font" = "latest"
