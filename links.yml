@@ -16,7 +16,9 @@
       glob: true
       path: files/.config/*
 
-    ~/.claude/settings.json: files/.claude/settings.json
+    ~/.claude/settings.json:
+      path: files/.claude/settings.json
+      force: true
     ~/.claude/keybindings.json: files/.claude/keybindings.json
     ~/.claude/CLAUDE.md: files/_AGENTS.md
 
