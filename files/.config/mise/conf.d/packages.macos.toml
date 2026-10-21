@@ -1,3 +1,6 @@
+[settings]
+write_targets.packages = "~/.config/mise/conf.d/packages.macos.toml"
+
 [bootstrap.packages]
 
 "brew:bash" = "latest"
