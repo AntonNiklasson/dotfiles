@@ -1,35 +1,6 @@
-[tools]
-node = "24"
-bun = "latest"
-pnpm = "latest"
-"npm:zx" = "latest"
-
-bat = "latest"
-fd = "latest"
-fzf = "latest"
-ripgrep = "latest"
-zoxide = "latest"
-yazi = "latest"
-glow = "latest"
-tlrc = "latest"
-bottom = "latest"
-"npm:diff-so-fancy" = "latest"
-
-gh = "latest"
-delta = "latest"
-lazygit = "latest"
-
-neovim = "latest"
-
-jq = "latest"
-direnv = "latest"
-"aqua:anomalyco/opencode" = "latest"
-
-k9s = "latest"
-lazydocker = "latest"
-
 [settings]
 idiomatic_version_file_enable_tools = ["node"]
 # gh token lives in keychain; unauthenticated = zscaler-shared 60 req/h
 github.credential_command = "gh auth token"
 write_targets.packages = "~/.config/mise/conf.d/packages.toml"
+write_targets.tools = "~/.config/mise/conf.d/tools.toml"

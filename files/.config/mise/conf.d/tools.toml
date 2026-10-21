@@ -1,0 +1,29 @@
+[tools]
+node = "24"
+bun = "latest"
+pnpm = "latest"
+"npm:zx" = "latest"
+
+bat = "latest"
+fd = "latest"
+fzf = "latest"
+ripgrep = "latest"
+zoxide = "latest"
+yazi = "latest"
+glow = "latest"
+tlrc = "latest"
+bottom = "latest"
+"npm:diff-so-fancy" = "latest"
+
+gh = "latest"
+delta = "latest"
+lazygit = "latest"
+
+neovim = "latest"
+
+jq = "latest"
+direnv = "latest"
+"aqua:anomalyco/opencode" = "latest"
+
+k9s = "latest"
+lazydocker = "latest"

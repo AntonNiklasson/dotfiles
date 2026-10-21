@@ -12,7 +12,8 @@ cd ~/.dotfiles
 
 `mise bootstrap` does everything, from `files/.config/mise/` (linked to `~/.config/mise`):
 
-- `config.toml`: `[tools]` (CLI tools + runtimes) and settings
+- `config.toml`: settings
+- `conf.d/tools.toml`: CLI tools + runtimes
 - `conf.d/packages.toml`: brew formulae + casks
 - `conf.d/dotfiles.toml`: symlinks into `$HOME`
 - `conf.d/macos.toml`: macos defaults
