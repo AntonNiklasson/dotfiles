@@ -1,8 +1,9 @@
+# CLI tools + runtimes live in files/.config/mise/config.toml.
+# brew keeps casks, mas, shell plumbing, and formulae mise has no binary for.
+
 # taps
 tap "cormacrelf/tap" # dark-notify
 tap "dhth/tap"       # prs
-tap "oven-sh/bun"    # bun
-tap "sst/tap"        # opencode
 
 # shell
 brew "bash"
@@ -14,53 +15,31 @@ brew "coreutils"
 brew "gnu-sed"
 brew "curl"
 brew "dotbot"
+brew "mise"
 brew "mas"
-brew "direnv"
 
-# nav / view
-brew "bat"
+# nav / view (yazi itself is in mise; these are its preview deps)
 brew "eza"
-brew "fd"
-brew "fzf"
-brew "ripgrep"
 brew "the_silver_searcher"
-brew "zoxide"
 brew "tree"
-brew "yazi"
-brew "glow"     # markdown rendering in terminal
 brew "chafa"    # yazi image preview fallback
 brew "ffmpeg"   # yazi video/gif thumbnails
 brew "poppler"  # yazi pdf previews
 brew "sevenzip" # yazi archive preview/extract
 brew "exiftool" # yazi image metadata
-brew "tlrc"
-brew "bottom"
-brew "diff-so-fancy"
 
 # git
 brew "git"
-brew "gh"
-brew "git-delta"
 brew "git-extras"
 brew "git-trim"
-brew "lazygit"
 
 # editor / terminal
-brew "neovim"
 brew "vim"
 brew "tmux"
 brew "luarocks"
 
-# node
-brew "fnm"
-brew "pnpm"
-brew "bun"
-brew "zx"
-
 # dev misc
-brew "jq"
 brew "httpie"
-brew "opencode"
 brew "dark-notify"
 brew "prs"
 brew "blueutil"
@@ -70,8 +49,6 @@ brew "terminal-notifier"
 # infra / db
 brew "docker", link: false
 brew "docker-compose"
-brew "lazydocker"
-brew "k9s"
 brew "flyway"
 
 # casks — apps
