@@ -18,6 +18,7 @@ files/.config/k9s/*
 !files/.config/lazygit/
 !files/.config/leaderkey/
 !files/.config/mise/
+files/.config/mise/config*.local.toml
 !files/.config/nvim/
 !files/.config/ohmyposh/
 !files/.config/opencode/
