@@ -24,12 +24,15 @@ cd ~/.dotfiles
 `mise bootstrap` does everything, from `files/.config/mise/` (linked to `~/.config/mise`):
 
 - `config.toml`: settings
+- `miserc.toml`: turns on `*.macos.toml` / `*.linux.toml` loading only on that OS
 - `conf.d/tools.toml`: CLI tools + runtimes
-- `conf.d/packages.toml`: brew formulae + casks
+- `conf.d/packages.macos.toml`: brew formulae + casks
+- `conf.d/packages.linux.toml`: apt packages
+- `conf.d/defaults.macos.toml`: macos defaults, login items, caps lock agent
+- `conf.d/user.linux.toml`: zsh as login shell
 - `conf.d/dotfiles.toml`: symlinks into `$HOME`
-- `conf.d/macos.toml`: macos defaults
 - `conf.d/hooks.toml`: extra steps (bin/ deps, herdr)
-- `conf.d/tasks.toml`: `mise run cleanup`
+- `conf.d/tasks.toml`: `mise run cleanup` (macos)
 
 ## day to day
 
