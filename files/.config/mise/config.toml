@@ -31,6 +31,7 @@ neovim = "latest"
 
 # dev misc
 jq = "latest"
+mas = "latest" # CLI behind the mas: bootstrap packages
 direnv = "latest"
 "aqua:anomalyco/opencode" = "latest"
 
@@ -60,7 +61,6 @@ idiomatic_version_file_enable_tools = ["node"]
 "brew:gnu-sed" = "latest"
 "brew:curl" = "latest"
 "brew:mise" = "latest"
-"brew:mas" = "latest"
 
 # nav / view (yazi itself is in [tools]; these are its preview deps)
 "brew:eza" = "latest"

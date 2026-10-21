@@ -27,10 +27,8 @@ if [[ ! -x /opt/homebrew/bin/brew ]]; then
 fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# 4. mise, plus mas: bootstrap's package step needs mas on PATH already
-for pkg in mise mas; do
-  command -v "$pkg" &>/dev/null || brew install "$pkg"
-done
+# 4. mise
+command -v mise &>/dev/null || brew install mise
 
 # 5. link the mise config so bootstrap reads it (bootstrap relinks it too)
 if [[ -e ~/.config/mise && ! -L ~/.config/mise ]]; then
@@ -39,7 +37,11 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-# 6. everything else. --force-dotfiles replaces real files at link targets.
+# 6. mas CLI first: bootstrap's package step (mas: entries) runs before its
+# tools step, and skips app store apps if mas isn't installed yet.
+mise install mas
+
+# 7. everything else. --force-dotfiles replaces real files at link targets.
 mise bootstrap --force-dotfiles
 
 echo "done! restart terminal (and killall Dock Finder SystemUIServer for defaults)"
