@@ -23,7 +23,6 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
 export NODE_USE_SYSTEM_CA=1  # trust macOS keychain CAs (Zscaler TLS interception)
 export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
-export PATH=$PATH:/opt/homebrew/opt/ruby/bin
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:~/.local/bin
