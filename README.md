@@ -29,7 +29,7 @@ cd ~/.dotfiles
 - `conf.d/tools.toml`: CLI tools + runtimes
 - `conf.d/packages.macos.toml`: brew formulae + casks
 - `conf.d/packages.linux.toml`: apt packages
-- `conf.d/packages.private.toml`: private machines only (tailscale)
+- `conf.d/packages.private.toml`: private machines only (tailscale: cask on macos, official install script on linux)
 - `conf.d/defaults.macos.toml`: macos defaults, login items, caps lock agent
 - `conf.d/user.linux.toml`: zsh as login shell
 - `conf.d/dotfiles.toml`: symlinks into `$HOME`
