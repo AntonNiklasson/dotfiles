@@ -2,12 +2,12 @@
 autohide = true
 orientation = "right"
 apps = [
-  "/Applications/Ghostty.app",
-  "/Applications/Arc.app",
-  "/Applications/Obsidian.app",
-  "/Applications/Todoist.app",
-  "/Applications/Slack.app",
   "/System/Applications/System Settings.app",
+  "/Applications/Arc.app",
+  "/Applications/Ghostty.app",
+  "/Applications/Obsidian.app",
+  "/Applications/Slack.app",
+  "/Applications/Todoist.app",
 ]
 
 [bootstrap.macos.trackpad]
