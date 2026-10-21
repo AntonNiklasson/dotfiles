@@ -27,5 +27,6 @@ jq = "latest"
 direnv = "latest"
 "aqua:anomalyco/opencode" = "latest"
 
+kubectl = "latest"
 k9s = "latest"
 lazydocker = "latest"
