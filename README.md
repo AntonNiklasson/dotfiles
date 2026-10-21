@@ -28,4 +28,5 @@ mise use -g <tool>                # add a CLI tool
 mise bootstrap packages use -g brew-cask:<app>   # add a package
 mise up                           # upgrade tools
 mise bootstrap packages upgrade   # upgrade packages
+mise run cleanup                  # preview removal of anything undeclared (--apply to remove)
 ```
