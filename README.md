@@ -2,9 +2,20 @@
 
 ## install
 
+With an agent:
+
+```bash
+curl -fsSL https://pi.dev/install.sh | sh
+pi   # /login, then:
+# set up this mac: follow https://raw.githubusercontent.com/AntonNiklasson/dotfiles/main/SETUP.md
+```
+
+Without:
+
 ```bash
 git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
+./install.sh --dry-run   # preview
 ./install.sh
 ```
 
