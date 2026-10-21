@@ -19,6 +19,18 @@ FXEnableExtensionChangeWarning = false
 [bootstrap.macos.defaults."com.apple.screencapture"]
 show-thumbnail = false
 
+[bootstrap.macos.defaults."com.apple.HIToolbox"]
+AppleCurrentKeyboardLayoutInputSourceID = "com.apple.keylayout.US"
+AppleEnabledInputSources = [
+  { "Bundle ID" = "com.apple.CharacterPaletteIM", InputSourceKind = "Non Keyboard Input Method" },
+  { InputSourceKind = "Keyboard Layout", "KeyboardLayout ID" = 0, "KeyboardLayout Name" = "U.S." },
+  { "Bundle ID" = "com.apple.PressAndHold", InputSourceKind = "Non Keyboard Input Method" },
+]
+AppleSelectedInputSources = [
+  { "Bundle ID" = "com.apple.PressAndHold", InputSourceKind = "Non Keyboard Input Method" },
+  { InputSourceKind = "Keyboard Layout", "KeyboardLayout ID" = 0, "KeyboardLayout Name" = "U.S." },
+]
+
 [bootstrap.hooks]
 post-defaults = '''
 dir="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
