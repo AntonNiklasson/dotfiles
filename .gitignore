@@ -31,6 +31,7 @@ files/.config/pi/*
 !files/.config/pi/agent/
 files/.config/pi/agent/*
 !files/.config/pi/agent/extensions/
+!files/.config/pi/agent/themes/
 !files/.config/pi/agent/settings.json
 !files/.config/yazi/
 
