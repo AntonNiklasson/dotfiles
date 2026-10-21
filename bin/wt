@@ -18,10 +18,11 @@ if (!hasPrompt) {
 
 const command = argv._[0]
 
-if (!command || !['new', 'rm', 'warmup'].includes(command)) {
+if (!command || !['new', 'open', 'rm', 'warmup'].includes(command)) {
   console.log('')
   console.log('Usage:')
   console.log('  wt new [name] [--branch BRANCH] [--prompt PROMPT] [--no-agent] [--wait] - Create a new worktree')
+  console.log('  wt open [name...] [--all] - Open a tab per existing worktree (picker when no names given)')
   console.log('  wt rm [name...] [--yes] - Remove worktrees (picker when no names given, --yes skips confirm)')
   console.log('  wt warmup [path]        - Apply .worktree-setup.yml to an existing worktree (cwd by default)')
   process.exit(1)
@@ -411,6 +412,45 @@ if (command === 'warmup') {
     tail: [`if [ $code -eq 0 ]; then herdr pane close ${shq(pane)}; else echo "wt: setup failed (exit $code) — this pane stays open"; fi`]
   })
   console.log('Setup running in a split pane')
+  process.exit(0)
+}
+
+if (command === 'open') {
+  requireHerdr()
+  let selectedPaths
+  const names = argv._.slice(1)
+  if (argv.all) {
+    selectedPaths = (await $`git worktree list`).stdout.trim()
+      .split('\n').slice(1)
+      .map(line => line.split(/\s+/)[0])
+  } else if (names.length > 0) {
+    selectedPaths = []
+    for (const name of names) {
+      const match = await resolveWorktreePath(name)
+      if (!match) {
+        console.log(`Error: no worktree matching "${name}"`)
+        process.exit(1)
+      }
+      selectedPaths.push(match)
+    }
+  } else {
+    selectedPaths = await pickWorktree('Open worktrees (Tab to select): ', (_, i) => i > 0)
+  }
+
+  for (const wtPath of selectedPaths) {
+    const label = path.basename(wtPath).replace(`${repoName}--`, '')
+    // prunable entries point at directories that are already gone
+    if (!fs.existsSync(wtPath)) {
+      console.log(`Skipping ${label}: directory missing`)
+      continue
+    }
+    if (await findTabForPath(wtPath)) {
+      console.log(`Skipping ${label}: already has a tab`)
+      continue
+    }
+    await createWorktreeTab(wtPath, label, { focus: false })
+    console.log(`Opened ${label}`)
+  }
   process.exit(0)
 }
 
