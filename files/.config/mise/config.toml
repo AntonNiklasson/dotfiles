@@ -40,3 +40,85 @@ lazydocker = "latest"
 [settings]
 # read .nvmrc / .node-version like fnm did
 idiomatic_version_file_enable_tools = ["node"]
+
+# ---------------------------------------------------------------------------
+# bootstrap: `mise bootstrap` installs packages, links dotfiles, applies
+# macos defaults, then installs [tools]. preview with `mise bootstrap --dry-run`.
+# ---------------------------------------------------------------------------
+
+# homebrew formulae/casks + mac app store. mise installs these itself into
+# /opt/homebrew; brew CLI still works on them.
+[bootstrap.packages]
+# shell
+"brew:bash" = "latest"
+"brew:zsh" = "latest"
+"brew:zsh-autosuggestions" = "latest"
+"brew:zsh-completions" = "latest"
+"brew:zsh-vi-mode" = "latest"
+"brew:coreutils" = "latest"
+"brew:gnu-sed" = "latest"
+"brew:curl" = "latest"
+"brew:mise" = "latest"
+"brew:mas" = "latest"
+
+# nav / view (yazi itself is in [tools]; these are its preview deps)
+"brew:eza" = "latest"
+"brew:the_silver_searcher" = "latest"
+"brew:tree" = "latest"
+"brew:chafa" = "latest"    # yazi image preview fallback
+"brew:ffmpeg" = "latest"   # yazi video/gif thumbnails
+"brew:poppler" = "latest"  # yazi pdf previews
+"brew:sevenzip" = "latest" # yazi archive preview/extract
+"brew:exiftool" = "latest" # yazi image metadata
+
+# git
+"brew:git" = "latest"
+"brew:git-extras" = "latest"
+"brew:git-trim" = "latest"
+
+# editor / terminal
+"brew:vim" = "latest"
+"brew:tmux" = "latest"
+"brew:luarocks" = "latest"
+
+# dev misc
+"brew:httpie" = "latest"
+"brew:cormacrelf/tap/dark-notify" = "latest"
+"brew:dhth/tap/prs" = "latest"
+"brew:blueutil" = "latest"
+"brew:displayplacer" = "latest"
+"brew:terminal-notifier" = "latest"
+
+# infra / db (docker CLI comes from docker-desktop)
+"brew:docker-compose" = "latest"
+"brew:flyway" = "latest"
+
+# apps
+"brew-cask:1password" = "latest"
+"brew-cask:bitwarden" = "latest"
+"brew-cask:caffeine" = "latest"
+"brew-cask:cursor" = "latest"
+"brew-cask:docker-desktop" = "latest"
+"brew-cask:dropbox" = "latest"
+"brew-cask:gcloud-cli" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:google-chrome" = "latest"
+"brew-cask:hiddenbar" = "latest"
+"brew-cask:leader-key" = "latest"
+"brew-cask:linear-linear" = "latest"
+"brew-cask:logitech-options" = "latest"
+"brew-cask:obsidian" = "latest"
+"brew-cask:postico" = "latest"
+"brew-cask:raycast" = "latest"
+"brew-cask:slack" = "latest"
+"brew-cask:spotify" = "latest"
+"brew-cask:todoist-app" = "latest"
+"brew-cask:tuple" = "latest"
+"brew-cask:zen" = "latest"
+
+# fonts
+"brew-cask:font-geist-mono-nerd-font" = "latest"
+
+# mac app store
+"mas:6472865291" = "latest" # keymapp
+"mas:6738274497" = "latest" # Raycast Companion
