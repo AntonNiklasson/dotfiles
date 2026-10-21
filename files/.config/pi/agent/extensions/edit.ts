@@ -23,6 +23,8 @@ export default function (pi: ExtensionAPI) {
       return toolRow(new Text(text, 0, 0), theme, context);
     },
     renderResult(result, { isPartial, expanded }, theme, context) {
+      // Collapsed: render nothing extra; the one-line call row from renderCall
+      // is the whole entry. Expanded: the full diff.
       const container = new Container();
 
       if (isPartial) {
@@ -40,27 +42,17 @@ export default function (pi: ExtensionAPI) {
         .join("\n")
         .split("\n")[0];
 
-      let header = "";
       if (context.isError) {
-        header = theme.fg("error", firstError || "edit failed");
-      } else {
-        let additions = 0;
-        let removals = 0;
-        for (const line of (details?.diff ?? "").split("\n")) {
-          if (line.startsWith("+") && !line.startsWith("+++")) additions++;
-          if (line.startsWith("-") && !line.startsWith("---")) removals++;
-        }
-        header =
-          theme.fg("success", `+${additions}`) +
-          theme.fg("dim", " / ") +
-          theme.fg("error", `-${removals}`);
+        return toolRow(
+          new Text(theme.fg("error", firstError || "edit failed"), 0, 0),
+          theme,
+          context,
+        );
       }
-
-      container.addChild(new Text(header, context.outputPad, 0));
 
       if (expanded && details?.diff) {
         container.addChild(
-          new Text(renderDiff(details.diff), context.outputPad + 2, 0),
+          new Text(renderDiff(details.diff), context.outputPad, 0),
         );
       }
 
