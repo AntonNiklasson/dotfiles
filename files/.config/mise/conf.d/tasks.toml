@@ -6,10 +6,9 @@ skip_if = '[ "$(uname)" != Darwin ]'
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-cfg=~/.config/mise/conf.d/packages.macos.toml
 undeclared_casks() {
   comm -23 <(brew list --cask | sort) \
-    <(grep -oE '^"brew-cask:[^"]+' "$cfg" | sed 's/"brew-cask://' | sort)
+    <(cat ~/.config/mise/conf.d/packages*.toml | grep -oE '^"brew-cask:[^"]+' | sed 's/"brew-cask://' | sort)
 }
 
 if [[ "${usage_apply:-false}" != true ]]; then
