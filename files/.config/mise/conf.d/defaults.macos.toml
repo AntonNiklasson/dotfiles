@@ -2,7 +2,6 @@
 autohide = true
 orientation = "right"
 apps = [
-  "/System/Applications/System Settings.app",
   "/Applications/Arc.app",
   "/Applications/Ghostty.app",
   "/Applications/Obsidian.app",
