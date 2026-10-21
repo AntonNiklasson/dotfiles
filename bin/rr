@@ -43,27 +43,15 @@ if (!prUrl) {
   }
 }
 
-const data = JSON.parse((await $`gh pr view ${prUrl} --json title,additions,deletions,baseRefName`).stdout)
-const { title, additions, deletions, baseRefName } = data
+const data = JSON.parse((await $`gh pr view ${prUrl} --json title,additions,deletions`).stdout)
+const { title, additions, deletions } = data
 
 const cleanTitle = title
   .replace(/\[?[A-Z]+-\d+\]?:?\s*/g, '')
   .replace(/\s*\[?[A-Z]+-\d+\]?:?\s*$/, '')
   .trim()
 
-let targetInfo = ''
-if (baseRefName !== 'main') {
-  const targetingPrs = JSON.parse(
-    (await $`gh pr list --base ${baseRefName} --author @me --state open --json url,number`).stdout
-  )
-  if (targetingPrs.length > 0) {
-    targetInfo = ` → ${baseRefName} (#${targetingPrs[0].number})`
-  } else {
-    targetInfo = ` → ${baseRefName}`
-  }
-}
-
-const message = `[${cleanTitle}](${prUrl}) \`+${additions}/-${deletions}\`${targetInfo}`
+const message = `[${cleanTitle}](${prUrl}) \`+${additions}/-${deletions}\``
 
 await $`echo -n ${message} | pbcopy`
 console.log('\x1b[32m✓\x1b[0m copied')
