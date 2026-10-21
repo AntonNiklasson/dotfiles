@@ -1,5 +1,5 @@
 [tools]
-node = ["24", "26", "22"]
+node = ["26", "24", "22"]
 bun = "latest"
 pnpm = "latest"
 "npm:zx" = "latest"
