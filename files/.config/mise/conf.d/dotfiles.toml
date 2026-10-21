@@ -1,0 +1,16 @@
+[dotfiles]
+"~/.zshrc" = "~/.dotfiles/files/.zshrc"
+"~/.gitconfig" = "~/.dotfiles/files/.gitconfig"
+"~/.gitignore" = "~/.dotfiles/files/.gitignore"
+"~/.hushlogin" = "~/.dotfiles/files/.hushlogin"
+"~/AGENTS.md" = "~/.dotfiles/files/_AGENTS.md"
+"~/.config/*" = "~/.dotfiles/files/.config/*"
+"~/.config/.DS_Store" = { mode = "absent" }
+"~/.claude/settings.json" = "~/.dotfiles/files/.claude/settings.json"
+"~/.claude/keybindings.json" = "~/.dotfiles/files/.claude/keybindings.json"
+"~/.claude/CLAUDE.md" = "~/.dotfiles/files/_AGENTS.md"
+"~/.claude/skills" = "~/.dotfiles/skills"
+"~/.agents/skills" = "~/.dotfiles/skills"
+
+[bootstrap.hooks]
+post-dotfiles = 'find ~ ~/.config -maxdepth 1 -type l -lname "$HOME/.dotfiles/*" ! -exec test -e {} ";" -print -delete'

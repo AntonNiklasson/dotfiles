@@ -1,0 +1,96 @@
+[bootstrap.macos.dock]
+autohide = true
+orientation = "right"
+
+[bootstrap.macos.trackpad]
+three_finger_drag = true
+
+[bootstrap.macos.finder]
+preferred_view_style = "list"
+
+[bootstrap.macos.login_items]
+apps = [
+  "/Applications/Leader Key.app",
+  "/Applications/Raycast.app",
+  "/Applications/Tuple.app",
+  "/Applications/Bitwarden.app",
+]
+
+[bootstrap.macos.defaults."com.apple.dock"]
+mineffect = "scale"
+tilesize = 50.0
+wvous-br-corner = 2
+wvous-br-modifier = 0
+wvous-tr-corner = 12
+wvous-tr-modifier = 0
+autohide-time-modifier = 0
+mru-spaces = 0
+
+[bootstrap.macos.defaults.NSGlobalDomain]
+AppleInterfaceStyle = "Dark"
+AppleShowScrollBars = "WhenScrolling"
+"com.apple.trackpad.scaling" = 2.0
+"com.apple.mouse.scaling" = 1.5
+KeyRepeat = 2.0
+InitialKeyRepeat = 15.0
+NSNavPanelExpandedStateForSaveMode = true
+AppleKeyboardUIMode = 3
+ApplePressAndHoldEnabled = false
+
+[bootstrap.macos.defaults."com.apple.LaunchServices"]
+LSQuarantine = false
+
+[bootstrap.macos.defaults."com.apple.finder"]
+FXEnableExtensionChangeWarning = false
+
+[bootstrap.macos.defaults."com.apple.screencapture"]
+show-thumbnail = false
+
+[bootstrap.macos.defaults."com.apple.HIToolbox"]
+AppleFnUsageType = 0
+AppleCurrentKeyboardLayoutInputSourceID = "com.apple.keylayout.US"
+AppleEnabledInputSources = [
+  { "Bundle ID" = "com.apple.CharacterPaletteIM", InputSourceKind = "Non Keyboard Input Method" },
+  { InputSourceKind = "Keyboard Layout", "KeyboardLayout ID" = 0, "KeyboardLayout Name" = "U.S." },
+  { "Bundle ID" = "com.apple.PressAndHold", InputSourceKind = "Non Keyboard Input Method" },
+]
+AppleSelectedInputSources = [
+  { "Bundle ID" = "com.apple.PressAndHold", InputSourceKind = "Non Keyboard Input Method" },
+  { InputSourceKind = "Keyboard Layout", "KeyboardLayout ID" = 0, "KeyboardLayout Name" = "U.S." },
+]
+
+[bootstrap.macos.defaults."com.apple.WindowManager"]
+EnableTiledWindowMargins = false
+
+# spotlight off cmd-space (raycast)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["64", "enabled"]
+value = false
+
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["65", "enabled"]
+value = false
+
+# caps lock -> control on every keyboard; hidutil mappings reset at reboot
+[bootstrap.macos.launchd.agents.capslock-control]
+program = "/usr/bin/hidutil"
+args = ["property", "--set", '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}']
+run_at_load = true
+
+[bootstrap.hooks]
+post-defaults = '''
+icloud="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+if [ -d "$icloud" ]; then
+  dir="$icloud/Screenshots"
+  mkdir -p "$dir" || echo "screenshots: can't create $dir"
+  [ "$(defaults read com.apple.screencapture location 2>/dev/null)" = "$dir" ] || defaults write com.apple.screencapture location "$dir" || true
+else
+  echo "screenshots: iCloud Drive not set up yet, re-run bootstrap after signing in"
+fi
+# universalaccess is protected; needs full disk access for the terminal
+[ "$(defaults read com.apple.universalaccess reduceMotion 2>/dev/null)" = 1 ] || defaults write com.apple.universalaccess reduceMotion -bool true || echo "reduce motion: grant the terminal full disk access, or set it in system settings"
+'''

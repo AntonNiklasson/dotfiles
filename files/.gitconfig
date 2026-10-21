@@ -58,6 +58,10 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 
+[credential "https://github.com"]
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !gh auth git-credential
 # Machine-specific overrides (e.g. work email), not tracked. Missing file is ignored.
 [include]
 	path = ~/.gitconfig.local

@@ -1,0 +1,27 @@
+[settings]
+write_targets.packages = "~/.config/mise/conf.d/packages.linux.toml"
+
+[bootstrap.packages]
+"apt:zsh" = "latest"
+"apt:zsh-autosuggestions" = "latest"
+"apt:curl" = "latest"
+"apt:git" = "latest"
+"apt:git-extras" = "latest"
+"apt:git-lfs" = "latest"
+"apt:build-essential" = "latest"
+"apt:libatomic1" = "latest"
+"apt:unzip" = "latest"
+
+"apt:silversearcher-ag" = "latest"
+"apt:tree" = "latest"
+"apt:chafa" = "latest"
+"apt:ffmpeg" = "latest"
+"apt:poppler-utils" = "latest"
+"apt:7zip" = "latest"
+"apt:libimage-exiftool-perl" = "latest"
+
+"apt:vim" = "latest"
+"apt:tmux" = "latest"
+"apt:luarocks" = "latest"
+"apt:httpie" = "latest"
+"apt:postgresql-client" = "latest"

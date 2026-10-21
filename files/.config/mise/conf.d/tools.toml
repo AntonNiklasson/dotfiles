@@ -1,0 +1,32 @@
+[tools]
+node = ["26", "24", "22"]
+bun = "latest"
+pnpm = "latest"
+"npm:zx" = "latest"
+
+bat = "latest"
+"github:eza-community/eza" = { version = "latest", os = ["linux"] }
+fd = "latest"
+fzf = "latest"
+ripgrep = "latest"
+zoxide = "latest"
+yazi = { version = "latest", os = ["macos"] }
+"github:sxyazi/yazi" = { version = "latest", matching = "musl", os = ["linux"] }
+glow = "latest"
+tlrc = { version = "latest", os = ["macos", "linux/x64"] }
+bottom = "latest"
+"npm:diff-so-fancy" = "latest"
+
+gh = "latest"
+delta = "latest"
+lazygit = "latest"
+
+"aqua:neovim/neovim" = "latest"
+
+jq = "latest"
+direnv = "latest"
+"aqua:anomalyco/opencode" = "latest"
+
+kubectl = "latest"
+k9s = "latest"
+lazydocker = "latest"

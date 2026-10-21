@@ -23,12 +23,10 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export PI_CODING_AGENT_DIR="$XDG_CONFIG_HOME/pi/agent"
 export NODE_USE_SYSTEM_CA=1  # trust macOS keychain CAs (Zscaler TLS interception)
 export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
-export PATH=$PATH:/opt/homebrew/opt/ruby/bin
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:~/.local/share/bob/nvim-bin
-export JAVA_HOME=$(brew --prefix openjdk@21)
 export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
@@ -61,14 +59,17 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd '^e' edit-command-line
 
-# homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# homebrew (macos)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export JAVA_HOME=/opt/homebrew/opt/openjdk@21
+fi
 export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true
 
 
-# fast node manager
-eval "$(fnm env --use-on-cd --shell zsh)"
+# mise. after brew so its PATH wins.
+eval "$(mise activate zsh)"
 
 
 # history
@@ -212,10 +213,14 @@ function psql-query() {
 }
 
 # pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+else
+  export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
+fi
 case ":$PATH:" in
   *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+  *) export PATH="$PATH:$PNPM_HOME/bin" ;;
 esac
 # pnpm end
 

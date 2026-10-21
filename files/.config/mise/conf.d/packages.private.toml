@@ -1,0 +1,5 @@
+[bootstrap.packages]
+"brew-cask:tailscale-app" = { version = "latest", os = "macos" }
+
+[bootstrap.hooks]
+post-packages = '{% if os() == "linux" %}command -v tailscale >/dev/null || { script=$(curl -fsSL https://tailscale.com/install.sh) && sh -c "$script"; }{% else %}true{% endif %}'
