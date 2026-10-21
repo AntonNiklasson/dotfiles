@@ -37,7 +37,14 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-# 6. everything else. --force-dotfiles replaces real files at link targets.
+# 6. github login. mise resolves versions and taps via the github API, and the
+# unauthenticated 60 req/h limit is shared with everyone behind zscaler.
+mise install gh
+mise exec -- gh auth status &>/dev/null || mise exec -- gh auth login
+GITHUB_TOKEN="$(mise exec -- gh auth token)"
+export GITHUB_TOKEN
+
+# 7. everything else. --force-dotfiles replaces real files at link targets.
 mise bootstrap --force-dotfiles
 
 echo "done! restart terminal (and killall Dock Finder SystemUIServer for defaults)"

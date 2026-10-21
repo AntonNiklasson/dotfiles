@@ -41,6 +41,9 @@ lazydocker = "latest"
 [settings]
 # read .nvmrc / .node-version like fnm did
 idiomatic_version_file_enable_tools = ["node"]
+# gh keeps its token in the keychain, not hosts.yml, so mise can't find it on
+# its own. without a token we share zscaler's egress IP's 60 req/h limit.
+github.credential_command = "gh auth token"
 
 # ---------------------------------------------------------------------------
 # bootstrap: `mise bootstrap` installs packages, links dotfiles, applies
