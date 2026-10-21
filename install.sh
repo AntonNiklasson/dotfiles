@@ -29,13 +29,13 @@ case "$(uname -s)" in
       brew install gh
       TEMP_GH=true
     fi
-    command -v mise &>/dev/null || brew install mise
+    if command -v mise &>/dev/null; then brew upgrade mise; else brew install mise; fi
     ;;
   Linux)
     sudo apt-get update
     sudo apt-get install -y git curl ca-certificates gh
     export PATH="$HOME/.local/bin:$PATH"
-    command -v mise &>/dev/null || curl -fsSL https://mise.run | sh
+    if command -v mise &>/dev/null; then mise self-update -y; else curl -fsSL https://mise.run | sh; fi
     ;;
   *)
     echo "unsupported OS: $(uname -s)" >&2
@@ -56,16 +56,22 @@ gh auth status &>/dev/null || gh auth login
 GITHUB_TOKEN="$(gh auth token)"
 export GITHUB_TOKEN
 
+cd "$HOME"
+
 if [[ "$DRY_RUN" == true ]]; then
   # preview against the repo config without touching the live ~/.config
-  MISE_CONFIG_DIR="$DOTFILES/files/.config/mise" mise bootstrap --dry-run
+  MISE_CONFIG_DIR="$DOTFILES/files/.config/mise" mise bootstrap --dry-run --force-dotfiles
   exit 0
 fi
 
 # linux gh keeps its token in hosts.yml (no keyring); keep a copy for when ~/.config/gh becomes a link (gitignored)
-if [[ -f ~/.config/gh/hosts.yml && ! -L ~/.config/gh ]]; then
-  cp -n ~/.config/gh/hosts.yml "$DOTFILES/files/.config/gh/hosts.yml"
+if [[ -f ~/.config/gh/hosts.yml && ! -L ~/.config/gh && ! -e "$DOTFILES/files/.config/gh/hosts.yml" ]]; then
+  cp ~/.config/gh/hosts.yml "$DOTFILES/files/.config/gh/hosts.yml"
 fi
+
+# only the first run overwrites real files at link targets; later runs stop and show them
+BOOTSTRAP_ARGS=()
+[[ -L ~/.config/mise ]] || BOOTSTRAP_ARGS=(--force-dotfiles)
 
 if [[ -e ~/.config/mise && ! -L ~/.config/mise ]]; then
   mv ~/.config/mise ~/.config/mise.bak."$(date +%Y%m%d%H%M%S)"
@@ -73,7 +79,7 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-mise bootstrap --force-dotfiles
+mise bootstrap ${BOOTSTRAP_ARGS[@]+"${BOOTSTRAP_ARGS[@]}"}
 
 # mise's gh takes over once bootstrap has installed tools
 if [[ "$TEMP_GH" == true ]]; then
