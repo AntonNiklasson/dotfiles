@@ -25,9 +25,11 @@ cd ~/.dotfiles
 
 - `config.toml`: settings
 - `miserc.toml`: turns on `*.macos.toml` / `*.linux.toml` loading only on that OS
+- `miserc.local.toml` (gitignored): `env = ["private"]` on private machines loads `*.private.toml`. `install.sh` asks once
 - `conf.d/tools.toml`: CLI tools + runtimes
 - `conf.d/packages.macos.toml`: brew formulae + casks
 - `conf.d/packages.linux.toml`: apt packages
+- `conf.d/packages.private.toml`: private machines only (tailscale)
 - `conf.d/defaults.macos.toml`: macos defaults, login items, caps lock agent
 - `conf.d/user.linux.toml`: zsh as login shell
 - `conf.d/dotfiles.toml`: symlinks into `$HOME`
