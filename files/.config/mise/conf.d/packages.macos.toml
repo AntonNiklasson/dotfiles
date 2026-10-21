@@ -6,7 +6,6 @@
 "brew:coreutils" = "latest"
 "brew:cormacrelf/tap/dark-notify" = "latest"
 "brew:curl" = "latest"
-"brew:dhth/tap/prs" = "latest"
 "brew:displayplacer" = "latest"
 "brew:docker-compose" = "latest"
 "brew:exiftool" = "latest"
