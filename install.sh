@@ -1,6 +1,6 @@
 #!/bin/bash
 # fresh-mac setup: just enough to run `mise bootstrap` (config in files/.config/mise).
-# usage: ./install.sh [--dry-run]   (DOTFILES_BRANCH=<branch> to clone a branch)
+# usage: ./install.sh [--dry-run]
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
@@ -17,7 +17,7 @@ if ! xcode-select -p &>/dev/null; then
   read -r -p "press enter once the command line tools have installed "
 fi
 
-[[ -d "$DOTFILES" ]] || git clone -b "${DOTFILES_BRANCH:-main}" https://github.com/AntonNiklasson/dotfiles.git "$DOTFILES"
+[[ -d "$DOTFILES" ]] || git clone https://github.com/AntonNiklasson/dotfiles.git "$DOTFILES"
 
 if [[ ! -x /opt/homebrew/bin/brew ]]; then
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
