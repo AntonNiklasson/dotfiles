@@ -175,3 +175,16 @@ mkdir -p "$dir"
 '''
 # drop dead links into the repo (what dotbot's `clean` did)
 post-dotfiles = 'find ~ ~/.config -maxdepth 1 -type l -lname "$HOME/.dotfiles/*" ! -exec test -e {} ";" -print -delete'
+
+# node deps for the zx scripts in bin/ (wt, rr, copylast, list-tmux-windows)
+post-tools = "cd ~/.dotfiles/bin && mise exec -- pnpm install --frozen-lockfile"
+
+# herdr: installer, not brew/mise. a stale packaged copy earlier on PATH than
+# ~/.local/bin breaks every CLI call with a protocol_mismatch. herdr updates itself.
+final = '''
+if [ -x "$HOME/.local/bin/herdr" ]; then
+  "$HOME/.local/bin/herdr" update
+else
+  curl -fsSL https://herdr.dev/install.sh | sh
+fi
+'''
