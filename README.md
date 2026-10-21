@@ -19,23 +19,6 @@ cd ~/.dotfiles
 ./install.sh
 ```
 
-## how it works
-
-`mise bootstrap` does everything, from `files/.config/mise/` (linked to `~/.config/mise`):
-
-- `config.toml`: settings
-- `miserc.toml`: turns on `*.macos.toml` / `*.linux.toml` loading only on that OS
-- `miserc.local.toml` (gitignored): `env = ["private"]` on private machines loads `*.private.toml`. `install.sh` asks once
-- `conf.d/tools.toml`: CLI tools + runtimes
-- `conf.d/packages.macos.toml`: brew formulae + casks
-- `conf.d/packages.linux.toml`: apt packages
-- `conf.d/packages.private.toml`: private machines only (tailscale: cask on macos, official install script on linux)
-- `conf.d/defaults.macos.toml`: macos defaults, login items, caps lock agent
-- `conf.d/user.linux.toml`: zsh as login shell
-- `conf.d/dotfiles.toml`: symlinks into `$HOME`
-- `conf.d/hooks.toml`: extra steps (bin/ deps, herdr)
-- `conf.d/tasks.toml`: `mise run cleanup` (macos)
-
 ## day to day
 
 ```bash
