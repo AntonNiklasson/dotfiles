@@ -10,13 +10,14 @@ cd ~/.dotfiles
 
 ## how it works
 
-`mise bootstrap` does everything, from `files/.config/mise/config.toml`:
+`mise bootstrap` does everything, from `files/.config/mise/` (linked to `~/.config/mise`):
 
-- `[bootstrap.packages]`: brew formulae + casks
-- `[dotfiles]`: symlinks into `$HOME`
-- `[bootstrap.macos.defaults]`: macos settings
-- `[tools]`: CLI tools + runtimes
-- `[bootstrap.hooks]`: everything else
+- `config.toml`: `[tools]` (CLI tools + runtimes) and settings
+- `conf.d/packages.toml`: brew formulae + casks
+- `conf.d/dotfiles.toml`: symlinks into `$HOME`
+- `conf.d/macos.toml`: macos defaults
+- `conf.d/hooks.toml`: extra steps (bin/ deps, herdr)
+- `conf.d/tasks.toml`: `mise run cleanup`
 
 ## day to day
 

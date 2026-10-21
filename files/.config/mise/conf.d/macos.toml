@@ -1,0 +1,30 @@
+# macos defaults. type follows the TOML value (int/bool/string). mise doesn't
+# restart apps: `killall Dock Finder SystemUIServer` or log out to see changes.
+[bootstrap.macos.defaults."com.apple.dock"]
+autohide-time-modifier = 0
+mru-spaces = 0
+
+[bootstrap.macos.defaults.NSGlobalDomain]
+NSNavPanelExpandedStateForSaveMode = true
+AppleKeyboardUIMode = 3
+ApplePressAndHoldEnabled = false
+
+[bootstrap.macos.defaults."com.apple.LaunchServices"]
+LSQuarantine = false
+
+[bootstrap.macos.defaults."com.apple.AppleMultitouchTrackpad"]
+TrackpadThreeFingerDrag = true
+
+[bootstrap.macos.defaults."com.apple.finder"]
+FXEnableExtensionChangeWarning = false
+
+[bootstrap.macos.defaults."com.apple.screencapture"]
+show-thumbnail = false
+
+[bootstrap.hooks]
+# screenshot dir needs $HOME, which defaults values don't expand
+post-defaults = '''
+dir="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
+mkdir -p "$dir"
+[ "$(defaults read com.apple.screencapture location 2>/dev/null)" = "$dir" ] || defaults write com.apple.screencapture location "$dir"
+'''

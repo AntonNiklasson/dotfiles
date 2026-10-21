@@ -1,0 +1,33 @@
+# everything undeclared: brew formulae, brew casks, mise tool versions.
+# `mise run cleanup` previews, `mise run cleanup --apply` removes.
+[tasks.cleanup]
+description = "preview (or --apply) removal of everything not in this config"
+usage = 'flag "--apply" help="remove instead of preview"'
+quiet = true
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+cfg=~/.config/mise/conf.d/packages.toml
+undeclared_casks() {
+  # casks homebrew installed never get pruned by mise, so diff them by hand
+  comm -23 <(brew list --cask | sort) \
+    <(grep -oE '^"brew-cask:[^"]+' "$cfg" | sed 's/"brew-cask://' | sort)
+}
+
+if [[ "${usage_apply:-false}" != true ]]; then
+  echo "# brew formulae";  mise bootstrap packages prune --dry-run
+  echo; echo "# brew casks";   undeclared_casks
+  echo; echo "# mise tools";   mise ls --prunable
+  echo; echo "preview only. remove with: mise run cleanup --apply"
+  exit 0
+fi
+
+mise bootstrap packages prune
+casks=$(undeclared_casks)
+if [[ -n "$casks" ]]; then
+  echo "$casks"
+  read -r -p "uninstall these casks? (y/n) " reply
+  [[ "$reply" == y ]] && echo "$casks" | xargs brew uninstall --cask
+fi
+mise prune --tools
+'''
