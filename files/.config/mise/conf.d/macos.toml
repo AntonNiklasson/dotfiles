@@ -1,8 +1,35 @@
+[bootstrap.macos.dock]
+autohide = true
+orientation = "right"
+
+[bootstrap.macos.finder]
+preferred_view_style = "list"
+
+[bootstrap.macos.login_items]
+apps = [
+  "/Applications/Leader Key.app",
+  "/Applications/Raycast.app",
+  "/Applications/Tuple.app",
+  "/Applications/Bitwarden.app",
+]
+
 [bootstrap.macos.defaults."com.apple.dock"]
+mineffect = "scale"
+tilesize = 50.0
+wvous-br-corner = 2
+wvous-br-modifier = 0
+wvous-tr-corner = 12
+wvous-tr-modifier = 0
 autohide-time-modifier = 0
 mru-spaces = 0
 
 [bootstrap.macos.defaults.NSGlobalDomain]
+AppleInterfaceStyle = "Dark"
+AppleShowScrollBars = "WhenScrolling"
+"com.apple.trackpad.scaling" = 2.0
+"com.apple.mouse.scaling" = 1.5
+KeyRepeat = 2.0
+InitialKeyRepeat = 15.0
 NSNavPanelExpandedStateForSaveMode = true
 AppleKeyboardUIMode = 3
 ApplePressAndHoldEnabled = false
@@ -20,6 +47,7 @@ FXEnableExtensionChangeWarning = false
 show-thumbnail = false
 
 [bootstrap.macos.defaults."com.apple.HIToolbox"]
+AppleFnUsageType = 0
 AppleCurrentKeyboardLayoutInputSourceID = "com.apple.keylayout.US"
 AppleEnabledInputSources = [
   { "Bundle ID" = "com.apple.CharacterPaletteIM", InputSourceKind = "Non Keyboard Input Method" },
@@ -30,6 +58,22 @@ AppleSelectedInputSources = [
   { "Bundle ID" = "com.apple.PressAndHold", InputSourceKind = "Non Keyboard Input Method" },
   { InputSourceKind = "Keyboard Layout", "KeyboardLayout ID" = 0, "KeyboardLayout Name" = "U.S." },
 ]
+
+[bootstrap.macos.defaults."com.apple.WindowManager"]
+EnableTiledWindowMargins = false
+
+# spotlight off cmd-space (raycast)
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["64", "enabled"]
+value = false
+
+[[bootstrap.macos.defaults_entries]]
+domain = "com.apple.symbolichotkeys"
+key = "AppleSymbolicHotKeys"
+path = ["65", "enabled"]
+value = false
 
 [bootstrap.hooks]
 post-defaults = '''
