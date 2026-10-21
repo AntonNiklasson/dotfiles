@@ -2,6 +2,9 @@
 autohide = true
 orientation = "right"
 
+[bootstrap.macos.trackpad]
+three_finger_drag = true
+
 [bootstrap.macos.finder]
 preferred_view_style = "list"
 
@@ -36,9 +39,6 @@ ApplePressAndHoldEnabled = false
 
 [bootstrap.macos.defaults."com.apple.LaunchServices"]
 LSQuarantine = false
-
-[bootstrap.macos.defaults."com.apple.AppleMultitouchTrackpad"]
-TrackpadThreeFingerDrag = true
 
 [bootstrap.macos.defaults."com.apple.finder"]
 FXEnableExtensionChangeWarning = false
@@ -75,9 +75,17 @@ key = "AppleSymbolicHotKeys"
 path = ["65", "enabled"]
 value = false
 
+# caps lock -> control on every keyboard; hidutil mappings reset at reboot
+[bootstrap.macos.launchd.agents.capslock-control]
+program = "/usr/bin/hidutil"
+args = ["property", "--set", '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}']
+run_at_load = true
+
 [bootstrap.hooks]
 post-defaults = '''
 dir="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Screenshots"
 mkdir -p "$dir"
 [ "$(defaults read com.apple.screencapture location 2>/dev/null)" = "$dir" ] || defaults write com.apple.screencapture location "$dir"
+# universalaccess is protected; needs full disk access for the terminal
+[ "$(defaults read com.apple.universalaccess reduceMotion 2>/dev/null)" = 1 ] || defaults write com.apple.universalaccess reduceMotion -bool true || echo "reduce motion: grant the terminal full disk access, or set it in system settings"
 '''
