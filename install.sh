@@ -19,7 +19,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # 1.5. prerequisites needed before brew bundle + dotfile linking
-for pkg in mas dotbot; do
+for pkg in mas dotbot mise; do
   command -v "$pkg" &>/dev/null || brew install "$pkg"
 done
 
@@ -32,8 +32,11 @@ dotbot -d "$DOTFILES" -c "$DOTFILES/links.yml"
 # 3. brew packages (sudo already primed at top of script)
 "$DOTFILES/bin/brew-dotfiles" install
 
+# 3.2. mise tools (config linked to ~/.config/mise/config.toml in step 2)
+mise install
+
 # 3.5. node deps for the zx scripts in bin/ (wt, rr, copylast, list-tmux-windows)
-(cd "$DOTFILES/bin" && pnpm install --frozen-lockfile)
+(cd "$DOTFILES/bin" && mise exec -- pnpm install --frozen-lockfile)
 
 # 3.6. herdr — deliberately not in the Brewfile: the formula lags the installer,
 # and a stale brew copy in /opt/homebrew/bin shadows ~/.local/bin, which breaks
