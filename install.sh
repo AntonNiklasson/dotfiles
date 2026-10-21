@@ -49,6 +49,11 @@ gh auth status &>/dev/null || gh auth login
 GITHUB_TOKEN="$(gh auth token)"
 export GITHUB_TOKEN
 
+# linux gh keeps its token in hosts.yml (no keyring); keep it once ~/.config/gh becomes a link (gitignored)
+if [[ -f ~/.config/gh/hosts.yml && ! -L ~/.config/gh ]]; then
+  mv -n ~/.config/gh/hosts.yml "$DOTFILES/files/.config/gh/hosts.yml"
+fi
+
 if [[ -e ~/.config/mise && ! -L ~/.config/mise ]]; then
   mv ~/.config/mise ~/.config/mise.bak."$(date +%Y%m%d%H%M%S)"
 fi
