@@ -5,13 +5,14 @@ pnpm = "latest"
 "npm:zx" = "latest"
 
 bat = "latest"
+"github:eza-community/eza" = { version = "latest", os = ["linux"] }
 fd = "latest"
 fzf = "latest"
 ripgrep = "latest"
 zoxide = "latest"
 yazi = "latest"
 glow = "latest"
-tlrc = "latest"
+tlrc = { version = "latest", os = ["macos", "linux/x64"] }
 bottom = "latest"
 "npm:diff-so-fancy" = "latest"
 

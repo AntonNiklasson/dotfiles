@@ -28,7 +28,6 @@ export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:~/.local/share/bob/nvim-bin
-export JAVA_HOME=$(brew --prefix openjdk@21)
 export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
@@ -61,13 +60,16 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd '^e' edit-command-line
 
-# homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# homebrew (macos)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export JAVA_HOME=/opt/homebrew/opt/openjdk@21
+fi
 export HOMEBREW_NO_AUTO_UPDATE=true
 export HOMEBREW_NO_ENV_HINTS=true
 
 
-# mise (tools in ~/.config/mise/config.toml). after brew so its PATH wins.
+# mise. after brew so its PATH wins.
 eval "$(mise activate zsh)"
 
 
@@ -212,7 +214,11 @@ function psql-query() {
 }
 
 # pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+else
+  export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
+fi
 case ":$PATH:" in
   *":$PNPM_HOME/bin:"*) ;;
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;

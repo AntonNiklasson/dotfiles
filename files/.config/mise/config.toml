@@ -2,5 +2,5 @@
 idiomatic_version_file_enable_tools = ["node"]
 # gh token lives in keychain; unauthenticated = zscaler-shared 60 req/h
 github.credential_command = "gh auth token"
-write_targets.packages = "~/.config/mise/conf.d/packages.toml"
+write_targets.packages = "~/.config/mise/conf.d/packages.macos.toml"
 write_targets.tools = "~/.config/mise/conf.d/tools.toml"

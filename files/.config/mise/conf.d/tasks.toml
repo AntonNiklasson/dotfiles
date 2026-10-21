@@ -2,10 +2,11 @@
 description = "preview (or --apply) removal of everything not in this config"
 usage = 'flag "--apply" help="remove instead of preview"'
 quiet = true
+skip_if = '[ "$(uname)" != Darwin ]'
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-cfg=~/.config/mise/conf.d/packages.toml
+cfg=~/.config/mise/conf.d/packages.macos.toml
 undeclared_casks() {
   comm -23 <(brew list --cask | sort) \
     <(grep -oE '^"brew-cask:[^"]+' "$cfg" | sed 's/"brew-cask://' | sort)
