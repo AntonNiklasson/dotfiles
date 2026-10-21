@@ -26,6 +26,8 @@ apps = [
 [bootstrap.macos.defaults."com.apple.dock"]
 mineffect = "scale"
 tilesize = 50.0
+wvous-bl-corner = 13
+wvous-bl-modifier = 0
 wvous-br-corner = 2
 wvous-br-modifier = 0
 wvous-tr-corner = 12
