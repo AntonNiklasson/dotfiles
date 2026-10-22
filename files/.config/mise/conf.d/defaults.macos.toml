@@ -37,6 +37,7 @@ mru-spaces = 0
 
 [bootstrap.macos.defaults.NSGlobalDomain]
 AppleInterfaceStyle = "Dark"
+AppleInterfaceStyleSwitchesAutomatically = false
 AppleShowScrollBars = "WhenScrolling"
 "com.apple.trackpad.scaling" = 2.0
 "com.apple.mouse.scaling" = 1.5
