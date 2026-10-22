@@ -95,14 +95,10 @@ post-defaults = '''
 # dock folder tiles: Downloads as folder icon, Applications above it
 "$HOME/.dotfiles/bin/dock-folders" || true
 
-icloud="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
-if [ -d "$icloud" ]; then
-  dir="$icloud/Screenshots"
-  mkdir -p "$dir" || echo "screenshots: can't create $dir"
-  [ "$(defaults read com.apple.screencapture location 2>/dev/null)" = "$dir" ] || defaults write com.apple.screencapture location "$dir" || true
-else
-  echo "screenshots: iCloud Drive not set up yet, re-run bootstrap after signing in"
-fi
+# local, not iCloud: work laptop can't sync. raycast screenshots ext reads this location
+dir="$HOME/Pictures/Screenshots"
+mkdir -p "$dir" || echo "screenshots: can't create $dir"
+[ "$(defaults read com.apple.screencapture location 2>/dev/null)" = "$dir" ] || defaults write com.apple.screencapture location "$dir" || true
 # universalaccess is protected; needs full disk access for the terminal
 [ "$(defaults read com.apple.universalaccess reduceMotion 2>/dev/null)" = 1 ] || defaults write com.apple.universalaccess reduceMotion -bool true || echo "reduce motion: grant the terminal full disk access, or set it in system settings"
 '''
