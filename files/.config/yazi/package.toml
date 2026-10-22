@@ -9,11 +9,6 @@ rev = "6cf1f43"
 hash = "347cc6b190eb0c2fd60513cc7ae37412"
 
 [[plugin.deps]]
-use = "barbanevosa/autosession"
-rev = "7a12b20"
-hash = "f9b76184511c983db7c6f719eea1e14d"
-
-[[plugin.deps]]
 use = "h-hg/yamb"
 rev = "971b858"
 hash = "da4534745930e827a44d4585bbd965eb"

@@ -12,11 +12,6 @@ run = "filter --smart"
 desc = "Filter files (smart case)"
 
 [[mgr.prepend_keymap]]
-on = "q"
-run = "plugin autosession -- save-and-quit"
-desc = "Save session and quit"
-
-[[mgr.prepend_keymap]]
 on = ["u", "a"]
 run = "plugin yamb -- save"
 desc = "Bookmark hovered file or directory"
