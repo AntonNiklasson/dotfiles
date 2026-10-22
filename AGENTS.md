@@ -1,3 +1,10 @@
+## Everything via mise bootstrap
+
+- This repo IS the setup, and `mise bootstrap` is how it gets applied. Never manage any of it manually — no raw `brew ...` installs, no hand-editing live files in `~/.config/**`.
+- Dotfiles/packages/settings changes: edit the source of truth under `files/`, commit, then `MISE_CONFIG_DIR="$HOME/.dotfiles/files/.config/mise" mise bootstrap` to apply (use `--dry-run` to preview, `--force-dotfiles` to overwrite links).
+- Status/drift check: `mise bootstrap status --missing`.
+- Package ops: `mise bootstrap packages use -g <source>:<pkg>`, `mise bootstrap packages remove -g <source>:<pkg>`, `mise bootstrap packages upgrade`.
+
 ## Git workflow in this repo
 
 Edited from two laptops, often in sessions I don't come back to. Goal: no change ever lives only in a working tree or a side branch. These rules override the global git rules.
