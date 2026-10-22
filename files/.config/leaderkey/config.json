@@ -199,6 +199,11 @@
       "value" : "/Applications/Ghostty.app"
     },
     {
+      "key" : "6",
+      "type" : "application",
+      "value" : "/Applications/Dia.app"
+    },
+    {
       "key" : "3",
       "type" : "application",
       "value" : "/Applications/Obsidian.app"

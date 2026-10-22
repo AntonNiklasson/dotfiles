@@ -3,6 +3,7 @@ autohide = true
 orientation = "right"
 apps = [
   "/Applications/Arc.app",
+  "/Applications/Dia.app",
   "/Applications/Ghostty.app",
   "/Applications/Obsidian.app",
   "/Applications/Slack.app",

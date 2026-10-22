@@ -39,6 +39,7 @@ write_targets.packages = "~/.config/mise/conf.d/packages.macos.toml"
 
 "brew-cask:1password" = "latest"
 "brew-cask:arc" = "latest"
+"brew-cask:thebrowsercompany-dia" = "latest"
 "brew-cask:bitwarden" = "latest"
 "brew-cask:caffeine" = "latest"
 "brew-cask:codex" = "latest"
