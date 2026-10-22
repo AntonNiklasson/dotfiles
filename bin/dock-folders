@@ -1,0 +1,75 @@
+#!/bin/bash
+# dock folder tiles: Downloads as a folder icon + Applications folder above it.
+# mise bootstrap has no persistent-others support, so this rewrites the dock's
+# persistent-others array. Goes through `defaults` (cfprefsd) — direct plist
+# edits get clobbered when the Dock relaunches. Idempotent: safe on every
+# bootstrap via the post-defaults hook.
+set -euo pipefail
+
+DOMAIN=com.apple.dock
+tmp=$(mktemp /tmp/dock-folders.XXXXXX.plist)
+trap 'rm -f "$tmp"' EXIT
+
+defaults export "$DOMAIN" "$tmp"
+
+if python3 - "$tmp" <<'PY'
+import plistlib, random, sys
+
+path = sys.argv[1]
+with open(path, 'rb') as f:
+    dock = plistlib.load(f)
+
+others = dock.get('persistent-others', [])
+changed = False
+
+URL = 'file:///Applications/'
+apps_tile = {
+    'tile-type': 'directory-tile',
+    'GUID': random.getrandbits(63),
+    'tile-data': {
+        'file-data': {'_CFURLString': URL, '_CFURLStringType': 15},
+        'file-label': 'Applications',
+        'file-type': 2,
+        'displayas': 1,
+        'showas': 0,
+        'arrangement': 2,
+        'preferreditemsize': -1,
+    },
+}
+
+# canonical tile already in place? otherwise rebuild it at index 0
+have_apps = any(
+    t.get('tile-data', {}).get('file-data', {}).get('_CFURLString') == URL
+    and t.get('tile-data', {}).get('displayas') == 1
+    and t.get('tile-data', {}).get('showas') == 0
+    and t.get('tile-data', {}).get('arrangement') == 2
+    for t in others
+)
+filtered = [t for t in others if t.get('tile-data', {}).get('file-data', {}).get('_CFURLString') != URL]
+if have_apps:
+    others = filtered
+else:
+    others = [dict(apps_tile)] + filtered
+    changed = True
+
+# Downloads tile: displayas 1 = folder icon (0 = stack)
+for t in others:
+    td = t.get('tile-data', {})
+    if td.get('file-label') == 'Downloads' and td.get('displayas') != 1:
+        td['displayas'] = 1
+        changed = True
+
+dock['persistent-others'] = others
+
+with open(path, 'wb') as f:
+    plistlib.dump(dock, f)
+
+sys.exit(0 if changed else 1)
+PY
+then
+  defaults import "$DOMAIN" "$tmp"
+  killall Dock
+  echo "dock-folders: applied"
+else
+  echo "dock-folders: nothing to do"
+fi

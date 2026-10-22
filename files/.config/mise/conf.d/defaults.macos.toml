@@ -92,6 +92,9 @@ run_at_load = true
 
 [bootstrap.hooks]
 post-defaults = '''
+# dock folder tiles: Downloads as folder icon, Applications above it
+"$HOME/.dotfiles/bin/dock-folders" || true
+
 icloud="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 if [ -d "$icloud" ]; then
   dir="$icloud/Screenshots"
