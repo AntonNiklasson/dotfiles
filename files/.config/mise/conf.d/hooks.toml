@@ -3,7 +3,9 @@ post-tools = "cd ~/.dotfiles/bin && mise exec -- pnpm install --frozen-lockfile"
 
 # herdr from its installer: a stale brew copy on PATH breaks it (protocol_mismatch)
 final = '''
-if [ -x "$HOME/.local/bin/herdr" ]; then
+if [ -n "$HERDR_ENV" ]; then
+  echo "herdr: skipping update inside a herdr session; run 'herdr update' outside it"
+elif [ -x "$HOME/.local/bin/herdr" ]; then
   "$HOME/.local/bin/herdr" update
 else
   script=$(curl -fsSL https://herdr.dev/install.sh) && sh -c "$script"
