@@ -86,11 +86,13 @@ key = "AppleSymbolicHotKeys"
 path = ["65", "enabled"]
 value = false
 
-# caps lock -> control on every keyboard; hidutil mappings reset at reboot
-[bootstrap.macos.launchd.agents.capslock-control]
-program = "/usr/bin/hidutil"
-args = ["property", "--set", '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}']
-run_at_load = true
+# caps lock -> control, same as system settings > keyboard > modifier keys.
+# per keyboard (vendor-product-0); 0-0-0 = built-in. applies after logout
+[[bootstrap.macos.defaults_entries]]
+domain = "NSGlobalDomain"
+key = "com.apple.keyboard.modifiermapping.0-0-0"
+host = "current"
+value = [{ HIDKeyboardModifierMappingSrc = 0x700000039, HIDKeyboardModifierMappingDst = 0x7000000E4 }]
 
 [bootstrap.hooks]
 post-defaults = '''
