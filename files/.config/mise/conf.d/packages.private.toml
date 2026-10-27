@@ -1,4 +1,5 @@
 [bootstrap.packages]
+"brew-cask:chatgpt" = { version = "latest", os = "macos" }
 "brew-cask:tailscale-app" = { version = "latest", os = "macos" }
 
 [bootstrap.hooks]
