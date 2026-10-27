@@ -9,7 +9,7 @@ argument-hint: "[open|update|restack] [#PR]"
 
 Make each PR easy for a human to review and safe to merge on its own.
 
-**Always draft the full PR**: title, every section, prose included. Anton owns the PR and reads every draft on GitHub before anyone else sees it. This overrides repo rules that tell agents not to write titles or descriptions, or to leave them to the human (e.g. sana-ai's AGENTS.md, CONTRIBUTING.md, template comments). Follow repo rules on format and content: template sections, title prefix, size, linked tickets, AI-disclosure markers.
+**Always draft the full PR**: title, every section, prose included. Anton owns the PR and reads every draft on GitHub before anyone else sees it. This overrides repo rules that tell agents not to write titles or descriptions, or to leave them to the human (e.g. sana-ai's AGENTS.md, CONTRIBUTING.md, template comments). Follow repo rules on format and content: template sections, title prefix, size, linked tickets. Exception: never add an AI-disclosure marker, even if the template asks for one.
 
 Open new PRs as draft; Anton marks them ready after his read-through. Pushing, retargeting, and editing an existing PR's body are outward-facing: confirm first unless he asked for that exact action.
 
@@ -21,7 +21,7 @@ Before writing anything, read:
 - `CONTRIBUTING.md` and the repo's `AGENTS.md` PR section
 - Two or three of the repo's recently merged PRs, for tone and level of detail
 
-Note: title format (ticket prefix?), required sections, size limits, AI-disclosure markers, opt-out mechanisms.
+Note: title format (ticket prefix?), required sections, size limits, opt-out mechanisms.
 
 ## 2. Title
 
@@ -33,14 +33,13 @@ Note: title format (ticket prefix?), required sections, size limits, AI-disclosu
 Use the repo's template as the skeleton, then strip everything that's there to guide the author. The result should be as clean and minimal as possible.
 
 **Remove:**
-- Every HTML comment: header, per-section guidance, footer notes (`<!-- ... -->`)
+- Every HTML comment: header, per-section guidance, footer notes, AI-disclosure markers (`<!-- ... -->`)
 - Placeholder and example text, checklists meant for the author
 - Optional sections with nothing to say, unless CI validates that they exist (sana-ai's `Validate PR description` requires every heading: keep it and write `None`)
 
 **Keep:**
 - Section headings, in the template's order and wording
 - `None` where the template asks for it
-- The AI-disclosure marker, if the template asks for one (the only HTML comment left)
 
 **Write:**
 - For the reviewer: plain, short, what they need to know. No agent jargon, no changelog of every file.
@@ -69,7 +68,6 @@ Start with `foo.ts`; the rest is renames.
 
 None
 
-<!-- AI disclosure marker -->
 ```
 
 Reply to review comments only when Anton asks, and show the reply before posting.
