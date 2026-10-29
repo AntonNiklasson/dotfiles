@@ -61,6 +61,7 @@ write_targets.packages = "~/.config/mise/conf.d/packages.macos.toml"
 "brew-cask:spotify" = "latest"
 "brew-cask:todoist-app" = "latest"
 "brew-cask:tuple" = "latest"
+"brew-cask:visual-studio-code" = "latest"
 "brew-cask:wispr-flow" = "latest"
 "brew-cask:zen" = "latest"
 
