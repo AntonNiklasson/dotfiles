@@ -19,9 +19,17 @@ fi
 # with PICK_URL_SOURCE=recent-unwrapped for the full buffer.
 SOURCE=${PICK_URL_SOURCE:-visible}
 
+if ! text=$(herdr pane read "$PANE" --source "$SOURCE" --format text 2>&1); then
+  echo "pick-url: failed to read pane $PANE: $text"
+  sleep 2
+  exit 1
+fi
+
+# grep exits 1 on no match; under pipefail + set -e that would kill the popup
+# before the "no urls" message below, so swallow it.
 urls=$(
-  herdr pane read "$PANE" --source "$SOURCE" --format text 2>/dev/null |
-    grep -oE '(https?://|www\.)[A-Za-z0-9._~:/?#@!$&*+,;=%-]+' |
+  printf '%s\n' "$text" |
+    { grep -oE '(https?://|www\.)[A-Za-z0-9._~:/?#@!$&*+,;=%-]+' || true; } |
     sed 's/[).,:;]*$//' |
     awk '!seen[$0]++' |
     tail -r
