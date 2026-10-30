@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# herdr-agent-picker — fuzzy-pick a running agent and focus its pane.
+#
+# Bound to prefix+a as a herdr popup. Herdr has no built-in agent picker, only
+# next_agent/previous_agent and indexed focus_agent.
+#
+# Ordered by attention: agents waiting on you first, then finished, working,
+# idle. Within a group, workspace order. The focused agent sorts last.
+#
+# One `herdr api snapshot` carries agents, tabs and workspaces, so labels cost
+# no extra process spawns.
+
+selected=$(
+  herdr api snapshot | jq -r '
+    .result.snapshot as $s
+    | ($s.workspaces | map({key: .workspace_id, value: .}) | from_entries) as $ws
+    | ($s.tabs | map({key: .tab_id, value: .label}) | from_entries) as $tabs
+    | {blocked: 0, waiting: 0, done: 1, working: 2, idle: 3} as $rank
+    | {
+        blocked: "\u001b[31m●\u001b[0m",
+        waiting: "\u001b[31m●\u001b[0m",
+        done:    "\u001b[34m●\u001b[0m",
+        working: "\u001b[33m●\u001b[0m",
+        idle:    "\u001b[2m○\u001b[0m"
+      } as $icon
+    | $s.agents
+    | sort_by([
+        (if .focused then 1 else 0 end),
+        ($rank[.agent_status] // 4),
+        ($ws[.workspace_id].number // 999)
+      ])
+    | .[]
+    | [
+        .pane_id,
+        ($icon[.agent_status] // "?"),
+        "\($ws[.workspace_id].label // .workspace_id)/\($tabs[.tab_id] // .tab_id)",
+        (.terminal_title_stripped // .agent)
+      ]
+    | "\(.[0])\t\(.[1]) \u001b[36m\(.[2])\u001b[0m  \(.[3])"' |
+    fzf --ansi --reverse --no-info --prompt='> ' \
+        --with-nth=2 --delimiter=$'\t' --tiebreak=index
+)
+[ -z "$selected" ] && exit 0
+
+herdr agent focus "${selected%%$'\t'*}" >/dev/null
