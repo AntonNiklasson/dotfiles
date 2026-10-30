@@ -76,7 +76,7 @@ description = "workspace picker"
 command = "$HOME/.dotfiles/bin/herdr-session-launcher"
 
 [[keys.command]]
-key = "prefix+a"
+key = "prefix+k"
 type = "popup"
 width = "50%"
 height = "40%"

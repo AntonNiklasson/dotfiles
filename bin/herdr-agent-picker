@@ -4,7 +4,7 @@ set -euo pipefail
 
 # herdr-agent-picker — fuzzy-pick a running agent and focus its pane.
 #
-# Bound to prefix+a as a herdr popup. Herdr has no built-in agent picker, only
+# Bound to prefix+k as a herdr popup. Herdr has no built-in agent picker, only
 # next_agent/previous_agent and indexed focus_agent.
 #
 # Ordered by attention: agents waiting on you first, then finished, working,
