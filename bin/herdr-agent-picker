@@ -7,8 +7,8 @@ set -euo pipefail
 # Bound to prefix+k as a herdr popup. Herdr has no built-in agent picker, only
 # next_agent/previous_agent and indexed focus_agent.
 #
-# Ordered by attention: agents waiting on you first, then finished, working,
-# idle. Within a group, workspace order. The focused agent sorts last.
+# Most recently active first: state_change_seq is a server-wide counter bumped
+# on every agent status change. The focused agent sorts last.
 #
 # One `herdr api snapshot` carries agents, tabs and workspaces, so labels cost
 # no extra process spawns.
@@ -18,7 +18,6 @@ selected=$(
     .result.snapshot as $s
     | ($s.workspaces | map({key: .workspace_id, value: .}) | from_entries) as $ws
     | ($s.tabs | map({key: .tab_id, value: .label}) | from_entries) as $tabs
-    | {blocked: 0, waiting: 0, done: 1, working: 2, idle: 3} as $rank
     | {
         blocked: "\u001b[31m●\u001b[0m",
         waiting: "\u001b[31m●\u001b[0m",
@@ -29,8 +28,7 @@ selected=$(
     | $s.agents
     | sort_by([
         (if .focused then 1 else 0 end),
-        ($rank[.agent_status] // 4),
-        ($ws[.workspace_id].number // 999)
+        -(.state_change_seq // 0)
       ])
     | .[]
     | [
