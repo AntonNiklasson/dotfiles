@@ -3,6 +3,20 @@
 - Use sub-agents as a tool for you to save tokens. Your context window is precious.
 - Default: do the work, then put open questions in a numbered list at the end. Don't stack them mid-response.
 
+## Writing style: ASD-STE100 (Simplified Technical English)
+
+Base prose on ASD-STE100 principles. Concision rule above still wins.
+
+- One word, one meaning. Pick a term, keep it. No synonyms for variety.
+- Short sentences: instructions ≤20 words, descriptions ≤25.
+- One instruction per sentence. Imperative mood ("Run X", not "You should run X").
+- Active voice. Name the actor.
+- Simple verb tenses: present, past, future. No "would have been".
+- No phrasal verbs when a single verb exists ("start" not "kick off", "remove" not "get rid of").
+- Concrete over vague. No hedging filler ("basically", "essentially", "it seems").
+- Put conditions first: "If tests fail, check X."
+- Code identifiers, commands, paths: keep exact, in backticks. STE vocabulary limits don't apply to them.
+
 ## Git 
 
 - Always prefix new branches with `an/` as a namespace
