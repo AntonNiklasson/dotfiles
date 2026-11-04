@@ -20,7 +20,6 @@ files/.config/k9s/*
 !files/.config/mise/
 files/.config/mise/**/*.local.toml
 !files/.config/nvim/
-!files/.config/ohmyposh/
 !files/.config/opencode/
 files/.config/opencode/*
 !files/.config/opencode/opencode.json
