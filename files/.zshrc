@@ -26,7 +26,6 @@ export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:~/.dotfiles/bin
 export PATH=$PATH:~/.local/bin
-export PATH=$PATH:~/.local/share/bob/nvim-bin
 export VISUAL='nvim'
 export EDITOR=$VISUAL
 export REACT_EDITOR=''
