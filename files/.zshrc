@@ -149,8 +149,6 @@ alias pn='pnpm'
 alias pni='pnpm install'
 alias pnr='pnpm run'
 alias pu='pi update && pi update --extensions'
-alias t='tmux'
-# Herdr: native workspace/pane multiplexer. Keep `t` as tmux during migration.
 alias h='herdr'
 if (( $+commands[herdr] )); then
   autoload -Uz compinit
