@@ -21,7 +21,6 @@ write_targets.packages = "~/.config/mise/conf.d/packages.linux.toml"
 "apt:libimage-exiftool-perl" = "latest"
 
 "apt:vim" = "latest"
-"apt:tmux" = "latest"
 "apt:luarocks" = "latest"
 "apt:httpie" = "latest"
 "apt:postgresql-client" = "latest"
