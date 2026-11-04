@@ -15,7 +15,6 @@ yazi = { version = "latest", os = ["macos"] }
 glow = "latest"
 tlrc = { version = "latest", os = ["macos", "linux/x64"] }
 bottom = "latest"
-"npm:diff-so-fancy" = "latest"
 
 gh = "latest"
 delta = "latest"
