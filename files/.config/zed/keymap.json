@@ -1,0 +1,54 @@
+// Zed keymap. Mirrors nvim/lua/config/keymaps.lua + LazyVim defaults.
+[
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      // jj: leave insert mode + save
+      "j j": ["action::Sequence", ["vim::NormalBefore", "workspace::Save"]]
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual",
+    "bindings": {
+      // paste over selection without clobbering the register
+      "p": ["vim::Paste", { "preserve_clipboard": true }]
+    }
+  },
+  {
+    "context": "Editor && (vim_mode == normal || vim_mode == visual) && !menu",
+    "bindings": {
+      "space w": "workspace::Save",
+      "space y p": "workspace::CopyRelativePath",
+
+      // splits
+      "space s v": "pane::SplitRight",
+      "space s b": "pane::SplitDown",
+
+      // pickers (LazyVim defaults)
+      "space space": "file_finder::Toggle",
+      "space f f": "file_finder::Toggle",
+      "space /": "pane::DeploySearch",
+      "space ,": "tab_switcher::Toggle",
+
+      // explorer (yazi.nvim in nvim)
+      "space e e": "project_panel::ToggleFocus",
+
+      // git (snacks.gitbrowse)
+      "space g B": "editor::OpenPermalinkToLine",
+
+      // code
+      "space c a": "editor::ToggleCodeActions",
+      "space c r": "editor::Rename"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal || ProjectPanel",
+    "bindings": {
+      // ctrl+hjkl: move between panes
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  }
+]
