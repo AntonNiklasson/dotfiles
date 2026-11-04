@@ -5,6 +5,7 @@ write_targets.packages = "~/.config/mise/conf.d/packages.macos.toml"
 
 "brew:bash" = "latest"
 "brew:blueutil" = "latest"
+"brew:btop" = "latest"
 "brew:chafa" = "latest"
 "brew:coreutils" = "latest"
 "brew:cormacrelf/tap/dark-notify" = "latest"
