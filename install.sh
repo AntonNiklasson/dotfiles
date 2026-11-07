@@ -1,15 +1,13 @@
 #!/bin/bash
 # fresh-machine setup (macos, debian/ubuntu): just enough to run `mise bootstrap`.
-# usage: ./install.sh [--plan] [--yes]
+# usage: ./install.sh [--plan]
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
 PLAN=false
-YES_ARGS=()
 for arg in "$@"; do
   case "$arg" in
     --plan) PLAN=true ;;
-    -y|--yes) YES_ARGS=(--yes) ;;
     *) echo "unknown argument: $arg" >&2; exit 1 ;;
   esac
 done
@@ -31,7 +29,7 @@ Installer plan (no changes will be made):
 7. Back up an existing mise config directory and link the repo's config.
 8. Run mise bootstrap to install declared packages/tools, link dotfiles,
    and apply configured settings and hooks. Incomplete first setups use
-   --force-dotfiles; --yes skips bootstrap confirmation prompts only.
+   --force-dotfiles. Bootstrap may ask for confirmation.
 9. Remove a temporary Homebrew gh installation after successful bootstrap.
 PLAN
   if [[ -d "$DOTFILES/files/.config/mise" ]] && command -v mise &>/dev/null; then
@@ -109,7 +107,7 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-mise bootstrap ${BOOTSTRAP_ARGS[@]+"${BOOTSTRAP_ARGS[@]}"} ${YES_ARGS[@]+"${YES_ARGS[@]}"}
+mise bootstrap ${BOOTSTRAP_ARGS[@]+"${BOOTSTRAP_ARGS[@]}"}
 
 # mise's gh takes over once bootstrap has installed tools
 if [[ "$TEMP_GH" == true ]]; then
