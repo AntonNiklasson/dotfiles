@@ -7,7 +7,7 @@ If you're an agent, follow [SETUP.md](SETUP.md).
 ```bash
 git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./install.sh --dry-run   # preview
+./install.sh --plan      # preview installer steps and available package plan
 ./install.sh
 ```
 

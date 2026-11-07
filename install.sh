@@ -1,21 +1,39 @@
 #!/bin/bash
 # fresh-machine setup (macos, debian/ubuntu): just enough to run `mise bootstrap`.
-# usage: ./install.sh [--dry-run] [--yes]
+# usage: ./install.sh [--plan] [--yes]
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
-DRY_RUN=false
+PLAN=false
 YES_ARGS=()
 for arg in "$@"; do
   case "$arg" in
-    --dry-run) DRY_RUN=true ;;
+    --plan) PLAN=true ;;
     -y|--yes) YES_ARGS=(--yes) ;;
     *) echo "unknown argument: $arg" >&2; exit 1 ;;
   esac
 done
 
 # Preview must exit before sudo, package installation, auth, or config writes.
-if [[ "$DRY_RUN" == true ]]; then
+if [[ "$PLAN" == true ]]; then
+  cat <<'PLAN'
+Installer plan (no changes will be made):
+1. Request sudo and keep it available during installation.
+2. Prepare prerequisites:
+   macOS: install Command Line Tools and Homebrew if missing; install gh if
+   missing, and install or upgrade mise.
+   Linux (Debian/Ubuntu): update apt and install git, curl, certificates,
+   and gh; install or update mise.
+3. Clone ~/.dotfiles if missing.
+4. Ask whether this is a private machine if no local role config exists.
+5. Check GitHub authentication; start login if needed.
+6. Preserve existing gh credentials before linking dotfiles.
+7. Back up an existing mise config directory and link the repo's config.
+8. Run mise bootstrap to install declared packages/tools, link dotfiles,
+   and apply configured settings and hooks. Incomplete first setups use
+   --force-dotfiles; --yes skips bootstrap confirmation prompts only.
+9. Remove a temporary Homebrew gh installation after successful bootstrap.
+PLAN
   if [[ -d "$DOTFILES/files/.config/mise" ]] && command -v mise &>/dev/null; then
     MISE_CONFIG_DIR="$DOTFILES/files/.config/mise" mise bootstrap --dry-run --force-dotfiles
   else
