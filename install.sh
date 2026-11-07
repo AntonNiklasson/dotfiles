@@ -1,11 +1,29 @@
 #!/bin/bash
 # fresh-machine setup (macos, debian/ubuntu): just enough to run `mise bootstrap`.
-# usage: ./install.sh [--dry-run]
+# usage: ./install.sh [--dry-run] [--yes]
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
 DRY_RUN=false
-[[ "${1:-}" == --dry-run ]] && DRY_RUN=true
+YES_ARGS=()
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=true ;;
+    -y|--yes) YES_ARGS=(--yes) ;;
+    *) echo "unknown argument: $arg" >&2; exit 1 ;;
+  esac
+done
+
+# Preview must exit before sudo, package installation, auth, or config writes.
+if [[ "$DRY_RUN" == true ]]; then
+  if [[ -d "$DOTFILES/files/.config/mise" ]] && command -v mise &>/dev/null; then
+    MISE_CONFIG_DIR="$DOTFILES/files/.config/mise" mise bootstrap --dry-run --force-dotfiles
+  else
+    echo "Would install prerequisites, clone $DOTFILES, authenticate GitHub, and run mise bootstrap."
+    echo "A package preview requires mise and the repository to be installed first."
+  fi
+  exit 0
+fi
 
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done &
@@ -58,12 +76,6 @@ export GITHUB_TOKEN
 
 cd "$HOME"
 
-if [[ "$DRY_RUN" == true ]]; then
-  # preview against the repo config without touching the live ~/.config
-  MISE_CONFIG_DIR="$DOTFILES/files/.config/mise" mise bootstrap --dry-run --force-dotfiles
-  exit 0
-fi
-
 # linux gh keeps its token in hosts.yml (no keyring); keep a copy for when ~/.config/gh becomes a link (gitignored)
 if [[ -f ~/.config/gh/hosts.yml && ! -L ~/.config/gh && ! -e "$DOTFILES/files/.config/gh/hosts.yml" ]]; then
   cp ~/.config/gh/hosts.yml "$DOTFILES/files/.config/gh/hosts.yml"
@@ -71,7 +83,7 @@ fi
 
 # only the first run overwrites real files at link targets; later runs stop and show them
 BOOTSTRAP_ARGS=()
-[[ -L ~/.config/mise ]] || BOOTSTRAP_ARGS=(--force-dotfiles)
+[[ "$(readlink ~/.zshrc || true)" == "$DOTFILES/files/.zshrc" ]] || BOOTSTRAP_ARGS=(--force-dotfiles)
 
 if [[ -e ~/.config/mise && ! -L ~/.config/mise ]]; then
   mv ~/.config/mise ~/.config/mise.bak."$(date +%Y%m%d%H%M%S)"
@@ -79,7 +91,7 @@ fi
 mkdir -p ~/.config
 ln -sfn "$DOTFILES/files/.config/mise" ~/.config/mise
 
-mise bootstrap ${BOOTSTRAP_ARGS[@]+"${BOOTSTRAP_ARGS[@]}"}
+mise bootstrap ${BOOTSTRAP_ARGS[@]+"${BOOTSTRAP_ARGS[@]}"} ${YES_ARGS[@]+"${YES_ARGS[@]}"}
 
 # mise's gh takes over once bootstrap has installed tools
 if [[ "$TEMP_GH" == true ]]; then
