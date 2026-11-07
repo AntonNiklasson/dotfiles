@@ -16,7 +16,8 @@ done
 if [[ "$PLAN" == true ]]; then
   cat <<'PLAN'
 Installer plan (no changes will be made):
-1. Request sudo and keep it available during installation.
+1. Save installation output under ~/.local/state/dotfiles/install-*.log,
+   then request sudo and keep it available during installation.
 2. Prepare prerequisites:
    macOS: install Command Line Tools and Homebrew if missing; install gh if
    missing, and install or upgrade mise.
@@ -41,10 +42,27 @@ PLAN
   exit 0
 fi
 
+# Keep each run outside the checkout so logs survive config linking and retries.
+LOG_DIR="$HOME/.local/state/dotfiles"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$(umask 077; mktemp "$LOG_DIR/install-$(date +%Y%m%d-%H%M%S)-XXXXXX.log")"
+exec > >(tee -a "$LOG_FILE") 2>&1
+finish() {
+  local status=$?
+  trap - EXIT
+  if [[ -n "${SUDO_KEEPALIVE_PID:-}" ]]; then
+    kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true
+  fi
+  echo "installer exited with status $status; log: $LOG_FILE"
+  exit "$status"
+}
+trap finish EXIT
+echo "installation log: $LOG_FILE"
+echo "started: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done &
 SUDO_KEEPALIVE_PID=$!
-trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
 
 # gh comes from the system package manager, not mise: installing it via mise
 # already needs the github API, and unauthenticated calls share zscaler's 60 req/h
