@@ -2,3 +2,6 @@
 # It cleans up on normal exit, but any signal (Ctrl-C included) leaves one behind.
 # Harmless -- zx falls back to a random name if the file is already there.
 /*.mjs
+
+# editor launcher log
+/launch-editor.log

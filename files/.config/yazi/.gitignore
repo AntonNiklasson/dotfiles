@@ -1,0 +1,4 @@
+# yazi packages (installed by `ya pkg`, tracked so a fresh clone works offline)
+**/preview.png
+# yamb bookmarks are machine-local, not shared config
+/bookmark

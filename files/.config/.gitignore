@@ -1,0 +1,22 @@
+# Ignore everything, then opt in per app folder.
+# App-specific rules live in each app's own .gitignore.
+/*
+!/.gitignore
+!/btop/
+!/eza/
+!/gh/
+!/gh-dash/
+!/ghostty/
+!/herdr/
+!/k9s/
+!/lazygit/
+!/leaderkey/
+!/mise/
+!/nvim/
+!/opencode/
+!/pi/
+!/yazi/
+
+# opencode writes its own .gitignore, so its rules live here.
+/opencode/*
+!/opencode/opencode.json
