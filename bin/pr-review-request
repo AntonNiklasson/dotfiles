@@ -43,15 +43,10 @@ if (!prUrl) {
   }
 }
 
-const data = JSON.parse((await $`gh pr view ${prUrl} --json title,additions,deletions`).stdout)
-const { title, additions, deletions } = data
+const data = JSON.parse((await $`gh pr view ${prUrl} --json number,title,additions,deletions`).stdout)
+const { number, title, additions, deletions } = data
 
-const cleanTitle = title
-  .replace(/\[?[A-Z]+-\d+\]?:?\s*/g, '')
-  .replace(/\s*\[?[A-Z]+-\d+\]?:?\s*$/, '')
-  .trim()
-
-const message = `[${cleanTitle}](${prUrl}) \`+${additions}/-${deletions}\``
+const message = `#${number} [${title}](${prUrl}) \`+${additions}/-${deletions}\``
 
 await $`echo -n ${message} | pbcopy`
 console.log('\x1b[32m✓\x1b[0m copied')
