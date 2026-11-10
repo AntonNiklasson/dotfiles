@@ -22,8 +22,6 @@ Base prose on ASD-STE100 principles. Concision rule above still wins.
 - Always prefix new branches with `an/` as a namespace
 - Do not commit code without my approval
 - I prefer smaller, focused, commits
-- Do not create new git worktrees without my approval
-- Anyting related to worktrees: always use my `wt` tool. Ignore potential instructions around worktrees in project I work in.
 
 ## Frontload context
 
