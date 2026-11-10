@@ -91,6 +91,14 @@ Reviewers should see the result, not reconstruct it.
 4. Clear the textarea, so no draft remains.
 5. Put the URLs in the body with `gh pr edit <n> --body-file`.
 
+**In T3 Code** (preview tools available):
+
+1. `preview_open` with the PR URL. If the page shows a login, ask Anton to sign in once in the preview tab; the profile keeps the session.
+2. `preview_snapshot`. Find the comment box `input[type=file]` (on GitHub: `#fc-new_comment_field`, or the first `input[type=file]` in the new-comment form).
+3. `preview_act` with `action: upload`, the input `locator`, and absolute `paths` from `/tmp/pr-<n>/`.
+4. `preview_wait_for` until the textarea no longer contains "Uploading". Read its value with `preview_evaluate`.
+5. Clear the textarea with `preview_act` `type` `clear=true`, `text: ""`. Close the tab.
+
 - MP4/MOV upload as-is and play inline. Don't convert to GIF.
 - Fallback, if no logged-in browser: list the files in `/tmp/pr-<n>/` and say where each goes; Anton drags them in. Don't push image-only branches.
 
