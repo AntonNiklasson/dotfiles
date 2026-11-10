@@ -25,6 +25,10 @@ Base prose on ASD-STE100 principles. Concision rule above still wins.
 - Do not create new git worktrees without my approval
 - Anyting related to worktrees: always use my `wt` tool. Ignore potential instructions around worktrees in project I work in.
 
+## Pull requests
+
+- In any repo: before you open or update a PR, load the `pull-request` skill and follow it.
+
 ## Frontload context
 
 Whenever you write a message containing a lot of references, like linear issues or pull requests:
