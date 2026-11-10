@@ -53,6 +53,10 @@ Reply to review comments only when Anton asks. Show the reply to Anton before yo
 - **Non-UI changes that are easier to show:** add a Mermaid diagram, terminal output, or a table of numbers.
 - **Verification:** state what you ran, what you checked, and what you did not check. State only checks that you ran.
 
+### Uploading files
+
+`gh` cannot upload files. Open the PR in a browser that is logged in. Paste or upload the file into the comment field. Copy the URL that GitHub adds, then clear the field. Do not post the comment. Put the URL in the PR body.
+
 ## 5. Reviewer guidance
 
 If the PR is not trivial, write 2–3 lines for the reviewer. Put them in the matching template section. If there is none, put them at the end of the body:
