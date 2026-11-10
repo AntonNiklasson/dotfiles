@@ -94,9 +94,9 @@ Reviewers should see the result, not reconstruct it.
 **In T3 Code** (preview tools available):
 
 1. `preview_open` with the PR URL. If the page shows a login, ask Anton to sign in once in the preview tab; the profile keeps the session.
-2. `preview_snapshot`. Find the comment box `input[type=file]` (on GitHub: `#fc-new_comment_field`, or the first `input[type=file]` in the new-comment form).
-3. `preview_act` with `action: upload`, the input `locator`, and absolute `paths` from `/tmp/pr-<n>/`.
-4. `preview_wait_for` until the textarea no longer contains "Uploading". Read its value with `preview_evaluate`.
+2. Click the comment box button "Paste, drop, or click to add files". GitHub has no `input[type=file]` until then. The click opens a file chooser (`preview_status` shows `fileChooser`).
+3. `preview_act` with `action: upload` and absolute `paths` from `/tmp/pr-<n>/`. Don't pass a locator.
+4. Poll the textarea (`textarea[placeholder="Leave a comment"]`) with `preview_evaluate` until it holds an `<img ... src="https://github.com/user-attachments/assets/...">` tag and no "Uploading". Copy the tag.
 5. Clear the textarea with `preview_act` `type` `clear=true`, `text: ""`. Close the tab.
 
 - MP4/MOV upload as-is and play inline. Don't convert to GIF.
