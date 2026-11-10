@@ -2,7 +2,7 @@
 
 import { $ } from 'zx'
 
-// rr - review request
+// pr-review-request
 // Generates a review request message for the current PR (or a given URL)
 // and copies it to the clipboard.
 
