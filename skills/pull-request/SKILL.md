@@ -143,3 +143,10 @@ This PR is part of a stack:
 2. Resolve conflicts against main. A file the branch deletes but main modified: check what main changed and whether it still matters for the replacement, then keep the deletion.
 3. Verify: `git log --oneline origin/main..<top>` lists only unmerged PRs' commits. Run the affected tests.
 4. `gh pr edit <next> --base main`, then push. Update the stack lists.
+
+## 7. Hand-off
+
+When a PR is created or updated and ready for Anton's read-through:
+
+1. Run `rr <url>`. It copies a review-request message (title link plus `+adds/-dels`) to the clipboard.
+2. End the reply with the `rr` output as a Markdown code block, so he can paste it as is.
