@@ -76,10 +76,23 @@ Reply to review comments only when Anton asks, and show the reply before posting
 
 Reviewers should see the result, not reconstruct it.
 
-- **UI changes:** before/after screenshots or a short clip. Capture them yourself when you can (local app, Storybook, Playwright); save to `/tmp/pr-<n>/` with descriptive names and tell Anton which file goes where. `gh` can't upload images into a PR body, so Anton drags them in. Link the Figma/design if one exists.
+- **UI changes:** before/after screenshots or a short clip. Capture them yourself when you can (local app, Storybook, Playwright); save to `/tmp/pr-<n>/` with descriptive names. Upload them yourself (see "Uploading files" below). Link the Figma/design if one exists.
 - **Non-UI changes that are easier shown than told:** a diagram (Mermaid renders on GitHub), a before/after terminal output, a table of numbers.
 - **Verification:** say how the change was verified, in the reviewer's terms: what was run, what was checked, what wasn't. E.g. "Ran the integration tests for meetings, notifications, discover and workspace; all green, one test still skipped (see comment)". If the template has no testing section, put it under "How to review".
 - Only claim what was actually run. Say plainly what's unverified.
+
+### Uploading files
+
+`gh` and the API can't upload attachments; GHE rejects the `gh` token on the upload endpoint. Use the browser instead:
+
+1. Open the PR page in a browser that is logged in to GitHub/GHE.
+2. Set the file on the comment box's file input. Don't post the comment.
+3. Wait until the textarea shows the uploaded markdown (`user-attachments/...` URL). Copy it.
+4. Clear the textarea, so no draft remains.
+5. Put the URLs in the body with `gh pr edit <n> --body-file`.
+
+- MP4/MOV upload as-is and play inline. Don't convert to GIF.
+- Fallback, if no logged-in browser: list the files in `/tmp/pr-<n>/` and say where each goes; Anton drags them in. Don't push image-only branches.
 
 ## 5. How to review
 
