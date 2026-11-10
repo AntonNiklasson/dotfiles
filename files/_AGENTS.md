@@ -23,6 +23,10 @@ Base prose on ASD-STE100 principles. Concision rule above still wins.
 - Do not commit code without my approval
 - I prefer smaller, focused, commits
 
+## Pull requests
+
+- In any repo: before you open or update a PR, load the `pull-request` skill and follow it.
+
 ## Frontload context
 
 Whenever you write a message containing a lot of references, like linear issues or pull requests:
