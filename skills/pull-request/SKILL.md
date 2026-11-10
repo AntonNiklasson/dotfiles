@@ -89,3 +89,9 @@ This PR is part of a stack:
 - Show the stack position in the title: `(2/3)`.
 - Push as few times as possible. Push all stack branches in one command.
 
+## 7. Hand-off
+
+When a PR is ready for Anton to read:
+
+1. Run `pr-review-request <url>`. It copies `#<n> [title](url) +adds/-dels` to the clipboard.
+2. Put its output at the end of your reply, in a code block.
