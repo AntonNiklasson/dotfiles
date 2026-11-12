@@ -43,19 +43,11 @@ if (!prUrl) {
   }
 }
 
-const data = JSON.parse((await $`gh pr view ${prUrl} --json title,additions,deletions,changedFiles,files`).stdout)
-const { title, additions, deletions, changedFiles, files } = data
+const data = JSON.parse((await $`gh pr view ${prUrl} --json title,additions,deletions,changedFiles`).stdout)
+const { title, additions, deletions, changedFiles } = data
 
-// Second line: file count plus the largest files by churn
-const MAX_FILES = 3
-const top = [...files]
-  .sort((a, b) => (b.additions + b.deletions) - (a.additions + a.deletions))
-  .slice(0, MAX_FILES)
-  .map(f => `\`${f.path}\``)
-const rest = changedFiles - top.length
-const fileLine = `${changedFiles} ${changedFiles === 1 ? 'file' : 'files'}: ${top.join(', ')}${rest > 0 ? `, +${rest} more` : ''}`
-
-const message = `[${title}](${prUrl}) \`+${additions}/-${deletions}\`\n${fileLine}`
+const fileLabel = `${changedFiles} ${changedFiles === 1 ? 'file' : 'files'} changed`
+const message = `[${title}](${prUrl})\n\`+${additions}/-${deletions}\` · ${fileLabel}`
 
 await $`echo -n ${message} | pbcopy`
 console.log('\x1b[32m✓\x1b[0m copied')
