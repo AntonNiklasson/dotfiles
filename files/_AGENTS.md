@@ -27,6 +27,12 @@ Base prose on ASD-STE100 principles. Concision rule above still wins.
 
 - In any repo: before you open or update a PR, load the `pull-request` skill and follow it.
 
+## GitHub comments
+
+- Mark every comment you post on GitHub as AI-written. Applies to PR/issue comments, review bodies, inline review comments, replies.
+- Prefix the body with `🤖 ` (robot emoji + space). Nothing else.
+- Don't apply to PR descriptions or commit messages.
+
 ## Frontload context
 
 Whenever you write a message containing a lot of references, like linear issues or pull requests:
