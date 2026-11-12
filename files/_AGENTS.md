@@ -30,7 +30,7 @@ Base prose on ASD-STE100 principles. Concision rule above still wins.
 ## GitHub comments
 
 - Mark every comment you post on GitHub as AI-written. Applies to PR/issue comments, review bodies, inline review comments, replies.
-- Prefix the body with `🤖 ` (robot emoji + space). Nothing else.
+- End the body with a blank line, then this exact footer: `<sub>This comment was authored by Anton's agent.</sub>`
 - Don't apply to PR descriptions or commit messages.
 
 ## Frontload context
