@@ -30,7 +30,12 @@ Base prose on ASD-STE100 principles. Concision rule above still wins.
 ## GitHub comments
 
 - Mark every comment you post on GitHub as AI-written. Applies to PR/issue comments, review bodies, inline review comments, replies.
-- End the body with a blank line, then this exact footer: `<sub>Posted through my agent.</sub>`
+- End the body with a blank line, then this exact footer (GitHub alert syntax):
+
+  ```
+  > [!NOTE]
+  > Posted through my agent.
+  ```
 - Don't apply to PR descriptions or commit messages.
 
 ## Frontload context
