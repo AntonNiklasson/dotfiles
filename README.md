@@ -7,7 +7,7 @@ If you're an agent, follow [SETUP.md](SETUP.md).
 ```bash
 git clone https://github.com/AntonNiklasson/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./install.sh --dry-run   # preview
+./install.sh --plan      # preview installer steps and available package plan
 ./install.sh
 ```
 
@@ -23,3 +23,5 @@ mise up                           # upgrade tools
 mise bootstrap packages upgrade   # upgrade packages
 mise run cleanup                  # preview removal of anything undeclared (--apply to remove)
 ```
+
+Installer logs are saved per run to `~/.local/state/dotfiles/install-*.log`; the path is printed at startup and exit. `--plan` does not create a log.
