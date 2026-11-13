@@ -13,10 +13,12 @@ setopt extendedglob
 pr_url="${1:-$(pbpaste)}"
 pr_url="${pr_url##[[:space:]]#}"
 pr_url="${pr_url%%[[:space:]]#}"
-if [[ ! "$pr_url" =~ '^https://github\.com/[^/[:space:]]+/[^/[:space:]]+/pull/[0-9]+/?$' ]]; then
+if [[ ! "$pr_url" =~ '^(https://github\.com/[^/[:space:]?#]+/[^/[:space:]?#]+/pull/[0-9]+)([/?#][^[:space:]]*)?$' ]]; then
   print -u2 'Provide a GitHub PR URL or copy one to the clipboard first.'
   exit 1
 fi
+
+pr_url="$match[1]"
 
 # Raycast starts a non-interactive shell, so load mise without relying on .zshrc.
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
