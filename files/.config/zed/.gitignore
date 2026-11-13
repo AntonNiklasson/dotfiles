@@ -1,0 +1,5 @@
+# Zed owns everything here except the checked-in config.
+*
+!.gitignore
+!settings.json
+!keymap.json
