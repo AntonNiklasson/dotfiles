@@ -26,7 +26,7 @@ mise run cleanup                  # preview removal of anything undeclared (--ap
 
 ### Raycast review requests
 
-After `mise bootstrap`, add `~/.config/raycast/scripts` in Raycast Settings →
+Add `~/.dotfiles/bin` in Raycast Settings →
 Extensions → Script Commands → Add Directories. Run **Review Request** and paste
 the PR URL to copy the formatted review request to your clipboard. The command
 uses your login shell so it can find the same tools as the terminal command.
