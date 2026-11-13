@@ -27,7 +27,7 @@ eval "$(mise env --shell zsh)"
 data=$(gh pr view "$pr_url" --json title,additions,deletions,changedFiles,commits)
 message=$(printf '%s' "$data" | jq -r --arg url "$pr_url" '
   (.commits | length) as $count |
-  "[\(.title)](\($url))\n`+\(.additions)/-\(.deletions)` · \($count) \(if $count == 1 then "commit" else "commits" end) · \(.changedFiles) \(if .changedFiles == 1 then "file" else "files" end) changed"
+  "[\(.title)](\($url))\n+\(.additions)/−\(.deletions) · \($count) \(if $count == 1 then "commit" else "commits" end) · \(.changedFiles) \(if .changedFiles == 1 then "file" else "files" end) changed"
 ')
 printf '%s' "$message" | pbcopy
 printf '✓ copied\n%s\n' "$message"
