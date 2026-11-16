@@ -158,10 +158,10 @@ fi
 alias rc='vim ~/.zshrc'
 alias rcs='source ~/.zshrc'
 alias vim='nvim'
-alias k='HTTPS_PROXY=socks5://localhost:8888 kubectl'
 alias oc='opencode --agent plan'
 alias prv='gh pr view --web'
 alias pic='pi --continue'
+alias k='kubectl'
 
 function r() {
   local runner=npm
