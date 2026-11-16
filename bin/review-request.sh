@@ -13,8 +13,8 @@ setopt extendedglob
 pr_url="${1:-$(pbpaste)}"
 pr_url="${pr_url##[[:space:]]#}"
 pr_url="${pr_url%%[[:space:]]#}"
-if [[ ! "$pr_url" =~ '^(https://github\.com/[^/[:space:]?#]+/[^/[:space:]?#]+/pull/[0-9]+)([/?#][^[:space:]]*)?$' ]]; then
-  print -u2 'Provide a GitHub PR URL or copy one to the clipboard first.'
+if [[ ! "$pr_url" =~ '^(https://[^/[:space:]?#]+/[^/[:space:]?#]+/[^/[:space:]?#]+/pull/[0-9]+)([/?#][^[:space:]]*)?$' ]]; then
+  print -u2 'Provide a GitHub or GHE PR URL or copy one to the clipboard first.'
   exit 1
 fi
 
