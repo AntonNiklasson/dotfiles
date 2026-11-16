@@ -1,5 +1,5 @@
 ---
-name: review
+name: code-review
 description: Review a PR's big picture, merge readiness, deploy risk, and rollback. No code edits or GitHub posts.
 disable-model-invocation: true
 user-invocable: true

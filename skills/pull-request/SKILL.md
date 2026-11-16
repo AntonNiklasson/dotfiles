@@ -1,6 +1,6 @@
 ---
 name: pull-request
-description: Open, update, or restack Anton's pull requests — titles, filling the repo's PR template, stacks, visuals and verification, and guidance for reviewers. Use whenever creating a PR, editing a PR body, pushing to a stacked branch, or rebasing a stack after a merge. Not for reviewing other people's PRs (use `review`).
+description: Open, update, or restack Anton's pull requests — titles, filling the repo's PR template, stacks, visuals and verification, and guidance for reviewers. Use whenever creating a PR, editing a PR body, pushing to a stacked branch, or rebasing a stack after a merge. Not for reviewing other people's PRs (use `code-review`).
 user-invocable: true
 argument-hint: "[open|update|restack] [#PR]"
 ---
