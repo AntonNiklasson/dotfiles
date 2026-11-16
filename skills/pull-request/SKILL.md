@@ -97,5 +97,5 @@ This PR is part of a stack:
 
 When a PR is ready for Anton to read:
 
-1. Run `pr-review-request <url>`. It copies `#<n> [title](url) +adds/-dels` to the clipboard.
+1. Run `review-request <url>`. It copies `[title](url)` plus a `+adds/−dels · N commits · N files changed` line to the clipboard.
 2. Put its output at the end of your reply, in a code block.
