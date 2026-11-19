@@ -16,6 +16,7 @@
 !/opencode/
 !/pi/
 !/yazi/
+!/zed/
 
 # opencode writes its own .gitignore, so its rules live here.
 /opencode/*

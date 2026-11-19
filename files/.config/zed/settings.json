@@ -1,0 +1,41 @@
+// Zed settings. Mirrors nvim (LazyVim) config in ../nvim.
+{
+  "vim_mode": true,
+  "relative_line_numbers": "enabled",
+  "vertical_scroll_margin": 4,
+  "current_line_highlight": "all",
+  "tab_size": 4,
+
+  // theme + font: same as ghostty
+  "auto_install_extensions": { "tokyo-night": true },
+  "theme": { "mode": "dark", "light": "Tokyo Night", "dark": "Tokyo Night" },
+  "buffer_font_family": "GeistMono Nerd Font Mono",
+  "buffer_font_size": 14,
+  "buffer_font_features": { "calt": false, "liga": false },
+
+  // vim.g.autoformat = false
+  "format_on_save": "off",
+  // inlay_hints.enabled = false
+  "inlay_hints": { "enabled": false },
+
+  "file_types": { "Markdown": ["mdx"] },
+
+  "languages": {
+    "TypeScript": { "language_servers": ["...", "!oxlint"] },
+    "TSX": { "language_servers": ["...", "!oxlint"] },
+    "JavaScript": { "language_servers": ["...", "!oxlint"] }
+  },
+  "lsp": {
+    "eslint": {
+      "settings": {
+        // monorepo: resolve config + deps from the nearest package
+        "workingDirectories": { "mode": "auto" }
+      }
+    }
+  },
+
+  // snacks.gitbrowse url_patterns equivalent
+  "git_hosting_providers": [
+    { "provider": "github", "name": "GHE", "base_url": "https://ghe.megaleo.com" }
+  ]
+}
